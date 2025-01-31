@@ -1,0 +1,19 @@
+Current errors:
+
+No module named 'helm'
+Could not load CRFM API key crfm_api_key.txt.
+No module named 'anthropic'
+Could not load anthropic API key claude_api_key.txt.
+No module named 'openai'
+Could not load OpenAI API key openai_api_key.txt.
+No module named 'vertexai'
+Could not load VertexAI API.
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/work/pi_brownsarahm_uri_edu/ayman_uri/fairness/fairnessBench/fairnessBench/runner.py", line 7, in <module>
+    from fairnessBench import LLM
+  File "/work/pi_brownsarahm_uri_edu/ayman_uri/fairness/fairnessBench/fairnessBench/LLM.py", line 140, in <module>
+    def complete_text_claude(prompt, stop_sequences=[anthropic.HUMAN_PROMPT], model="claude-v1", max_tokens_to_sample = 2000, temperature=0.5, log_file=None, messages=None, **kwargs):
+                                                     ^^^^^^^^^
+NameError: name 'anthropic' is not defined

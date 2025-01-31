@@ -1,5 +1,7 @@
+# AS: 
 final_exp_logs
-
+fairnessBench/benchmarks/adult/env/*.csv
+prepared
 
 
 # Byte-compiled / optimized / DLL files
