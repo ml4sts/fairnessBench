@@ -17,3 +17,16 @@ pip install -U numpy
 pip install --force-reinstall charset-normalizer==3.1.0
 
 
+# AS:
+# Our dependencies:
+# For llama:
+pip install transformers
+pip install torch
+pip install accelerate
+pip install tokenizer
+
+
+# For Adult:
+pip install ucimlrepo
+pip install scikit-learn
+
