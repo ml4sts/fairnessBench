@@ -73,11 +73,11 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     print(args, file=sys.stderr)
-    if not args.retrieval or args.agent_type != "ResearchAgent":
-        # should not use these actions when there is no retrieval
-        args.actions_remove_from_prompt.extend(["Retrieval from Research Log", "Append Summary to Research Log", "Reflection"])
-    # AS: This line is useless??
-    LLM.FAST_MODEL = args.fast_llm_name
-    # AS: getattr has something to do with applying or creating a function (check python conversation)
-    run(getattr(sys.modules[__name__], args.agent_type), args)
+    # if not args.retrieval or args.agent_type != "ResearchAgent":
+    #     # should not use these actions when there is no retrieval
+    #     args.actions_remove_from_prompt.extend(["Retrieval from Research Log", "Append Summary to Research Log", "Reflection"])
+    # # AS: This line is useless??
+    # LLM.FAST_MODEL = args.fast_llm_name
+    # # AS: getattr has something to do with applying or creating a function (check python conversation)
+    # run(getattr(sys.modules[__name__], args.agent_type), args)
     
