@@ -19,7 +19,7 @@ from dacite import from_dict
 from .low_level_actions import LOW_LEVEL_ACTIONS
 from .high_level_actions import HIGH_LEVEL_ACTIONS
 from .schema import Step, Trace, EnvException, TooLongPromptError, LLMError, EnhancedJSONEncoder 
-from .LLM import complete_text_claude
+from .LLM import complete_text_fast as complete_text_claude # AS: They hard code claude but I have to use llama...
 from .prepare_task import prepare_task, get_task_info
 
 class TimeoutException(Exception): pass

@@ -11,7 +11,7 @@ from autogpt.llm.providers.openai import OPEN_AI_MODELS
 from autogpt.logs import logger
 from autogpt.singleton import Singleton
 import datetime
-from MLAgentBench.LLM import complete_text_claude, complete_text_crfm
+from fairnessBench.LLM import complete_text_claude, complete_text_crfm
 import os
 import anthropic
 import time

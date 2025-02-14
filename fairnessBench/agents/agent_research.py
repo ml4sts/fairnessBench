@@ -2,8 +2,8 @@
 import os
 import sys
 import anthropic
-from MLAgentBench.LLM import complete_text_fast, complete_text
-from MLAgentBench.schema import Action
+from fairnessBench.LLM import complete_text_fast, complete_text
+from fairnessBench.schema import Action
 from .agent import Agent
 
 initial_prompt = """You are a helpful research assistant. You have access to the following tools:
