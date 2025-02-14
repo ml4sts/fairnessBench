@@ -1,0 +1,24 @@
+No module named 'helm'
+Could not load CRFM API key crfm_api_key.txt.
+[Errno 2] No such file or directory: 'claude_api_key.txt'
+Could not load anthropic API key claude_api_key.txt.
+No module named 'openai'
+Could not load OpenAI API key openai_api_key.txt.
+No module named 'vertexai'
+Could not load VertexAI API.
+/work/pi_brownsarahm_uri_edu/ayman_uri/fairness/fairnessBench/fairnessBench/agents/agent.py:198: SyntaxWarning: invalid escape sequence '\s'
+  pattern += f'"{e}":([\s\S]*),\s*'
+/work/pi_brownsarahm_uri_edu/ayman_uri/fairness/fairnessBench/fairnessBench/agents/agent.py:224: SyntaxWarning: invalid escape sequence '\['
+  e = e.replace("[", "\[").replace("]", "\]")
+/work/pi_brownsarahm_uri_edu/ayman_uri/fairness/fairnessBench/fairnessBench/agents/agent.py:224: SyntaxWarning: invalid escape sequence '\]'
+  e = e.replace("[", "\[").replace("]", "\]")
+/work/pi_brownsarahm_uri_edu/ayman_uri/fairness/fairnessBench/fairnessBench/agents/agent.py:225: SyntaxWarning: invalid escape sequence '\s'
+  pattern += f"{e}:([\s\S]*)"
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/work/pi_brownsarahm_uri_edu/ayman_uri/fairness/fairnessBench/fairnessBench/runner.py", line 11, in <module>
+    from fairnessBench.agents.agent_langchain  import LangChainAgent
+  File "/work/pi_brownsarahm_uri_edu/ayman_uri/fairness/fairnessBench/fairnessBench/agents/agent_langchain.py", line 9, in <module>
+    from langchain.agents import AgentExecutor
+ModuleNotFoundError: No module named 'langchain'

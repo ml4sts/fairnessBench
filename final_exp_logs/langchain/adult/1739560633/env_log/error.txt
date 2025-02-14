@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/work/pi_brownsarahm_uri_edu/ayman_uri/fairness/fairnessBench/fairnessBench/runner.py", line 32, in run
+    final_message = agent.run(env)
+                    ^^^^^^^^^^^^^^
+  File "/work/pi_brownsarahm_uri_edu/ayman_uri/fairness/fairnessBench/fairnessBench/agents/agent_langchain.py", line 270, in run
+    llm = ChatAnthropic(model=self.args.llm_name, anthropic_api_key=open("claude_api_key.txt").read().strip(), temperature=0.5, max_tokens_to_sample = 2000)
+                                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'claude_api_key.txt'

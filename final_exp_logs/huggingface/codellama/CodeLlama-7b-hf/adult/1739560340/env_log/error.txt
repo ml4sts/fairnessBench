@@ -1,0 +1,34 @@
+Traceback (most recent call last):
+  File "/work/pi_brownsarahm_uri_edu/ayman_uri/fairness/fairnessBench/fairnessBench/runner.py", line 32, in run
+    final_message = agent.run(env)
+                    ^^^^^^^^^^^^^^
+  File "/work/pi_brownsarahm_uri_edu/ayman_uri/fairness/fairnessBench/fairnessBench/agents/agent_research.py", line 113, in run
+    completion = complete_text(prompt, log_file, self.args.llm_name)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/work/pi_brownsarahm_uri_edu/ayman_uri/fairness/fairnessBench/fairnessBench/LLM.py", line 316, in complete_text
+    completion = complete_text_hf(prompt, stop_sequences=["Observation:"], log_file=log_file, model=model, **kwargs)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/work/pi_brownsarahm_uri_edu/ayman_uri/fairness/fairnessBench/fairnessBench/LLM.py", line 246, in complete_text_hf
+    hf_model = AutoModelForCausalLM.from_pretrained(model).to("cuda:9")
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/work/pi_brownsarahm_uri_edu/ayman_uri/fairness/llama_env/lib/python3.12/site-packages/transformers/modeling_utils.py", line 3110, in to
+    return super().to(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/work/pi_brownsarahm_uri_edu/ayman_uri/fairness/llama_env/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1340, in to
+    return self._apply(convert)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/work/pi_brownsarahm_uri_edu/ayman_uri/fairness/llama_env/lib/python3.12/site-packages/torch/nn/modules/module.py", line 900, in _apply
+    module._apply(fn)
+  File "/work/pi_brownsarahm_uri_edu/ayman_uri/fairness/llama_env/lib/python3.12/site-packages/torch/nn/modules/module.py", line 900, in _apply
+    module._apply(fn)
+  File "/work/pi_brownsarahm_uri_edu/ayman_uri/fairness/llama_env/lib/python3.12/site-packages/torch/nn/modules/module.py", line 927, in _apply
+    param_applied = fn(param)
+                    ^^^^^^^^^
+  File "/work/pi_brownsarahm_uri_edu/ayman_uri/fairness/llama_env/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1326, in convert
+    return t.to(
+           ^^^^^
+RuntimeError: CUDA error: invalid device ordinal
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+

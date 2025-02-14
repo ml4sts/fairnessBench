@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "/work/pi_brownsarahm_uri_edu/ayman_uri/fairness/fairnessBench/fairnessBench/runner.py", line 32, in run
+    final_message = agent.run(env)
+                    ^^^^^^^^^^^^^^
+  File "/work/pi_brownsarahm_uri_edu/ayman_uri/fairness/fairnessBench/fairnessBench/agents/agent.py", line 268, in run
+    completion = complete_text(prompt, log_file, self.args.llm_name)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/work/pi_brownsarahm_uri_edu/ayman_uri/fairness/fairnessBench/fairnessBench/LLM.py", line 312, in complete_text
+    completion = complete_text_claude(prompt, stop_sequences=[anthropic.HUMAN_PROMPT, "Observation:"], log_file=log_file, model=model, **kwargs)
+                 ^^^^^^^^^^^^^^^^^^^^
+NameError: name 'complete_text_claude' is not defined. Did you mean: 'complete_text_fast'?
