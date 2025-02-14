@@ -10,8 +10,10 @@
 # all_tasks="cifar10 imdb"
 all_tasks="adult"
 log_dir=final_exp_logs
+# AS: 
 # models="claude-2.1 gpt-4-0125-preview gemini-pro"
-models="llama"
+models="huggingface/codellama/CodeLlama-7b-hf" # AS: This name was determined by the LLM.py module. It is required to follow this name. But don't know how to use the local
+
 
 # Run listed tasks 
 for model in $models

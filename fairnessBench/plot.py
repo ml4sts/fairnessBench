@@ -121,7 +121,7 @@ def get_all_runs_with_log():
     df = pd.DataFrame()
     for r in all_runs:
         exp, task, run = r.split("/")[-5:-2]
-        if task in os.listdir("../research_assistant_final/MLAgentBench/benchmarks"):
+        if task in os.listdir("../research_assistant_final/fairnessBench/benchmarks"):
             new_row={"task": task, "exp": exp, "run": run, "path": r}
             df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
     

@@ -1,10 +1,10 @@
 #/bin/bash
 
 # auto-gpt
-# pip install -r Auto-GPT/requirements.txt
+pip install -r Auto-GPT/requirements.txt
 
 # crfm api
-# pip install crfm-helm
+pip install crfm-helm
 
 # ML dependencies
 conda install pytorch torchvision torchaudio pytorch-cuda=11.7 -c pytorch -c nvidia
@@ -24,6 +24,13 @@ pip install transformers
 pip install torch
 pip install accelerate
 pip install tokenizer
+
+pip install blobfile  # ??
+pip install protobuf  # ??
+pip install dacite    # ??
+pip install anthropic # for agent.py
+pip install langchain # langchain agent
+pip install langchain_anthropic 
 
 
 # For Adult:

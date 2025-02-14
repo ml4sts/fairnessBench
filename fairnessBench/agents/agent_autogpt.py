@@ -11,7 +11,7 @@ from autogpt.llm import api_manager
 
 
 class AutoGPTAgent(Agent):
-    """ A wrapper class to wrap the AutoGPT agents to the MLAgentBench framework."""
+    """ A wrapper class to wrap the AutoGPT agents to the fairnessBench framework."""
 
     def run(self, env):
 

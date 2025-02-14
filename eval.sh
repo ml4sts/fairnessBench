@@ -8,8 +8,8 @@ for model in $models
 do
     for task in $all_tasks
     do
-        echo "python -m MLAgentBench.eval --log-folder $log_dir/$model/$task --task $task --output-file ${model}_${task}.json"
-        python -m MLAgentBench.eval --log-folder $log_dir/$model/$task --task $task --output-file ${model}_${task}.json 
+        echo "python -m fairnessBench.eval --log-folder $log_dir/$model/$task --task $task --output-file ${model}_${task}.json"
+        python -m fairnessBench.eval --log-folder $log_dir/$model/$task --task $task --output-file ${model}_${task}.json 
         # add --eval-intermediate to evaluate intermediate steps 
     done
 done

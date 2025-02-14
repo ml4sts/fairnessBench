@@ -6,7 +6,7 @@ import openai
 from autogpt.config import Config
 from autogpt.llm.utils import metered, retry_openai_api
 from autogpt.logs import logger
-from MLAgentBench.LLM import get_embedding_crfm
+from fairnessBench.LLM import get_embedding_crfm
 
 
 Embedding = list[np.float32] | np.ndarray[Any, np.dtype[np.float32]]

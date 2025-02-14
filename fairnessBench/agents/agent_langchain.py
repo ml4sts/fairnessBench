@@ -1,4 +1,4 @@
-""" This file contains the agent class for the LangChain agent, which adapts the LangChain agents to the MLAgentBench framework."""
+""" This file contains the agent class for the LangChain agent, which adapts the LangChain agents to the fairnessBench framework."""
 
 import os
 import sys
@@ -8,7 +8,7 @@ from typing import Dict, List, Optional, Tuple, Union, Any
 
 from langchain.agents import AgentExecutor
 from langchain.agents import initialize_agent
-from langchain.agents.tools import Tool
+from langchain.agents.tools import tool
 from langchain_anthropic import ChatAnthropic
 from langchain.chat_models.base import BaseChatModel
 from langchain.schema import (
@@ -27,8 +27,8 @@ from langchain.callbacks.manager import CallbackManagerForChainRun
 from langchain.input import get_color_mapping
 from langchain.callbacks import FileCallbackHandler
 from langchain.agents.mrkl.output_parser import MRKLOutputParser
-from MLAgentBench.schema import Action
-from MLAgentBench.LLM import complete_text_crfm
+from fairnessBench.schema import Action
+from fairnessBench.LLM import complete_text_fast as complete_text_crfm # AS: Changed it to complete_text_fast
 from .agent import Agent
 
 
@@ -254,7 +254,7 @@ class ChatCRFM(BaseChatModel):
 
 
 class LangChainAgent(Agent):   
-    """ A wrapper class to wrap the LangChain agents to the MLAgentBench framework."""
+    """ A wrapper class to wrap the LangChain agents to the fairnessBench framework."""
 
     def __init__(self, args, env):
         super().__init__(args, env)
