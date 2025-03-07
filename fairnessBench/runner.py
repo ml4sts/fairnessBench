@@ -2,6 +2,10 @@
 This file is the entry point for fairnessBench.
 """
 
+### AS ###
+# Stop 4: 
+
+# Setting up classes and defining functions. Are these scripts also creating objects?
 import argparse
 import sys
 from fairnessBench import LLM
@@ -52,9 +56,12 @@ if __name__ == "__main__":
 
     # general agent configs
     parser.add_argument("--agent-type", type=str, default="ResearchAgent", help="agent type")
-    parser.add_argument("--llm-name", type=str, default="claude-v1", help="llm name")
-    parser.add_argument("--fast-llm-name", type=str, default="claude-v1", help="llm name")
-    parser.add_argument("--edit-script-llm-name", type=str, default="claude-v1", help="llm name")
+    # parser.add_argument("--llm-name", type=str, default="claude-v1", help="llm name")
+    parser.add_argument("--llm-name", type=str, default="huggingface/codellama/CodeLlama-7b-hf", help="llm name")
+    # parser.add_argument("--fast-llm-name", type=str, default="claude-v1", help="llm name")
+    parser.add_argument("--fast-llm-name", type=str, default="huggingface/codellama/CodeLlama-7b-hf", help="llm name")
+    # parser.add_argument("--edit-script-llm-name", type=str, default="claude-v1", help="llm name")
+    parser.add_argument("--edit-script-llm-name", type=str, default="huggingface/codellama/CodeLlama-7b-hf", help="llm name")
     parser.add_argument("--edit-script-llm-max-tokens", type=int, default=4000, help="llm max tokens")
     parser.add_argument("--agent-max-steps", type=int, default=50, help="max iterations for agent")
 

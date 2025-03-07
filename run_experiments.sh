@@ -6,13 +6,18 @@
 # This scrip calls on the multi_run_experiments.sh
 # First 4 args are the name of log_dir, task name, '8' and {0..7}
 
+if [ $1 ]; then
+    bash clean.sh
+fi
+
+
 # example tasks to run
+# AS: 
 # all_tasks="cifar10 imdb"
 all_tasks="adult"
 log_dir=final_exp_logs
-# AS: 
 # models="claude-2.1 gpt-4-0125-preview gemini-pro"
-models="huggingface/codellama/CodeLlama-7b-hf" # AS: This name was determined by the LLM.py module. It is required to follow this name. But don't know how to use the local
+models="codellama/CodeLlama-7b-hf" # AS: This name was determined by the LLM.py module. It is required to follow this name. But don't know how to use the local. Actually removed huggingface because it's wrong
 
 
 # Run listed tasks 
@@ -20,7 +25,7 @@ for model in $models
 do
     for task in $all_tasks
     do  
-        bash multi_run_experiment.sh $log_dir/$model/$task $task 8 {0..7} --llm-name $model --edit-script-llm-name $model --fast-llm-name $model
+        bash multi_run_experiment.sh $log_dir/$model/$task $task 1 0 --llm-name $model --edit-script-llm-name $model --fast-llm-name $model
     done
 done
 
@@ -29,12 +34,13 @@ done
 # What does --retrival do??
 for task in $all_tasks
 do 
-    bash multi_run_experiment.sh $log_dir/retrieval/$task $task 8 {0..7}  --retrieval 
+    bash multi_run_experiment.sh $log_dir/retrieval/$task $task 1 0  --retrieval 
 done
 
 
-## Agents do something with the log files (What was being set up in the previous two steps)
+# AS: Agents do something with the log files (What was being set up in the previous two steps)
 
+# AS: Don't have gpt credits
 # for task in $all_tasks
 # do 
 #     bash multi_run_experiment.sh $log_dir/autogpt/$task $task 8 {0..7} --agent-type AutoGPTAgent 
@@ -42,11 +48,11 @@ done
 
 for task in $all_tasks
 do 
-    bash multi_run_experiment.sh $log_dir/react/$task $task 8 {0..7} --agent-type ReasoningActionAgent 
+    bash multi_run_experiment.sh $log_dir/react/$task $task 1 0 --agent-type ReasoningActionAgent 
 done 
 
 
 for task in $all_tasks
 do 
-    bash multi_run_experiment.sh $log_dir/langchain/$task $task 8 {0..7}  --agent-type LangChainAgent 
+    bash multi_run_experiment.sh $log_dir/langchain/$task $task 1 0  --agent-type LangChainAgent 
 done
