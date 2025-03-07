@@ -2,6 +2,8 @@
 final_exp_logs
 fairnessBench/benchmarks/adult/env/*.csv
 prepared
+project_status.md
+clean.sh
 
 
 # Byte-compiled / optimized / DLL files

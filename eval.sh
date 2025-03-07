@@ -4,7 +4,7 @@
 all_tasks="adult"
 log_dir=final_exp_logs
 # models="claude2.1 gpt-4-0125-preview gemini-pro"
-models="huggingface/codellama/CodeLlama-7b-hf" # AS: This name was determined by the LLM.py module. It is required to follow this name. But don't know how to use the local
+models="codellama/CodeLlama-7b-hf" # AS: This name was determined by the LLM.py module. It is required to follow this name. But don't know how to use the local
 
 for model in $models
 do
