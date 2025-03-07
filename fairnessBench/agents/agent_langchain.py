@@ -278,7 +278,7 @@ class LangChainAgent(Agent):
 
         tools = []
         for tool_name in self.prompt_tool_names:
-            tools.append(Tool(
+            tools.append(tool(
                 tool_name, 
                 EnvTool(self.action_infos[tool_name], env).run,
                 self.construct_tool_prompt(tool_name, self.action_infos[tool_name]).replace("{", "{{").replace("}", "}}")
