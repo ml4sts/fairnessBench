@@ -24,6 +24,7 @@ pip install transformers
 pip install torch
 pip install accelerate
 pip install tokenizer
+pip install bitsandbytes
 
 pip install blobfile  # ??
 pip install protobuf  # ??

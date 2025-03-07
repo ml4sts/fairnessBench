@@ -6,7 +6,9 @@ import os
 from functools import partial
 import tiktoken
 from .schema import TooLongPromptError, LLMError
-from transformers import AutoModelForCausalLM, AutoTokenizer
+# from transformers import AutoModelForCausalLM, AutoTokenizer 
+# AS: Adding pipeline and BitsAndBytes to compress the llm
+from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline, BitsAndBytesConfig
 from transformers import StoppingCriteria, StoppingCriteriaList
 import torch
 enc = tiktoken.get_encoding("cl100k_base")
@@ -237,17 +239,38 @@ def log_to_file(log_file, prompt, completion, model, max_tokens_to_sample):
 
 
 # AS: Ello there beautiful...
+# device = ""
 loaded_hf_models = {}
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+# try:
+llama_= "/datasets/ai/llama3/hub/llama-3-8b-instruct" #current location of llama on unity
+tokenizer = AutoTokenizer.from_pretrained(llama_)
+# model = AutoModelForCausalLM.from_pretrained(llama_)
+# Define the quantization config
+quant_config = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_quant_type="nf4")
+model = AutoModelForCausalLM.from_pretrained(llama_, quantization_config = quant_config)
+# print(next(model.parameters()).device)
+print(f"Loaded successfuly using device:{device}")
+loaded_hf_models = {"codellama/CodeLlama-7b-hf": (model, tokenizer)}
+# except:
+    # print(f"Failed to load llama - Current device:{device}")
+
+
+
 def complete_text_hf(prompt, stop_sequences=[], model="huggingface/codellama/CodeLlama-7b-hf", max_tokens_to_sample = 2000, temperature=0.5, log_file=None, **kwargs):
-    model = model.split("/", 1)[1]
+    # model = model.split("/", 1)[1]
     if model in loaded_hf_models:
+        print("HERE")
         hf_model, tokenizer = loaded_hf_models[model]
     else:
-        hf_model = AutoModelForCausalLM.from_pretrained(model).to("cuda:9")
+        print("AS: ", model)
         tokenizer = AutoTokenizer.from_pretrained(model)
+        hf_model = AutoModelForCausalLM.from_pretrained(model)#.to("cuda:0") AS: This was causing an issue...
         loaded_hf_models[model] = (hf_model, tokenizer)
+        print(f"Loaded successfuly using device:{device}")
+
         
-    encoded_input = tokenizer(prompt, return_tensors="pt", return_token_type_ids=False).to("cuda:9")
+    encoded_input = tokenizer(prompt, return_tensors="pt", return_token_type_ids=False)#.to("cuda:0")
     stop_sequence_ids = tokenizer(stop_sequences, return_token_type_ids=False, add_special_tokens=False)
     stopping_criteria = StoppingCriteriaList()
     for stop_sequence_input_ids in stop_sequence_ids.input_ids:
@@ -312,7 +335,7 @@ def complete_text(prompt, log_file, model, **kwargs):
         completion = complete_text_claude(prompt, stop_sequences=[anthropic.HUMAN_PROMPT, "Observation:"], log_file=log_file, model=model, **kwargs)
     elif model.startswith("gemini"):
         completion = complete_text_gemini(prompt, stop_sequences=["Observation:"], log_file=log_file, model=model, **kwargs)
-    elif model.startswith("huggingface"):
+    elif model.startswith("codellama"):
         completion = complete_text_hf(prompt, stop_sequences=["Observation:"], log_file=log_file, model=model, **kwargs)
     elif "/" in model:
         # use CRFM API since this specifies organization like "openai/..."
@@ -326,7 +349,7 @@ def complete_text(prompt, log_file, model, **kwargs):
 # specify fast models for summarization etc
 # AS: 
 # FAST_MODEL = "claude-v1"
-FAST_MODEL = "huggingface/codellama/CodeLlama-7b-hf"
+FAST_MODEL = "codellama/CodeLlama-7b-hf"
 
 def complete_text_fast(prompt, **kwargs):
     return complete_text(prompt = prompt, model = FAST_MODEL, temperature =0.01, **kwargs)
