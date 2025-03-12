@@ -21,23 +21,24 @@ except:
 
 def run(agent_cls, args):
     # AS: Create an Environment object using args
-    with Environment(args) as env:
-
+    with Environment(args) as env: # AS: Create Environment object using arguments 
+        # AS: All these get printed just fine
         print("=====================================")
         research_problem, benchmark_folder_name = env.get_task_description()
         print("Benchmark folder name: ", benchmark_folder_name)
         print("Research problem: ", research_problem)
         print("Lower level actions enabled: ", [action.name for action in env.low_level_actions])
         print("High level actions enabled: ", [action.name for action in env.high_level_actions])
-        print("Read only files: ", env.read_only_files, file=sys.stderr)
+        print("Read only files: ", env.read_only_files, file=sys.stderr) #AS: ??
         print("=====================================")  
 
-        agent = agent_cls(args, env)
-        final_message = agent.run(env)
+        # AS: Create agent object from whichever agent was requested in agrs 
+        agent = agent_cls(args, env) # AS: (example: --agent-type = researchAgent -> agent_cls() is constructor for ResearchAgent class)
+        final_message = agent.run(env) # AS: This run function generates all the outputted logs related to the steps the agent is taking and agent responses
         print("=====================================")
-        print("Final message: ", final_message)
+        print("Final message: ", final_message) # AS: final message?
 
-    env.save("final")
+    env.save("final") # AS: ???
 
 
 
@@ -57,11 +58,11 @@ if __name__ == "__main__":
     # general agent configs
     parser.add_argument("--agent-type", type=str, default="ResearchAgent", help="agent type")
     # parser.add_argument("--llm-name", type=str, default="claude-v1", help="llm name")
-    parser.add_argument("--llm-name", type=str, default="huggingface/codellama/CodeLlama-7b-hf", help="llm name")
+    parser.add_argument("--llm-name", type=str, default="codellama/CodeLlama-7b-hf", help="llm name")
     # parser.add_argument("--fast-llm-name", type=str, default="claude-v1", help="llm name")
-    parser.add_argument("--fast-llm-name", type=str, default="huggingface/codellama/CodeLlama-7b-hf", help="llm name")
+    parser.add_argument("--fast-llm-name", type=str, default="codellama/CodeLlama-7b-hf", help="llm name")
     # parser.add_argument("--edit-script-llm-name", type=str, default="claude-v1", help="llm name")
-    parser.add_argument("--edit-script-llm-name", type=str, default="huggingface/codellama/CodeLlama-7b-hf", help="llm name")
+    parser.add_argument("--edit-script-llm-name", type=str, default="codellama/CodeLlama-7b-hf", help="llm name")
     parser.add_argument("--edit-script-llm-max-tokens", type=int, default=4000, help="llm max tokens")
     parser.add_argument("--agent-max-steps", type=int, default=50, help="max iterations for agent")
 

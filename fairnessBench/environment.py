@@ -2,6 +2,11 @@
 This file contains the Environment class, which prepares the environment for the research agent to run in.
 """
 
+### AS ###
+# Stop 5: Set up an Environment object and pass it to the agent
+
+
+
 import json
 import os
 import sys
@@ -46,15 +51,17 @@ class Environment:
 
         self._args = args
         self._log_dir = os.path.join(args.log_dir, "env_log")
+        # AS: generate env_log folder with all subfolders
         self._setup_log_dir()
 
-        if not args.interactive:
+
+        if not args.interactive: 
             self._benchmark_folder_name, self._research_problem = get_task_info(args.task)
             self._work_dir = os.path.join(args.work_dir, self.benchmark_folder_name)
             self._read_only_files = []
             self._initialize_task_env() # set up work dir and log dir
 
-        else:
+        else: # AS: If --interactive was passed: you can input prompt during runtime
             self._research_problem = input("What is the task: ")
             log_file = os.path.join(self.log_dir, "create_benchmark_folder_name.log")
             self._benchmark_folder_name = create_benchmark_folder_name(self._research_problem, log_file)
@@ -66,6 +73,7 @@ class Environment:
 
             self._initialize_interactive_env() # set up work dir and log dir
 
+        # AS: Set up usable actions for agent to use
         self._action_infos =  {t.name: t for t in LOW_LEVEL_ACTIONS + HIGH_LEVEL_ACTIONS}
 
         if not args.interactive:
@@ -222,6 +230,7 @@ class Environment:
 
 
     def _initialize_trace(self):
+        # AS: We can restore trace and continue???!!!!
         if self.args.resume:
             print("Restoring trace from {}".format(self.args.resume))
             prev_trace = from_dict(data_class=Trace, data=json.load(open(os.path.join(self.args.resume, "env_log","trace.json"), "r")))
