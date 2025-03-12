@@ -245,22 +245,22 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 # try:
 llama_= "/datasets/ai/llama3/hub/llama-3-8b-instruct" #current location of llama on unity
 tokenizer = AutoTokenizer.from_pretrained(llama_)
-# model = AutoModelForCausalLM.from_pretrained(llama_)
 # Define the quantization config
-quant_config = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_quant_type="nf4")
+quant_config = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_quant_type="nf4", bnb_4bit_compute_dtype=torch.float16)
+# model = AutoModelForCausalLM.from_pretrained(llama_)
 model = AutoModelForCausalLM.from_pretrained(llama_, quantization_config = quant_config)
 # print(next(model.parameters()).device)
-print(f"Loaded successfuly using device:{device}")
+print(f"Loaded local llama successfuly using device: {model.device}.")
 loaded_hf_models = {"codellama/CodeLlama-7b-hf": (model, tokenizer)}
 # except:
     # print(f"Failed to load llama - Current device:{device}")
 
 
 
-def complete_text_hf(prompt, stop_sequences=[], model="huggingface/codellama/CodeLlama-7b-hf", max_tokens_to_sample = 2000, temperature=0.5, log_file=None, **kwargs):
+def complete_text_hf(prompt, stop_sequences=[], model="codellama/CodeLlama-7b-hf", max_tokens_to_sample = 2000, temperature=0.5, log_file=None, **kwargs):
     # model = model.split("/", 1)[1]
     if model in loaded_hf_models:
-        print("HERE")
+        # print("HERE")
         hf_model, tokenizer = loaded_hf_models[model]
     else:
         print("AS: ", model)
@@ -271,11 +271,18 @@ def complete_text_hf(prompt, stop_sequences=[], model="huggingface/codellama/Cod
 
         
     encoded_input = tokenizer(prompt, return_tensors="pt", return_token_type_ids=False)#.to("cuda:0")
-    stop_sequence_ids = tokenizer(stop_sequences, return_token_type_ids=False, add_special_tokens=False)
-    stopping_criteria = StoppingCriteriaList()
-    for stop_sequence_input_ids in stop_sequence_ids.input_ids:
-        stopping_criteria.append(StopAtSpecificTokenCriteria(stop_sequence=stop_sequence_input_ids))
+    # print(encoded_input.keys())
+    encoded_input["input_ids"] = encoded_input["input_ids"].to(hf_model.device)#.to(torch.float32)
 
+    stop_sequence_ids = tokenizer(stop_sequences, return_token_type_ids=False, add_special_tokens=False)
+    # stop_sequence_ids["input_ids"] = stop_sequence_ids["input_ids"].to(hf_model.device)
+    stopping_criteria = StoppingCriteriaList()
+
+    for stop_sequence_input_ids in stop_sequence_ids.input_ids:
+        # stop_sequence_input_ids.to(hf_model.device)
+        type(stop_sequence_input_ids)
+        stopping_criteria.append(StopAtSpecificTokenCriteria(stop_sequence=stop_sequence_input_ids))
+    
     output = hf_model.generate(
         **encoded_input,
         temperature=temperature,
