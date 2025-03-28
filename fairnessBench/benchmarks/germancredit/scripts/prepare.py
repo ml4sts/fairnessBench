@@ -35,7 +35,7 @@ X["sex"] = X["Attribute9"].map(lambda x: sex_ms_mapping[x][0]) # SR: picks 0th i
 
 categorical_columns = ["Attribute1", "Attribute3", "Attribute4", "Attribute6", "Attribute7", 
                        "Attribute9", "Attribute10", "Attribute12", "Attribute14", "Attribute15",
-                      "Attribute17", "Attribute19", "Attribute20", "sex", "ms"]
+                      "Attribute17", "Attribute19", "Attribute20", "sex"] # , "ms"
 
 
 # SR: function to convert categorical values to numerical values       
