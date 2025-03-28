@@ -1,5 +1,3 @@
-Adult data: Predict whether annual income of an individual exceeds $50K/yr based on census data. Also known as "Census Income" dataset. Extraction was done by Barry Becker from the 1994 Census database.
-
 age: Integer 
 
 workclass : Categorical feature
