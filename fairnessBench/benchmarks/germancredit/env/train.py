@@ -6,7 +6,6 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_sc
 from ucimlrepo import fetch_ucirepo
 from sklearn.preprocessing import OrdinalEncoder
 from aif360.sklearn.metrics import disparate_impact_ratio
-import numpy as np
 
 # SR: we did the data reading and splitting in prepare.py file, below files are read after split done.
 train_X = pd.read_csv("train_X.csv", index_col=0)
@@ -16,7 +15,6 @@ test_y = pd.read_csv("test_y.csv", index_col=0)
 
 # SR: train_y and test_y are in the form of column vector hence ravel transforms it into a 1D array for model training. 
 # SR: I added this step because the model showed a warning interms of shape while fitting data.
-
 train_y = train_y.values.ravel()
 test_y = test_y.values.ravel()
 
@@ -26,7 +24,7 @@ lr = LogisticRegression(max_iter=1000) # SR: model
 lr.fit(train_X, train_y) # SR: training
 
 # AS: make prediction
-pred_y = lr.predict(test_X) 
+pred_y = lr.predict(test_X)
 pred_y = pd.DataFrame(pred_y) # SR: creating a dataframe of prediction we got from the model using test data
 
 prot_attr = test_X['sex'] # SR: we have considered sex as protected attribute from the data 
