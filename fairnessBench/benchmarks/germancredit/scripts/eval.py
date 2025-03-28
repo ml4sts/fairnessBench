@@ -22,8 +22,9 @@ def get_score(submission_folder = "../env"): # needs to be fixed as per location
     # SR: Calculate fairness metrics
     disparate_impact = disparate_impact_ratio(y_true=test_y, y_pred=pred_y, prot_attr=prot_attr, priv_group=1)
     
-    performace_df = pd.DataFrame({'acc': [accuracy], 'disparate_impact': [disparate_impact]})
-    
+    performace_df = pd.DataFrame({
+        'acc': [accuracy],
+        'disparate_impact': [disparate_impact]})
     return performace_df
 
 if __name__ == "__main__":
