@@ -37,4 +37,5 @@ pip install langchain_anthropic
 # For Adult:
 pip install ucimlrepo
 pip install scikit-learn
+pip install aif360
 

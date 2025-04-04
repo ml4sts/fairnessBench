@@ -1,5 +1,5 @@
 #/bin/bash
-all_tasks="cifar10"
+all_tasks="adult"
 
 for task in $all_tasks
 do    
