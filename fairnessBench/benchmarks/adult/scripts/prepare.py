@@ -7,7 +7,6 @@ from sklearn.preprocessing import OrdinalEncoder
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 
-# pip install ucimlrepo, install this before running
 # used this link to get data : https://archive.ics.uci.edu/dataset/2/adult
 
 # Fetch dataset

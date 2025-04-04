@@ -1,5 +1,5 @@
 import os
-# import sys
+import sys
 import numpy as np
 import pandas as pd
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
@@ -20,11 +20,12 @@ def get_score(): # needs to be fixed as per location of submission.csv file
     # SR: Calculate performance metrics
     accuracy = accuracy_score(test_y, pred_y)
     
-    # SR: Calculate fairness metrics
-    disparate_impact = disparate_impact_ratio(y_true=test_y, y_pred=pred_y, prot_attr=prot_attr, priv_group=1)
+    # Calculate fairness metrics
+    di = disparate_impact_ratio(y_true=test_y, y_pred=pred_y, prot_attr=prot_attr, priv_group=1)
     
-    performace_df = pd.DataFrame({'acc': [accuracy], 'disparate_impact': [disparate_impact]})
-    
+    performace_df = pd.DataFrame({
+        'acc': [accuracy],
+        'disparate_impact': [di]})
     return performace_df
 
 if __name__ == "__main__":
