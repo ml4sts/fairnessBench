@@ -9,6 +9,7 @@ from aif360.sklearn.metrics import statistical_parity_difference, disparate_impa
 # sys.path.append("../env")
 # SR: the submission.csv we are using here contains y_test, y_pred and protected_attribute columns and we'll use these to calculate any fair/ performance metric
 
+
 def get_score(): # needs to be fixed as per location of submission.csv file 
     submission_path = "submission.csv"
     submission = pd.read_csv(submission_path)
@@ -25,6 +26,8 @@ def get_score(): # needs to be fixed as per location of submission.csv file
     
     performace_df = pd.DataFrame({'acc': [accuracy], 'disparate_impact': [disparate_impact]})
     
+
+   
     return performace_df
 
 if __name__ == "__main__":

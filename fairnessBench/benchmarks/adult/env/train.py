@@ -14,6 +14,7 @@ train_y = pd.read_csv("train_y.csv", index_col=0)
 test_X = pd.read_csv("test_X.csv", index_col=0)
 test_y = pd.read_csv("test_y.csv", index_col=0)
 
+
 # SR: train_y and test_y are in the form of column vector hence ravel transforms it into a 1D array for model training. 
 # SR: I added this step because the model showed a warning interms of shape while fitting data.
 
@@ -34,6 +35,7 @@ prot_attr = test_X['sex'] # SR: we have considered sex as protected attribute fr
 # task is to improve score for fair metric disparate impact (optimal score is 1, worse score is 0)
 disparate_impact = disparate_impact_ratio(y_true=test_y, y_pred=pred_y, prot_attr=prot_attr, priv_group=1) 
 test_accuracy = accuracy_score(test_y, pred_y) # accuracy
+
 
 print('accuracy score:', test_accuracy)
 print('disparate impact ratio', disparate_impact)
