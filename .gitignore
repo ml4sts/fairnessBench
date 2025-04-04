@@ -1,6 +1,6 @@
 # AS: 
 final_exp_logs
-fairnessBench/benchmarks/adult/env/*.csv
+fairnessBench/benchmarks/*/env/*.csv
 prepared
 project_status.md
 clean.sh

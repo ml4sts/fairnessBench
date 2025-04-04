@@ -1,10 +1,10 @@
 # Import helpful libraries
 import pandas as pd
-from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 from ucimlrepo import fetch_ucirepo
 from sklearn.preprocessing import OrdinalEncoder
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 from aif360.sklearn.metrics import disparate_impact_ratio
 
 # SR: we did the data reading and splitting in prepare.py file, below files are read after split done.
@@ -34,9 +34,12 @@ disparate_impact = disparate_impact_ratio(y_true=test_y, y_pred=pred_y, prot_att
 test_accuracy = accuracy_score(test_y, pred_y) # accuracy
 
 print('accuracy score:', test_accuracy)
-print('disparate impact ratio', Di)
+print('disparate impact ratio', disparate_impact)
 
 # SR: creating a dataframe with prediction_y column, test_y column and the protected_att for using in eval.py script.
-output = pd.DataFrame({"Actual_y": test_y, "Predicted_y": pred_y.values.ravel(), "sex" : test_X["sex"]})
+output = pd.DataFrame({
+    "Actual_y": test_y,
+    "Predicted_y": pred_y.values.ravel(),
+    "sex" : test_X["sex"]})
 output.to_csv("submission.csv", index=False) # this will be read in eval.py 
-
+output
