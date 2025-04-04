@@ -9,9 +9,11 @@ from sklearn.model_selection import train_test_split
 
 # pip install ucimlrepo, install this before running
 # used this link to get data : https://archive.ics.uci.edu/dataset/2/adult
+
+# Fetch dataset
 adult = fetch_ucirepo(id=2) 
 
-# Include code here that  the data from the prepared files
+# data (as pandas dataframes) 
 X = adult.data.features.copy()
 y = adult.data.targets.copy()
 
@@ -51,7 +53,7 @@ def categorical_feature_encoder(df, features):
 X, enc = categorical_feature_encoder(X, categorical_columns)
 
 # SR: Splitting to test and train 
-train_X, test_X, train_y, test_y = train_test_split(X, y_df, test_size=0.2, random_state=42)
+train_X, test_X, train_y, test_y = train_test_split(X, y, test_size=0.2, random_state=42)
 
 os.chdir("../env/")
 
