@@ -8,9 +8,7 @@ from sklearn.preprocessing import OrdinalEncoder
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 
-# pip install ucimlrepo, install this before running
 # used this link to get data : https://archive.ics.uci.edu/dataset/2/adult
-
 
 adult = fetch_ucirepo(id=2) 
 
@@ -27,10 +25,8 @@ X["sex"] = X["sex"].apply(lambda i: 1 if i == 'Male' else 0)
 # read paper and figure out ifone hot encoding is required here or not
 
 
-
 categorical_columns = ["workclass", "education", "marital-status", "occupation", "relationship", 
                        "race", "native-country"]
-
 
          
 def categorical_feature_encoder(df, features):
@@ -65,12 +61,12 @@ def categorical_feature_encoder(df, features):
 
 X, enc = categorical_feature_encoder(X, categorical_columns)
 
-y = y.values.ravel() # flattening because it is in 2D format
+# y = y.values.ravel() # flattening because it is in 2D format
 
-y_df = pd.DataFrame(y)
+# y_df = pd.DataFrame(y)
 
 # Split and transforming 
-train_X, test_X, train_y, test_y = train_test_split(X, y_df, test_size=0.2, random_state=42)
+train_X, test_X, train_y, test_y = train_test_split(X, y, test_size=0.2, random_state=42)
 
 # #DEbug
 # print(type(X))
@@ -92,7 +88,7 @@ train_X, test_X, train_y, test_y = train_test_split(X, y_df, test_size=0.2, rand
 
 
 os.chdir("../env/")
-train_X.to_csv("train_X.csv", index=True)
-train_y.to_csv("train_y.csv", index=True)
-test_X.to_csv("test_X.csv", index=True)
-test_y.to_csv("test_y.csv", index=True)
+train_X.to_csv("train_X.csv")
+train_y.to_csv("train_y.csv")
+test_X.to_csv("test_X.csv")
+test_y.to_csv("test_y.csv")

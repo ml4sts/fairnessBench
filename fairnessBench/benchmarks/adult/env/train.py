@@ -1,15 +1,23 @@
 # Import helpful libraries
+import numpy as np
 import pandas as pd
-from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 from ucimlrepo import fetch_ucirepo
 from sklearn.preprocessing import OrdinalEncoder
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+from aif360.sklearn.metrics import disparate_impact_ratio
 
-train_X = pd.read_csv("train_X.csv", index=True)
-train_y = pd.read_csv("train_y.csv", index=True)
-test_X = pd.read_csv("test_X.csv", index=True)
-test_y = pd.read_csv("test_y.csv", index=True)
+
+train_X = pd.read_csv("train_X.csv", index_col=0)
+train_y = pd.read_csv("train_y.csv", index_col=0)
+test_X = pd.read_csv("test_X.csv", index_col=0)
+test_y = pd.read_csv("test_y.csv", index_col=0)
+
+
+
+train_y = train_y.values.ravel()
+test_y = test_y.values.ravel()
 
 
 # AS: Traning and testing?? 
@@ -19,6 +27,11 @@ lr.fit(train_X, train_y)
 
 # AS: make prediction
 pred_y = lr.predict(test_X)
+pred_y = pd.DataFrame(pred_y) # SR: creating a dataframe of prediction we got from the model using test data
+
+
+prot_attr = test_X['sex']
+Di = disparate_impact_ratio(y_true=test_y, y_pred=pred_y, prot_attr=prot_attr, priv_group=1)
 
 
 # ***********************************************
@@ -32,10 +45,15 @@ pred_y = lr.predict(test_X)
 # ***********************************************
 
 
-train_accuracy = accuracy_score(test_y, pred_y)
-print('accuracy score:', train_accuracy)
+test_accuracy = accuracy_score(test_y, pred_y)
+print('accuracy score:', test_accuracy)
+print('disparate impact ratio', Di)
 
-output = pd.DataFrame({ "Actual_y": test_y, "Predicted_y": pred_y, "sex" : test_X["sex"]})
+# output = pd.DataFrame({ "Actual_y": test_y, "Predicted_y": pred_y, "sex" : test_X["sex"]})
+output = pd.DataFrame({
+    "Actual_y": test_y,
+    "Predicted_y": pred_y.values.ravel(),
+    "sex" : test_X["sex"]})
 
 output.to_csv("submission.csv", index=False) # this will be read in eval.py and other matrics will be calculated
 
