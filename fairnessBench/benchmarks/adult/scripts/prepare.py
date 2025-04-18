@@ -25,6 +25,7 @@ categorical_columns = ["workclass", "education", "marital-status", "occupation",
                        "race", "native-country"]
 
 # SR: encoding categorical values to numerical values
+
 def categorical_feature_encoder(df, features):
     # AS: This function takes the values of each column and changes the object values to float then to int
     """
@@ -54,9 +55,10 @@ X, enc = categorical_feature_encoder(X, categorical_columns)
 # SR: Splitting to test and train 
 train_X, test_X, train_y, test_y = train_test_split(X, y, test_size=0.2, random_state=42)
 
-os.chdir("../env/")
+
 
 # SR: saving test and train files to read in train.py script
+os.chdir("../env/")
 train_X.to_csv("train_X.csv")
 train_y.to_csv("train_y.csv")
 test_X.to_csv("test_X.csv")
