@@ -1,12 +1,19 @@
+# AS: First import of runner.py. Has functions dedicated for the models used in the benchmark process
+
 """ This file contains the code for calling all LLM APIs. """
 
 import os
 from functools import partial
 import tiktoken
 from .schema import TooLongPromptError, LLMError
-
+from transformers import AutoModelForCausalLM, AutoTokenizer
+from transformers import StoppingCriteria, StoppingCriteriaList
+import torch
 enc = tiktoken.get_encoding("cl100k_base")
 
+
+
+# AS: CRFM
 try:
     from helm.common.authentication import Authentication
     from helm.common.request import Request, RequestResult
@@ -16,26 +23,170 @@ try:
     auth = Authentication(api_key=open("crfm_api_key.txt").read().strip())
     service = RemoteService("https://crfm-models.stanford.edu")
     account: Account = service.get_account(auth)
+
+
+    # AS: Moved inside the try 
+    # AS: CRFM: Looks like this function takes a prompt, uses the auth key that was set  at the top to send the prompt and get the return 
+    def get_embedding_crfm(text, model="openai/gpt-4-0314"):
+        request = Request(model="openai/text-embedding-ada-002", prompt=text, embedding=True)
+        request_result: RequestResult = service.make_request(auth, request)
+        return request_result.embedding 
+
+
+    def complete_text_crfm(prompt="", stop_sequences = [], model="openai/gpt-4-0314",  max_tokens_to_sample=2000, temperature = 0.5, log_file=None, messages = None, **kwargs): 
+        random = log_file
+        if messages:
+            request = Request(
+                    prompt=prompt, 
+                    messages=messages,
+                    model=model, 
+                    stop_sequences=stop_sequences,
+                    temperature = temperature,
+                    max_tokens = max_tokens_to_sample,
+                    random = random
+                )
+        else:
+            # print("model", model)
+            # print("max_tokens", max_tokens_to_sample)
+            request = Request(
+                    # model_deployment=model,
+                    prompt=prompt, 
+                    model=model, 
+                    stop_sequences=stop_sequences,
+                    temperature = temperature,
+                    max_tokens = max_tokens_to_sample,
+                    random = random
+            )
+
+        try:      
+            request_result: RequestResult = service.make_request(auth, request)
+        except Exception as e:
+            # probably too long prompt
+            print(e)
+            raise TooLongPromptError()
+
+        if request_result.success == False:
+            print(request.error)
+            raise LLMError(request.error)
+        completion = request_result.completions[0].text
+        if log_file is not None:
+            log_to_file(log_file, prompt if not messages else str(messages), completion, model, max_tokens_to_sample)
+        return completion
+    # AS: ---
+
 except Exception as e:
     print(e)
     print("Could not load CRFM API key crfm_api_key.txt.")
 
+
+
+
+# AS: Claude
 try:   
     import anthropic
     # setup anthropic API key
     anthropic_client = anthropic.Anthropic(api_key=open("claude_api_key.txt").read().strip())
+
+    # AS: Moved this def inside the try because if we don't have calude_api_key then we don't need this def
+    def complete_text_claude(prompt, stop_sequences=[anthropic.HUMAN_PROMPT], model="claude-v1", max_tokens_to_sample = 2000, temperature=0.5, log_file=None, messages=None, **kwargs):
+        """ Call the Claude API to complete a prompt."""
+
+        ai_prompt = anthropic.AI_PROMPT
+        if "ai_prompt" in kwargs is not None:
+            ai_prompt = kwargs["ai_prompt"]
+
+        try:
+            if model == "claude-3-opus-20240229":
+                while True:
+                    try:
+                        message = anthropic_client.messages.create(
+                            messages=[
+                                {
+                                    "role": "user",
+                                    "content": prompt,
+                                }
+                            ] if messages is None else messages,
+                            model=model,
+                            stop_sequences=stop_sequences,
+                            temperature=temperature,
+                            max_tokens=max_tokens_to_sample,
+                            **kwargs
+                        )
+                    except anthropic.InternalServerError as e:
+                        pass
+                    try:
+                        completion = message.content[0].text
+                        break
+                    except:
+                        print("end_turn???")
+                        pass
+            else:
+                rsp = anthropic_client.completions.create(
+                    prompt=f"{anthropic.HUMAN_PROMPT} {prompt} {ai_prompt}",
+                    stop_sequences=stop_sequences,
+                    model=model,
+                    temperature=temperature,
+                    max_tokens_to_sample=max_tokens_to_sample,
+                    **kwargs
+                )
+                completion = rsp.completion
+        except anthropic.APIStatusError as e:
+            print(e)
+            raise TooLongPromptError()
+        except Exception as e:
+            raise LLMError(e)
+
+    
+        if log_file is not None:
+            log_to_file(log_file, prompt, completion, model, max_tokens_to_sample)
+        return completion
+        # AS: ---
+
+
 except Exception as e:
     print(e)
     print("Could not load anthropic API key claude_api_key.txt.")
-    
+
+
+
+
+# AS: gpt
+# AS: Setup openai API key and complete text function
 try:
     import openai
     # setup OpenAI API key
     openai.organization, openai.api_key  =  open("openai_api_key.txt").read().strip().split(":")    
     os.environ["OPENAI_API_KEY"] = openai.api_key 
+
+
+    # AS: Possibly move inside the try  -- Moved :D
+    def complete_text_openai(prompt, stop_sequences=[], model="gpt-3.5-turbo", max_tokens_to_sample=500, temperature=0.2, log_file=None, **kwargs):
+        """ Call the OpenAI API to complete a prompt."""
+        raw_request = {
+              "model": model,
+              "temperature": temperature,
+              "max_tokens": max_tokens_to_sample,
+              "stop": stop_sequences or None,  # API doesn't like empty list
+              **kwargs
+        }
+        if model.startswith("gpt-3.5") or model.startswith("gpt-4"):
+            messages = [{"role": "user", "content": prompt}]
+            response = openai.ChatCompletion.create(**{"messages": messages,**raw_request})
+            completion = response["choices"][0]["message"]["content"]
+        else:
+            response = openai.Completion.create(**{"prompt": prompt,**raw_request})
+            completion = response["choices"][0]["text"]
+        if log_file is not None:
+            log_to_file(log_file, prompt, completion, model, max_tokens_to_sample)
+        return completion
+        # AS: ---
+
 except Exception as e:
     print(e)
     print("Could not load OpenAI API key openai_api_key.txt.")
+
+
+
 
 try:
     import vertexai
@@ -46,12 +197,10 @@ except Exception as e:
     print(e)
     print("Could not load VertexAI API.")
 
-from transformers import AutoModelForCausalLM, AutoTokenizer
-from transformers import StoppingCriteria, StoppingCriteriaList
-import torch
 
-loaded_hf_models = {}
 
+
+# AS: Other stuff
 class StopAtSpecificTokenCriteria(StoppingCriteria):
     def __init__(self, stop_sequence):
         super().__init__()
@@ -80,6 +229,15 @@ def log_to_file(log_file, prompt, completion, model, max_tokens_to_sample):
         f.write(f"Number of sampled tokens: {num_sample_tokens}\n")
         f.write("\n\n")
 
+# AS: Here I tried adding the path to the local llama and added to the loaded_hf_modules dict. But found out that the "AutoTokenizer" function doesn't work with local paths 
+# try:
+#     model="/datasets/ai/codellama/CodeLlama-7b"
+    
+#     print("loaded llama successfully")
+
+
+# AS: Ello there beautiful...
+loaded_hf_models = {}
 def complete_text_hf(prompt, stop_sequences=[], model="huggingface/codellama/CodeLlama-7b-hf", max_tokens_to_sample = 2000, temperature=0.5, log_file=None, **kwargs):
     model = model.split("/", 1)[1]
     if model in loaded_hf_models:
@@ -114,6 +272,9 @@ def complete_text_hf(prompt, stop_sequences=[], model="huggingface/codellama/Cod
     return completion
 
 
+
+
+# AS: gemini
 def complete_text_gemini(prompt, stop_sequences=[], model="gemini-pro", max_tokens_to_sample = 2000, temperature=0.5, log_file=None, **kwargs):
     """ Call the gemini API to complete a prompt."""
     # Load the model
@@ -137,129 +298,12 @@ def complete_text_gemini(prompt, stop_sequences=[], model="gemini-pro", max_toke
         log_to_file(log_file, prompt, completion, model, max_tokens_to_sample)
     return completion
 
-def complete_text_claude(prompt, stop_sequences=[anthropic.HUMAN_PROMPT], model="claude-v1", max_tokens_to_sample = 2000, temperature=0.5, log_file=None, messages=None, **kwargs):
-    """ Call the Claude API to complete a prompt."""
-
-    ai_prompt = anthropic.AI_PROMPT
-    if "ai_prompt" in kwargs is not None:
-        ai_prompt = kwargs["ai_prompt"]
-
-    
-    try:
-        if model == "claude-3-opus-20240229":
-            while True:
-                try:
-                    message = anthropic_client.messages.create(
-                        messages=[
-                            {
-                                "role": "user",
-                                "content": prompt,
-                            }
-                        ] if messages is None else messages,
-                        model=model,
-                        stop_sequences=stop_sequences,
-                        temperature=temperature,
-                        max_tokens=max_tokens_to_sample,
-                        **kwargs
-                    )
-                except anthropic.InternalServerError as e:
-                    pass
-                try:
-                    completion = message.content[0].text
-                    break
-                except:
-                    print("end_turn???")
-                    pass
-        else:
-            rsp = anthropic_client.completions.create(
-                prompt=f"{anthropic.HUMAN_PROMPT} {prompt} {ai_prompt}",
-                stop_sequences=stop_sequences,
-                model=model,
-                temperature=temperature,
-                max_tokens_to_sample=max_tokens_to_sample,
-                **kwargs
-            )
-            completion = rsp.completion
-        
-    except anthropic.APIStatusError as e:
-        print(e)
-        raise TooLongPromptError()
-    except Exception as e:
-        raise LLMError(e)
-
-    
-    if log_file is not None:
-        log_to_file(log_file, prompt, completion, model, max_tokens_to_sample)
-    return completion
 
 
-def get_embedding_crfm(text, model="openai/gpt-4-0314"):
-    request = Request(model="openai/text-embedding-ada-002", prompt=text, embedding=True)
-    request_result: RequestResult = service.make_request(auth, request)
-    return request_result.embedding 
-    
-def complete_text_crfm(prompt="", stop_sequences = [], model="openai/gpt-4-0314",  max_tokens_to_sample=2000, temperature = 0.5, log_file=None, messages = None, **kwargs):
-    
-    random = log_file
-    if messages:
-        request = Request(
-                prompt=prompt, 
-                messages=messages,
-                model=model, 
-                stop_sequences=stop_sequences,
-                temperature = temperature,
-                max_tokens = max_tokens_to_sample,
-                random = random
-            )
-    else:
-        # print("model", model)
-        # print("max_tokens", max_tokens_to_sample)
-        request = Request(
-                # model_deployment=model,
-                prompt=prompt, 
-                model=model, 
-                stop_sequences=stop_sequences,
-                temperature = temperature,
-                max_tokens = max_tokens_to_sample,
-                random = random
-        )
-    
-    try:      
-        request_result: RequestResult = service.make_request(auth, request)
-    except Exception as e:
-        # probably too long prompt
-        print(e)
-        raise TooLongPromptError()
-    
-    if request_result.success == False:
-        print(request.error)
-        raise LLMError(request.error)
-    completion = request_result.completions[0].text
-    if log_file is not None:
-        log_to_file(log_file, prompt if not messages else str(messages), completion, model, max_tokens_to_sample)
-    return completion
 
 
-def complete_text_openai(prompt, stop_sequences=[], model="gpt-3.5-turbo", max_tokens_to_sample=500, temperature=0.2, log_file=None, **kwargs):
-    """ Call the OpenAI API to complete a prompt."""
-    raw_request = {
-          "model": model,
-          "temperature": temperature,
-          "max_tokens": max_tokens_to_sample,
-          "stop": stop_sequences or None,  # API doesn't like empty list
-          **kwargs
-    }
-    if model.startswith("gpt-3.5") or model.startswith("gpt-4"):
-        messages = [{"role": "user", "content": prompt}]
-        response = openai.ChatCompletion.create(**{"messages": messages,**raw_request})
-        completion = response["choices"][0]["message"]["content"]
-    else:
-        response = openai.Completion.create(**{"prompt": prompt,**raw_request})
-        completion = response["choices"][0]["text"]
-    if log_file is not None:
-        log_to_file(log_file, prompt, completion, model, max_tokens_to_sample)
-    return completion
 
+# AS: Pick a model from the arg model and call the complete function of that model. We want to use hf (huggingface)
 def complete_text(prompt, log_file, model, **kwargs):
     """ Complete text using the specified model with appropriate API. """
     
@@ -278,8 +322,12 @@ def complete_text(prompt, log_file, model, **kwargs):
         completion = complete_text_openai(prompt, stop_sequences=["Observation:"], log_file=log_file, model=model, **kwargs)
     return completion
 
+
 # specify fast models for summarization etc
-FAST_MODEL = "claude-v1"
+# AS: 
+# FAST_MODEL = "claude-v1"
+FAST_MODEL = "huggingface/codellama/CodeLlama-7b-hf"
+
 def complete_text_fast(prompt, **kwargs):
     return complete_text(prompt = prompt, model = FAST_MODEL, temperature =0.01, **kwargs)
 # complete_text_fast = partial(complete_text_openai, temperature= 0.01)

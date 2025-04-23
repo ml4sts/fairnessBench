@@ -108,7 +108,7 @@ def run_eval(log_folder, benchmark_folder_name, eval_intermediate=False):
                             folder_path = os.path.join(subdir, f'traces/step_{step}_files')
                             if os.path.exists(folder_path):
                                 print(folder_path)
-                                module = importlib.import_module(f'MLAgentBench.benchmarks.{benchmark_folder_name}.scripts.eval')
+                                module = importlib.import_module(f'fairnessBench.benchmarks.{benchmark_folder_name}.scripts.eval')
                                 eval_step_score = module.get_score(folder_path)
                                 result.score.append(eval_step_score)
                         except Exception as e:
@@ -119,7 +119,7 @@ def run_eval(log_folder, benchmark_folder_name, eval_intermediate=False):
                 folder_path = os.path.join(subdir, 'traces/step_final_files')
                 try:
                     if os.path.exists(folder_path):
-                        module = importlib.import_module(f'MLAgentBench.benchmarks.{benchmark_folder_name}.scripts.eval')
+                        module = importlib.import_module(f'fairnessBench.benchmarks.{benchmark_folder_name}.scripts.eval')
                         eval_final_score = module.get_score(folder_path)
                         result.score.append(eval_final_score)
                         result.final_score = eval_final_score
