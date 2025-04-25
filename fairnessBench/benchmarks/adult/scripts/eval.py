@@ -2,9 +2,8 @@ import os
 # import sys
 import numpy as np
 import pandas as pd
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
-from aif360.sklearn.metrics import statistical_parity_difference, disparate_impact_ratio, equal_opportunity_difference
-
+from sklearn.metrics import accuracy_score
+from aif360.sklearn.metrics import disparate_impact_ratio
 
 # sys.path.append("../env")
 # SR: the submission.csv we are using here contains y_test, y_pred and protected_attribute columns and we'll use these to calculate any fair/ performance metric

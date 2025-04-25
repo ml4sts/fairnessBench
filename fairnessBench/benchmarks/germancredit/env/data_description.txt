@@ -1,5 +1,3 @@
-German credit data: This dataset classifies people described by a set of attributes as good or bad credit risks. Comes in two formats (one all numeric). Also comes with a cost matrix. 
-
 Attribute 1:  (qualitative)      
  Status of existing checking account
        

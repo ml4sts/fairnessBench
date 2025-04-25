@@ -1,4 +1,3 @@
-# Import helpful libraries
 import pandas as pd
 from sklearn.metrics import accuracy_score
 from sklearn.linear_model import LogisticRegression
@@ -13,20 +12,16 @@ test_y = pd.read_csv("test_y.csv", index_col=0)
 lr = LogisticRegression(max_iter=1000) # SR: model
 lr.fit(train_X, train_y) # SR: training
 
-# AS: make prediction
 pred_y = lr.predict(test_X)
 
-prot_attr = test_X['sex'] # SR: we have considered sex as protected attribute from the data 
+prot_attr = test_X['gender'] # SR: we have considered sex as protected attribute from the data 
 
-# task is to improve score for fair metric disparate impact (optimal score is 1, worse score is 0)
 disparate_impact = disparate_impact_ratio(y_true=test_y, y_pred=pred_y, prot_attr=prot_attr, priv_group=1) 
 test_accuracy = accuracy_score(test_y, pred_y) # accuracy
 
 print('accuracy score:', test_accuracy)
 print('disparate impact ratio', disparate_impact)
 
-# SR: creating a dataframe with prediction_y column, test_y column and the protected_att for using in eval.py script.
-
-output = pd.DataFrame({"Actual_y": test_y.values.ravel(), "Predicted_y": pred_y, "sex" : test_X["sex"]})
+output = pd.DataFrame({"Actual_y": test_y.values.ravel(), "Predicted_y": pred_y, "sex" : test_X["gender"]})
 output.to_csv("submission.csv", index=False) # this will be read in eval.py 
-output
+
