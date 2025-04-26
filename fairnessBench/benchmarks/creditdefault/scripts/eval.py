@@ -1,11 +1,11 @@
-# import os
-# import sys
-import numpy as np
+import sys
+import os
+sys.path.append("../env")
 import pandas as pd
+import numpy as np
 from sklearn.metrics import accuracy_score
 from aif360.sklearn.metrics import disparate_impact_ratio
 
-# sys.path.append("../env")
 # SR: the submission.csv we are using here contains y_test, y_pred and protected_attribute columns and we'll use these to calculate any fair/ performance metric
 
 def get_score(agent_files): # needs to be fixed as per location of submission.csv file 

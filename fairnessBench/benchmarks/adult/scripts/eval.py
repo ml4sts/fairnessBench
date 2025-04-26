@@ -2,16 +2,15 @@ import os
 # import sys
 import numpy as np
 import pandas as pd
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
-from aif360.sklearn.metrics import statistical_parity_difference, disparate_impact_ratio, equal_opportunity_difference
-
+from sklearn.metrics import accuracy_score
+from aif360.sklearn.metrics import disparate_impact_ratio
 
 # sys.path.append("../env")
 # SR: the submission.csv we are using here contains y_test, y_pred and protected_attribute columns and we'll use these to calculate any fair/ performance metric
 
 
-def get_score(): # needs to be fixed as per location of submission.csv file 
-    submission_path = "submission.csv"
+def get_score(agent_files): # needs to be fixed as per location of submission.csv file 
+    submission_path = os.path.join(agent_files, "submission.csv")
     submission = pd.read_csv(submission_path)
     
     test_y = submission['Actual_y']
@@ -25,10 +24,11 @@ def get_score(): # needs to be fixed as per location of submission.csv file
     disparate_impact = disparate_impact_ratio(y_true=test_y, y_pred=pred_y, prot_attr=prot_attr, priv_group=1)
 
     performace_df = pd.DataFrame({'acc': [accuracy], 'disparate_impact': [disparate_impact]})
+    performance = {"acc": accuracy, "di": disparate_impact}
+    return performace
 
 
 
-    return performace_df
 
 if __name__ == "__main__":
     print(get_score())
