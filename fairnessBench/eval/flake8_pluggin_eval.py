@@ -14,7 +14,9 @@ class Fairnessevaluator:
         self.issues = []
     def run(self): 
         self.check_data_collection()
-        # self.check_missing_value_handling
+        #self.check_missing_value_handling
+        self.check_column_identification()
+        self.check_preprocessing()
         self.check_categorical_encoding()
         self.check_bias_mitigation()
         self.check_fairness_metrics()
@@ -23,7 +25,7 @@ class Fairnessevaluator:
 
         for line, col, msg in self.issues:
             yield line, col, msg, type(self)
-        print(f"Fairness Score: {self.score}/80")
+        print(f"Fairness Score: {self.score}")
     # format on how the error message should look like, it takes as input the line, column and the message   
     def add_issue(self, node, message, deduction=0):
         lineno = getattr(node, 'lineno', 1)
@@ -45,7 +47,7 @@ class Fairnessevaluator:
                     found.append(mod)
 
         missing = [l for l in libs if l not in found]
-        weight = 15
+        weight = 10
         anchor = next(ast.walk(self.tree))
 
         if found:
@@ -85,6 +87,97 @@ class Fairnessevaluator:
             self.add_issue(anchor,
                 "FNA102: No handling of missing values detected (e.g., dropna, fillna)"
             )
+    def check_column_identification(self):
+            
+        found_numeric = False
+        found_categorical = False
+
+        for node in ast.walk(self.tree):
+            # detect df.select_dtypes(include=[...])
+            if (isinstance(node, ast.Call)
+                and isinstance(node.func, ast.Attribute)
+                and node.func.attr == "select_dtypes"):
+                for kw in node.keywords:
+                    if kw.arg == "include" and isinstance(kw.value, ast.List):
+                        for elt in kw.value.elts:
+                            if (isinstance(elt, ast.Constant)
+                                and elt.value in ("int64", "float64")):
+                                found_numeric = True
+                            if (isinstance(elt, ast.Constant)
+                                and elt.value == "object"):
+                                found_categorical = True
+
+        anchor = next(ast.walk(self.tree))
+        weight = 10
+
+        found = []
+        if found_numeric:
+            found.append("numeric")
+        if found_categorical:
+            found.append("categorical")
+
+        missing = []
+        if not found_numeric:
+            missing.append("numeric")
+        if not found_categorical:
+            missing.append("categorical")
+
+        if found:
+            # award full weight
+            self.score += weight
+            fstr = ", ".join(found)
+            mstr = ", ".join(missing)
+            self.add_issue(anchor,
+                f"FNA103: Found {fstr} column identification, but didn’t find {mstr}, +{weight}",
+                0
+            )
+        else:
+            # none found → deduct full weight
+            self.score -= weight
+            self.add_issue(anchor,
+                "FNA103: No numeric or categorical column identification found "
+                "(e.g., df.select_dtypes(include=['int64','float64']).columns and "
+                "df.select_dtypes(include=['object']).columns)",
+                weight
+            )
+
+    def check_preprocessing(self):
+        pre = ["StandardScaler", "ColumnTransformer", "values.ravel()"]
+        found = []
+        for node in ast.walk(self.tree):
+        # detect StandardScaler / ColumnTransformer as Name or Attribute
+            if isinstance(node, ast.Name) and node.id in ("StandardScaler", "ColumnTransformer"):
+                if node.id not in found:
+                    found.append(node.id)
+    
+            elif isinstance(node, ast.Attribute):
+                # e.g. ColumnTransformer(...)
+                if node.attr in ("StandardScaler", "ColumnTransformer") and node.attr not in found:
+                    found.append(node.attr)
+                # detect values.ravel()
+                elif node.attr == "ravel":
+                    val = node.value
+                    if isinstance(val, ast.Attribute) and val.attr == "values":
+                        if "values.ravel()" not in found:
+                            found.append("values.ravel()")
+
+        missing = [e for e in pre if e not in found]
+        weight = 10
+        anchor = next(ast.walk(self.tree))
+
+        if found:
+            self.score += weight
+            fstr = ", ".join(found)
+            mstr = ", ".join(missing)
+            self.add_issue(anchor,
+                f"FNA104: Found {fstr}, but didn’t find {mstr}, +{weight}"
+            )
+        else:
+            self.add_issue(anchor,
+                "FNA104: No categorical encoding found (e.g., StandardScaler, ColumnTransformer, values.ravel())"
+                
+            )
+
 
     def check_categorical_encoding(self):
         encs = ["get_dummies", "OneHotEncoder", "LabelEncoder"]
@@ -104,11 +197,11 @@ class Fairnessevaluator:
             fstr = ", ".join(found)
             mstr = ", ".join(missing)
             self.add_issue(anchor,
-                f"FNA103: Found {fstr}, but didn’t find {mstr}, +{weight}"
+                f"FNA105: Found {fstr}, but didn’t find {mstr}, +{weight}"
             )
         else:
             self.add_issue(anchor,
-                "FNA103: No categorical encoding found (e.g., get_dummies, OneHotEncoder, LabelEncoder)"
+                "FNA105: No categorical encoding found (e.g., get_dummies, OneHotEncoder, LabelEncoder)"
                 
             )
         
@@ -134,15 +227,15 @@ class Fairnessevaluator:
             fstr = ", ".join(found)
             mstr = ", ".join(missing)
             self.add_issue(anchor,
-                f"FNA104: Found {fstr}, but didn’t find {mstr}, +{weight}"
+                f"FNA106: Found {fstr}, but didn’t find {mstr}, +{weight}"
             )
         else:
             self.add_issue(anchor,
-                "FNA104: No bias mitigation techniques found (e.g., aif360, fairlearn, equitas, fairness_indicator)"
+                "FNA106: No bias mitigation techniques found (e.g., aif360, fairlearn, equitas, fairness_indicator)"
             )
 
     def check_fairness_metrics(self):
-        mets = ["equalized_odds", "demographic_parity", "statistical_parity", "disparate_impact_ratio", "accuracy","average_abs_odds_difference", "average_odds_difference", "consistency","false_discovery_rate"]
+        mets = ["equalized_odds", "demographic_parity", "statistical_parity", "disparate_impact_ratio", "accuracy","average_abs_odds_difference", "average_odds_difference", "consistency","false_discovery_rate","Equal_opporutnity_differenace","Equalized_odds_difference","Error_rte_difference","Error_rate_ratio","false ommisionate_difference"]
         found = []
         for node in ast.walk(self.tree):
             if isinstance(node, ast.FunctionDef) and node.name in mets:
@@ -162,11 +255,11 @@ class Fairnessevaluator:
             fstr = ", ".join(found)
             mstr = ", ".join(missing)
             self.add_issue(anchor,
-                f"FNA105: Found {fstr}, but didn’t find {mstr}, +{weight}"
+                f"FNA107: Found {fstr}, but didn’t find {mstr}, +{weight}"
             )
         else:
             self.add_issue(anchor,
-                "FNA105: No fairness metrics function found (e.g., equalized_odds, demographic_parity, statistical_parity, disparate_impact_ratio)"
+                "FNA107: No fairness metrics function found (e.g., equalized_odds, demographic_parity, statistical_parity, disparate_impact_ratio)"
                            
             )
          
@@ -192,16 +285,16 @@ class Fairnessevaluator:
             fstr = ", ".join(found)
             mstr = ", ".join(missing)
             self.add_issue(anchor,
-                f"FNA106: Found {fstr}, but didn’t find {mstr}, +{weight}"
+                f"FNA108: Found {fstr}, but didn’t find {mstr}, +{weight}"
             )
         else:
             self.add_issue(anchor,
-                "FNA106: No fairness-aware training techniques found (e.g., adversarial, reweighting,DisparateImpactRemover,AdversarialDebiasing,ARTClassifier,PrejudiceRemover, EqOddsPostprocessing,DeterministicReranking,GerryFairClassifier)"
+                "FNA108: No fairness-aware training techniques found (e.g., adversarial, reweighting,DisparateImpactRemover,AdversarialDebiasing,ARTClassifier,PrejudiceRemover, EqOddsPostprocessing,DeterministicReranking,GerryFairClassifier)"
                 
             )
 
     def check_evaluation(self):
-        funcs = ["audit_bias", "disparate_impact_ratio"]
+        funcs = ["audit_bias"]
         found = []
         for node in ast.walk(self.tree):
             if isinstance(node, ast.FunctionDef) and node.name in funcs:
@@ -221,10 +314,10 @@ class Fairnessevaluator:
             fstr = ", ".join(found)
             mstr = ", ".join(missing)
             self.add_issue(anchor,
-                f"FNA107: Found {fstr}, but didn’t find {mstr}, +{weight}"
+                f"FNA109: Found {fstr}, but didn’t find {mstr}, +{weight}"
             )
         else:
             self.add_issue(anchor,
-                "FNA107: No fairness evaluation or auditing function found (e.g., audit_bias, disparate_impact_ratio)"
+                "FNA109: No fairness evaluation or auditing function found (e.g., audit_bias)"
                 
             )
