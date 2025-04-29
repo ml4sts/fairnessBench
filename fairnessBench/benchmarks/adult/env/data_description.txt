@@ -120,6 +120,4 @@ native-country : Categorical
     Hong, 
     Holand-Netherlands
 
-income : Target|Binary
-    >50K, 
-    <=50K.
+income : continuous income.
