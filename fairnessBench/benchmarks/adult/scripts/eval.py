@@ -25,7 +25,7 @@ def get_score(agent_files): # needs to be fixed as per location of submission.cs
 
     performace_df = pd.DataFrame({'acc': [accuracy], 'disparate_impact': [disparate_impact]})
     performance = {"acc": accuracy, "di": disparate_impact}
-    return performace
+    return performance
 
 
 

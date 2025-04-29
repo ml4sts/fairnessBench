@@ -120,4 +120,4 @@ native-country : Categorical
     Hong, 
     Holand-Netherlands
 
-income : continuous income.
+income : Target|Continuous.

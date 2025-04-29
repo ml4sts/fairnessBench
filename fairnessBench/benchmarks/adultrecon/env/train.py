@@ -1,8 +1,8 @@
 import numpy as np
 import pandas as pd
-from sklearn.metrics import accuracy_score
 from sklearn.linear_model import LogisticRegression
-from aif360.sklearn.metrics import disparate_impact_ratio
+from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
+from aif360.sklearn.metrics import disparate_impact_ratio, statistical_parity_difference, equal_opportunity_difference
 
 train_X = pd.read_csv("train_X.csv", index_col=0)
 train_y = pd.read_csv("train_y.csv", index_col=0)
@@ -15,7 +15,7 @@ lr.fit(train_X, train_y)
 
 pred_y = lr.predict(test_X) 
 
-prot_attr = test_X['sex']  
+prot_attr = test_X['gender']  
 
 test_accuracy = accuracy_score(test_y, pred_y) # accuracy
 recall = recall_score(test_y, pred_y)
@@ -34,7 +34,6 @@ print('disparate impact ratio', disparate_impact)
 print('statistical_parity_difference', statistical_parity_diff)
 print('equal_opportunity_difference', equal_opportunity_diff)
 
-
-output = pd.DataFrame({"Actual_y": test_y.values.ravel(), "Predicted_y": pred_y, "sex" : test_X["sex"]})
-output.to_csv("submission.csv", index=False) # this will be read in eval.py 
+output = pd.DataFrame({"Actual_y": test_y.values.ravel(), "Predicted_y": pred_y, "gender" : test_X["gender"]})
+output.to_csv("submission.csv", index=False)  
 
