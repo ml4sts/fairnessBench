@@ -38,23 +38,26 @@ def read_prompts(file_path: str):
             prompts = [prompt.strip() for prompt in file.read().split('---')]  # Split by the delimiter (---)
         return prompts
 
+def llm_eval(file_path = " ../final_exp_logs/llama/adult/1745027075/env_log/traces/step_final_files/updated_train.py"):
+        # Hardcoded path to the file containing the code
+        # file_path = '/work/pi_brownsarahm_uri_edu/ayman_uri/fairness/fairnessBench'
+        
+        # Read the code from the file
+        code = read_code(file_path)
+        
+        # Read the prompts from a file (for evaluation)
+        prompt_file = 'llm_eval_prompt.txt'  # Path to the file containing multiple prompts
+        
+        
+        
+        # Read the prompts
+        prompts = read_prompts(prompt_file)
+        
+        responses = []
+        # Loop through all the prompts and evaluate the code with each prompt
+        for fairness_prompt in prompts:
+                responses.append(llm_evaluation(code, fairness_prompt))
+                # print(f"Prompt============:\n {fairness_prompt}\n\n\n Response===========\n{result}\n\n")
+                # print(result)
 
- # Hardcoded path to the file containing the code
-file_path = '/work/pi_brownsarahm_uri_edu/ayman_uri/fairness/fairnessBench/final_exp_logs/llama/adult/1745027075/env_log/traces/step_final_files/updated_train.py'
-
-# Read the code from the file
-code = read_code(file_path)
-
-# Read the prompts from a file (for evaluation)
-prompt_file = 'llm_eval_prompt.txt'  # Path to the file containing multiple prompts
-
-
-
-# Read the prompts
-prompts = read_prompts(prompt_file)
-
-# Loop through all the prompts and evaluate the code with each prompt
-for fairness_prompt in prompts:
-        result = llm_evaluation(code, fairness_prompt)
-        print(f"Prompt============:\n {fairness_prompt}\n\n\n Response===========\n{result}\n\n")
-        # print(result)
+        return responses
