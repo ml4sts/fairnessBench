@@ -4,6 +4,10 @@ fairnessBench/benchmarks/*/env/*.csv
 prepared
 project_status.md
 clean.sh
+*api_key*
+*.json
+.vscode/
+fairnessBench/eval/test/
 
 
 # Byte-compiled / optimized / DLL files
