@@ -1,4 +1,4 @@
-# import os
+import os
 # import sys
 import numpy as np
 import pandas as pd
@@ -26,7 +26,7 @@ def get_score(agent_files): # needs to be fixed as per location of submission.cs
         'acc': [accuracy],
         'disparate_impact': [disparate_impact]})
     performance = {"acc": accuracy, "di": disparate_impact}
-    return performace
+    return performance
 
 if __name__ == "__main__":
     print(get_score())
