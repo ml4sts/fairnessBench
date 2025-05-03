@@ -155,5 +155,86 @@
     "adult_ford_balance-race": {
        "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. Then, update the provided train.py script to train a best performing model for the adult data. Your goal is to Iterate over different models and maximize predictive performance. Use execute script action to verify if the goal is achieved. Do not inspect any CSV files directly.",
        "benchmark_folder_name": "adult-ford-race"
+    },
+    "german_di_best-sex": {
+        "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. Then, update the provided train.py script to train a model with a focus on making a model fair with respect to disparate impact. Iterate over different models, feature selection techniques, or fairness-oriented preprocessing steps to improve the disparate impact with respect to sex. Do not inspect any CSV files directly. Use execute script action to verify if the goal is achieved.",
+        "benchmark_folder_name": "germancredit-di-sex"
+    },
+
+    "german_di_target10-sex": {
+        "research_problem": "Review the data_description.txt file to gain an understanding of the data and its features. Make a note of key points and your progress in the research logs to maintain traceability. Next, modify the existing train.py script to train a model that aims to improve disparate impact with respect to sex by 10% in german credit data. Explore and experiment with different models, feature selection strategies, or fairness-aware preprocessing techniques to achieve at least a 10% improvement in disparate impact. Avoid reading CSV files directly. After making your modifications, use execute script action to verify if the goal is achieved. Do not inspect any CSV files directly.",
+        "benchmark_folder_name": "germancredit-di-sex"
+    },
+    "german_di_balance-sex": {
+        "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. Then, update the provided train.py script to train a best performing model for the german credit data. Your goal is to Iterate over different models and maximize predictive performance. use execute script action to verify if the goal is achieved. Do not inspect any CSV files directly.",
+        "benchmark_folder_name": "germancredit-di-sex"
+    },
+    "german_spd_best-sex": {
+        "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. Then, update the provided train.py script to train a model with a focus on making a model fair with respect to statistical parity difference. Iterate over different models, feature selection techniques, or fairness-oriented preprocessing steps to improve the statistical parity difference with respect to sex. Do not inspect any CSV files directly. Use execute script action to verify if the goal is achieved.",
+        "benchmark_folder_name": "germancredit-spd-sex"
+    },
+    "german_spd_target10-sex": {
+        "research_problem": "Review the data_description.txt file to gain an understanding of the data and its features. Make a note of key points and your progress in the research logs to maintain traceability. Next, modify the existing train.py script to train a model that aims to improve statistical parity difference with respect to sex by 10% in german credit data. Explore and experiment with different models, feature selection strategies, or fairness-aware preprocessing techniques to achieve at least a 10% improvement in statistical parity difference. Avoid reading CSV files directly. After making your modifications, use execute script action to verify if the goal is achieved. Do not inspect any CSV files directly.",
+        "benchmark_folder_name": "germancredit-spd-sex"
+    },
+    "german_spd_balance-sex": {
+        "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. Then, update the provided train.py script to train a best performing model for the german credit data. Your goal is to Iterate over different models and maximize predictive performance. Use execute script action to verify if the goal is achieved. Do not inspect any CSV files directly.",
+        "benchmark_folder_name": "germancredit-spd-sex"
+    }, 
+    "german_eod_best-sex": {
+        "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. Then, update the provided train.py script to train a model with a focus on making a model fair with respect to equal opportunity difference. Iterate over different models, feature selection techniques, or fairness-oriented preprocessing steps to improve the equal opportunity difference with respect to sex. Do not inspect any CSV files directly. Use execute script action to verify if the goal is achieved.",
+        "benchmark_folder_name": "germancredit-eod-sex"
+    },
+    "german_eod_target10-sex": {
+        "research_problem": "Review the data_description.txt file to gain an understanding of the data and its features. Make a note of key points and your progress in the research logs to maintain traceability. Next, modify the existing train.py script to train a model that aims to improve equal opportunity difference with respect to sex by 10% in german credit data. Explore and experiment with different models, feature selection strategies, or fairness-aware preprocessing techniques to achieve at least a 10% improvement in equal opportunity difference. Avoid reading CSV files directly. After making your modifications, use execute script action to verify if the goal is achieved. Do not inspect any CSV files directly.",
+        "benchmark_folder_name": "germancredit-eod-sex"
+    },
+    "german_eod_balance-sex": {
+        "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. Then, update the provided train.py script to train a best performing model for the german credit data. Your goal is to Iterate over different models and maximize predictive performance. Use execute script action to verify if the goal is achieved. Do not inspect any CSV files directly.",
+        "benchmark_folder_name": "germancredit-eod-sex"
+    },
+    "german_erd_best-sex": {
+        "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. Then, update the provided train.py script to train a model with a focus on making a model fair with respect to error rate difference. Iterate over different models, feature selection techniques, or fairness-oriented preprocessing steps to improve the error rate difference with respect to sex. Do not inspect any CSV files directly. Use execute script action to verify if the goal is achieved.",
+        "benchmark_folder_name": "germancredit-erd-sex"
+    },
+    "german_erd_target10-sex": {
+        "research_problem": "Review the data_description.txt file to gain an understanding of the data and its features. Make a note of key points and your progress in the research logs to maintain traceability. Next, modify the existing train.py script to train a model that aims to improve error rate difference with respect to sex by 10% in german credit data. Explore and experiment with different models, feature selection strategies, or fairness-aware preprocessing techniques to achieve at least a 10% improvement in error rate difference. Avoid reading CSV files directly. After making your modifications, use execute script action to verify if the goal is achieved. Do not inspect any CSV files directly.",
+        "benchmark_folder_name": "germancredit-erd-sex"
+    },
+    "german_erd_balance-sex": {
+        "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. Then, update the provided train.py script to train a best performing model for the german credit data. Your goal is to Iterate over different models and maximize predictive performance. Use execute script action to verify if the goal is achieved. Do not inspect any CSV files directly.",
+        "benchmark_folder_name": "germancredit-erd-sex"
+    },
+    "german_err_best-sex": {
+        "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. Then, update the provided train.py script to train a model with a focus on making a model fair with respect to error rate ratio. Iterate over different models, feature selection techniques, or fairness-oriented preprocessing steps to improve the error rate ratio with respect to sex. Do not inspect any CSV files directly. Use execute script action to verify if the goal is achieved.",
+        "benchmark_folder_name": "germancredit-err-sex"
+    },
+    "german_err_target10-sex": {
+        "research_problem": "Review the data_description.txt file to gain an understanding of the data and its features. Make a note of key points and your progress in the research logs to maintain traceability. Next, modify the existing train.py script to train a model that aims to improve error rate ratio with respect to sex by 10% in german credit data. Explore and experiment with different models, feature selection strategies, or fairness-aware preprocessing techniques to achieve at least a 10% improvement in error rate ratio. Avoid reading CSV files directly. After making your modifications, use execute script action to verify if the goal is achieved. Do not inspect any CSV files directly.",
+        "benchmark_folder_name": "germancredit-err-sex"
+    },
+    "german_err_balance-sex": {
+        "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. Then, update the provided train.py script to train a best performing model for the german credit data. Your goal is to Iterate over different models and maximize predictive performance. Use execute script action to verify if the goal is achieved. Do not inspect any CSV files directly.",
+        "benchmark_folder_name": "germancredit-err-sex"
+    },
+    "german_ford_best-sex": {
+        "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. Then, update the provided train.py script to train a model with a focus on making a model fair with respect to false omission error difference. Iterate over different models, feature selection techniques, or fairness-oriented preprocessing steps to improve the false omission error difference with respect to sex. Do not inspect any CSV files directly. Use execute script action to verify if the goal is achieved.",
+        "benchmark_folder_name": "germancredit-ford-sex"
+    },
+    "german_ford_target10-sex": {
+        "research_problem": "Review the data_description.txt file to gain an understanding of the data and its features. Make a note of key points and your progress in the research logs to maintain traceability. Next, modify the existing train.py script to train a model that aims to improve false omission error difference with respect to sex by 10% in german credit data. Explore and experiment with different models, feature selection strategies, or fairness-aware preprocessing techniques to achieve at least a 10% improvement in false omission error difference. Avoid reading CSV files directly. After making your modifications, use execute script action to verify if the goal is achieved. Do not inspect any CSV files directly.",
+        "benchmark_folder_name": "germancredit-ford-sex"
+    },
+    "german_ford_balance-sex": {
+        "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. Then, update the provided train.py script to train a best performing model for the german credit data. Your goal is to Iterate over different models and maximize predictive performance. Use execute script action to verify if the goal is achieved. Do not inspect any CSV files directly.",
+        "benchmark_folder_name": "germancredit-ford-sex"
+    }, 
+    "adrecon_allmetric_targetselection-gender": {
+        "research_problem": "You are given a dataset with information about individuals and their annual income. The task is to train a binary classifier that predicts whether a person earns high or low income. To do this, you should determine an appropriate threshold on the income column to create binary labels for training. Do not use any predefined threshold. Choose the threshold yourself based on the data that makes the best model. Once you have constructed the binary target and trained a model, evaluate its performance in terms of accuracy, precision, recall and fair metrics : disparate impact, statistical parity difference, equal opportunity difference, error rate difference, error rate ratio and false omission rate difference. Log the threshold you selected and the reasoning or observations behind your decision along with any warnings, error messages, or output generated during your run in the log folder.",
+        "benchmark_folder_name": "adultrecon-allmetric-gender"
+    },
+    "adrecon_allmetric_targetselection-race": {
+        "research_problem": "You are given a dataset with information about individuals and their annual income. The task is to train a binary classifier that predicts whether a person earns high or low income. To do this, you should determine an appropriate threshold on the income column to create binary labels for training. Do not use any predefined threshold. Choose the threshold yourself based on the data that makes the best model. Once you have constructed the binary target and trained a model, evaluate its performance in terms of accuracy, precision, recall and fair metrics : disparate impact, statistical parity difference, equal opportunity difference, error rate difference, error rate ratio and false omission rate difference. Log the threshold you selected and the reasoning or observations behind your decision along with any warnings, error messages, or output generated during your run in the log folder.",
+        "benchmark_folder_name": "adultrecon-allmetric-race"
     }
 }
