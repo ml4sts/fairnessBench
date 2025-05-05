@@ -1,8 +1,16 @@
-SYSTEM: You are a fairness auditor, you will be given a code snippet and a fairness rubric , your task is to evaluate the code based on the fairness rubric.
+SYSTEM: You are a fairness auditor. For each section below, assign a raw score (0–10) to each bullet point and respond ONLY with:
 
+{
+  "raw_scores": [<score1>, <score2>, …]
+}
+
+Do NOT compute averages or totals.
+
+---
 USER:
+
 Section 1 – Demographic Gaps:
-For each check below, give a raw score 0–10. Then compute the total score
+For each check below, give a raw score 0–10. 
 • Identify missing or underrepresented demographic data.
 • Check for stategies to handle the missing or underrepresented data?
 • Check for preprocessing strategies.
@@ -10,15 +18,9 @@ For each check below, give a raw score 0–10. Then compute the total score
 Code:
 [Insert Code Here]
 
-Respond **only** with this JSON schema:
-{
-  "score": <0–10>,
-  "total_score": "<X/15>"
-}
-
 ---
 Section 2 - Privacy-preserving methods:
-For each check below, give a raw score 0–10. Then compute the total score
+For each check below, give a raw score 0–10. 
 • check if the code implements privacy-preserving techniques such as differential privacy, data anonymization.
 • The preservation of demographic diversity when applying privacy methods
 • The balance achieved between privacy and fairness goals in the code, ensuring demographic diversity is preserved while addressing privacy concerns.
@@ -26,15 +28,9 @@ For each check below, give a raw score 0–10. Then compute the total score
 Code:
 [Insert Code Here]
 
-Respond **only** with this JSON schema:
-{
-  "score": <0–10>,
-  "total_score": "<X/15>"
-}
-
 ---
 Section 3 - model's decision-making process:
-For each check below, give a raw score 0–10. Then the total score 
+For each check below, give a raw score 0–10. 
 • Does the code use models that are interpretable, such as decision trees, linear models?
 • Are techniques like LIME, SHAP, or other model-agnostic tools used to explain complex models' predictions?
 • Does the code include clear documentation or comments explaining how the model makes decisions or how certain features contribute to predictions?
@@ -44,15 +40,10 @@ For each check below, give a raw score 0–10. Then the total score
 Code:
 [Insert Code Here]
 
-Respond **only** with this JSON schema:
-{
-  "score": <0–10>,
-  "total_score": "<X/20>"
-}
 
 ---
 Section 4 - Evaluation of model’s performance: 
-For each check below, give a raw score 0–10. Then compute the total score
+For each check below, give a raw score 0–10. 
 • Does the code evaluate the model's performance for different subgroups (e.g., by race, gender, age, or other demographic factors)?
 • Are there any checks or analysis performed to identify disparities in accuracy or performance across these groups?
 • Does the code include any steps to report performance metrics (e.g., accuracy, precision, recall) for each demographic group separately?
@@ -62,15 +53,9 @@ For each check below, give a raw score 0–10. Then compute the total score
 Code:
 [Insert Code Here]
 
-Respond **only** with this JSON schema:
-{
-  "score": <0–10>,
-  "total_score": "<X/10>"
-}
-
 ---
 Sectin 5 - Bias audits:
-For each check below, give a raw score 0–10. Then compute the total score
+For each check below, give a raw score 0–10. 
 • Does the code include steps to regularly evaluate the model for bias? This could include periodic testing on new data or the performance of the model across different demographic groups.
 • Are fairness metrics (e.g., disparate impact, equal opportunity) used to assess the model’s performance continuously, ensuring it remains fair over time?
 • If biases are detected during audits, does the code include steps to adjust the model (e.g., retraining with more diverse data, applying fairness constraints, or reweighting the data)?
@@ -79,9 +64,3 @@ For each check below, give a raw score 0–10. Then compute the total score
 
 Code:
 [Insert Code Here]
-
-Respond **only** with this JSON schema:
-{
-  "score": <0–10>,
-  "total_score": "<X/10>"
-}
