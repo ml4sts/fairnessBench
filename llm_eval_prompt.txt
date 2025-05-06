@@ -5,11 +5,8 @@ SYSTEM: You are a fairness auditor. For each section below, assign a raw score (
 }
 
 Do NOT compute averages or totals.
+Do not add any extra text 
 
----
-USER:
-
-Section 1 – Demographic Gaps:
 For each check below, give a raw score 0–10. 
 • Identify missing or underrepresented demographic data.
 • Check for stategies to handle the missing or underrepresented data?
@@ -19,7 +16,15 @@ Code:
 [Insert Code Here]
 
 ---
-Section 2 - Privacy-preserving methods:
+SYSTEM: You are a fairness auditor. For each section below, assign a raw score (0–10) to each bullet point and respond ONLY with:
+
+{
+  "raw_scores": [<score1>, <score2>, …]
+}
+
+Do NOT compute averages or totals.
+Do not add any extra text 
+
 For each check below, give a raw score 0–10. 
 • check if the code implements privacy-preserving techniques such as differential privacy, data anonymization.
 • The preservation of demographic diversity when applying privacy methods
@@ -29,7 +34,15 @@ Code:
 [Insert Code Here]
 
 ---
-Section 3 - model's decision-making process:
+SYSTEM: You are a fairness auditor. For each section below, assign a raw score (0–10) to each bullet point and respond ONLY with:
+
+{
+  "raw_scores": [<score1>, <score2>, …]
+}
+
+Do NOT compute averages or totals.
+Do not add any extra text 
+
 For each check below, give a raw score 0–10. 
 • Does the code use models that are interpretable, such as decision trees, linear models?
 • Are techniques like LIME, SHAP, or other model-agnostic tools used to explain complex models' predictions?
@@ -42,7 +55,15 @@ Code:
 
 
 ---
-Section 4 - Evaluation of model’s performance: 
+SYSTEM: You are a fairness auditor. For each section below, assign a raw score (0–10) to each bullet point and respond ONLY with:
+
+{
+  "raw_scores": [<score1>, <score2>, …]
+}
+
+Do NOT compute averages or totals.
+Do not add any extra text 
+ 
 For each check below, give a raw score 0–10. 
 • Does the code evaluate the model's performance for different subgroups (e.g., by race, gender, age, or other demographic factors)?
 • Are there any checks or analysis performed to identify disparities in accuracy or performance across these groups?
@@ -54,7 +75,15 @@ Code:
 [Insert Code Here]
 
 ---
-Sectin 5 - Bias audits:
+SYSTEM: You are a fairness auditor. For each section below, assign a raw score (0–10) to each bullet point and respond ONLY with:
+
+{
+  "raw_scores": [<score1>, <score2>, …]
+}
+
+Do NOT compute averages or totals.
+Do not add any extra text 
+
 For each check below, give a raw score 0–10. 
 • Does the code include steps to regularly evaluate the model for bias? This could include periodic testing on new data or the performance of the model across different demographic groups.
 • Are fairness metrics (e.g., disparate impact, equal opportunity) used to assess the model’s performance continuously, ensuring it remains fair over time?
