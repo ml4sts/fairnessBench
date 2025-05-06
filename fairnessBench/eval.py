@@ -93,7 +93,7 @@ class EvaluationResult:
     extra: Dict[str, bool]
 
 
-def run_eval(log_folder, benchmark_folder_name, eval_intermediate=False):
+def run_eval(log_folder, benchmark_folder_name, eval_model = "qwen", eval_intermediate=False):
     results = {}    
 
     # Log folder is the specific log folder for one model and one task
@@ -159,8 +159,8 @@ def run_eval(log_folder, benchmark_folder_name, eval_intermediate=False):
                                 result.score.append(eval_step_score)
                                 # AS: Attempting to get llm_eval here
                                 try:
-                                    train_script = os.join(folder_path, "train.py")
-                                    llm_score = llm_eval(train_script)
+                                    train_script = os.path.join(folder_path, "train.py")
+                                    llm_score = llm_eval(train_script, eval_model)
                                     result.llm_score.append(llm_score)
                                     flake8_score = get_flake8(train_script)
                                     result.flake8_score.append(flake8_score)
@@ -185,7 +185,7 @@ def run_eval(log_folder, benchmark_folder_name, eval_intermediate=False):
                         # AS: Attempting to get llm_eval here
                         train_script = os.path.join(folder_path, "train.py")
                         try:
-                            llm_score = llm_eval(train_script)
+                            llm_score = llm_eval(train_script, eval_model)
                             result.final_llm_score = llm_score
                         except Exception as e:
                             print("\nllm_eval didn't work\n")
@@ -233,11 +233,12 @@ if __name__ == "__main__":
     parser.add_argument("--log-folder", type=str, default="logs")
     parser.add_argument("--task", type=str, default="adult")
     parser.add_argument("--output-file", type=str, default="results.json")
+    parser.add_argument("--eval_model", type=str, default="qwen")
     parser.add_argument("--eval-intermediate", action="store_true")
     args = parser.parse_args()
     
     benchmark_folder_name = get_task_info(args.task)[0] 
-    results = run_eval(args.log_folder, benchmark_folder_name, eval_intermediate = args.eval_intermediate)
+    results = run_eval(args.log_folder, benchmark_folder_name, eval_model = args.eval_model, eval_intermediate = args.eval_intermediate)
               
     json.dump(results, open(args.output_file, "w"), indent=4, cls=EnhancedJSONEncoder)
                 

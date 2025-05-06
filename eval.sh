@@ -1,17 +1,24 @@
 #/bin/bash
 
-# all_tasks="cifar10 imdb"
-all_tasks="adult"
+# Final step: Evaluation
+# This script evaluates each model on the run of each task
+# For each model and task we get 1 JSON file
+
+# all_tasks="adult adultrecon germancredit creditdefault sanity_check"
+all_tasks="adult_di_best-sex adult_di_best-race"
+
 log_dir=final_exp_logs
+
 # models="claude2.1 gpt-4-0125-preview gemini-pro"
-models="codellama/CodeLlama-7b-hf" # AS: This name was determined by the LLM.py module. It is required to follow this name. But don't know how to use the local
+models="gpt-4o" 
+eval_model="qwen"
 
 for model in $models
 do
     for task in $all_tasks
     do
         echo "python -m fairnessBench.eval --log-folder $log_dir/$model/$task --task $task --output-file ${model}_${task}.json"
-        python -m fairnessBench.eval --log-folder $log_dir/$model/$task --task $task --output-file ${model}_${task}.json 
+        python -m fairnessBench.eval --log-folder $log_dir/$model/$task --task $task --output-file ${model}_${task}.json --eval_model $eval_model --eval-intermediate
         # add --eval-intermediate to evaluate intermediate steps 
     done
 done
