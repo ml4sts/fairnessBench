@@ -3,59 +3,72 @@
 """ This file contains the code for calling all LLM APIs. """
 
 import os
-from functools import partial
-import tiktoken
-from .schema import TooLongPromptError, LLMError
-# from transformers import AutoModelForCausalLM, AutoTokenizer 
-# AS: Adding pipeline and BitsAndBytes to compress the llm
-from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline, BitsAndBytesConfig
-from transformers import StoppingCriteria, StoppingCriteriaList
 import torch
-enc = tiktoken.get_encoding("cl100k_base")
+import tiktoken
+# from .saliency import *
+from functools import partial
+from .schema import TooLongPromptError, LLMError
+from transformers import StoppingCriteria, StoppingCriteriaList
+# AS: Adding pipeline and BitsAndBytes to compress the llm
+# from transformers import AutoModelForCausalLM, AutoTokenizer 
+from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline, BitsAndBytesConfig
 
+enc = tiktoken.get_encoding("cl100k_base")
+torch.cuda.empty_cache()
 
 # AS: Setup llama
 loaded_hf_models = {}
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 try:
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    llama_= "meta-llama/Meta-Llama-3.1-405B" # 70 B gave us decent results. Need export HF_HOME
-    # llama_= "meta-llama/Llama-3.3-70B-Instruct" # 70 B gave us decent results. Need export HF_HOME
+    # Need export HF_HOME=/datasets/ai/llama3
+    # llama_= "meta-llama/Llama-3.3-70B-Instruct" # Gave us decent results.
+    # llama_= "meta-llama/Llama-3.1-405B-Instruct" # Terrible hallusinations
     # llama_= "meta-llama/Llama-3.1-8B-Instruct" # Trying smaller models for test runs 
     # Define the quantization config
     quant_config = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_quant_type="nf4", bnb_4bit_compute_dtype=torch.float16)
     tokenizer = AutoTokenizer.from_pretrained(llama_)
     # model = AutoModelForCausalLM.from_pretrained(llama_)
     model = AutoModelForCausalLM.from_pretrained(llama_, quantization_config = quant_config, device_map="auto",torch_dtype=torch.float16)
-    loaded_hf_models = {"codellama/CodeLlama-7b-hf": (model, tokenizer)}
-    print(f"Loaded local llama successfuly using device: {model.device}.")
-except:
-    print(f"Failed to load local llama - Current device:{device}")
+    loaded_hf_models = {"llama": (model, tokenizer)}
+    print(f"Loaded local {llama_} successfuly using device: {model.device}.")
+except Exception as e:
+    print(f"Failed to load local llama - Current device:{device}\nIssue: {e}")
 
 
-
-def complete_text_hf(prompt, stop_sequences=[], model="codellama/CodeLlama-7b-hf", max_tokens_to_sample = 2000, temperature=0.5, log_file=None, **kwargs):
-    # model = model.split("/", 1)[1]
+def complete_text_hf(prompt, stop_sequences=[], model="llama", max_tokens_to_sample = 2000, temperature=0.5, log_file=None, **kwargs):
     if model in loaded_hf_models:
-        # print("HERE")
         hf_model, tokenizer = loaded_hf_models[model]
     else:
-        print("AS: ", model)
+        model = "meta-llama/Llama-3.3-70B-Instruct"
+        quant_config = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_quant_type="nf4", bnb_4bit_compute_dtype=torch.float16)
         tokenizer = AutoTokenizer.from_pretrained(model)
-        hf_model = AutoModelForCausalLM.from_pretrained(model)#.to("cuda:0") AS: This was causing an issue...
-        loaded_hf_models[model] = (hf_model, tokenizer)
-        print(f"Loaded successfuly using device:{hf_model.device}")
+        # hf_model = AutoModelForCausalLM.from_pretrained(model)#.to("cuda:0") AS: This was causing an issue...
+        hf_model = AutoModelForCausalLM.from_pretrained(model, quantization_config = quant_config, device_map="auto",torch_dtype=torch.float16)
+        loaded_hf_models["llama"] = (hf_model, tokenizer)
+        print(f"Loaded {model} successfuly using device:{hf_model.device}")
 
         
     encoded_input = tokenizer(prompt, return_tensors="pt", return_token_type_ids=False).to("cuda")
     # print(encoded_input.keys())
     # encoded_input["input_ids"] = encoded_input["input_ids"].to(hf_model.device)#.to(torch.float32)
 
+    # AS: For saliency score
+    """
+    encoded_input = tokenizer(prompt)
+    input_tokens = encoded_input['input_ids']
+    attention_ids = encoded_input['attention_mask']
+    base_saliency_matrix, base_embd_matrix = saliency(hf_model, input_tokens, attention_ids)
+    # Input x gradient
+    base_explanation = input_x_gradient(base_saliency_matrix, base_embd_matrix, normalize=True)
+    # Gradient norm
+    base_explanation_l1 = l1_grad_norm(base_saliency_matrix, normalize=True)
+    """
+
     stop_sequence_ids = tokenizer(stop_sequences, return_token_type_ids=False, add_special_tokens=False)
     # stop_sequence_ids["input_ids"] = stop_sequence_ids["input_ids"].to(hf_model.device)
     stopping_criteria = StoppingCriteriaList()
 
     for stop_sequence_input_ids in stop_sequence_ids.input_ids:
-        # stop_sequence_input_ids.to(hf_model.device)
         type(stop_sequence_input_ids)
         stopping_criteria.append(StopAtSpecificTokenCriteria(stop_sequence=stop_sequence_input_ids))
     
@@ -79,70 +92,130 @@ def complete_text_hf(prompt, stop_sequences=[], model="codellama/CodeLlama-7b-hf
 
 
 
-# AS: CRFM
+
+
+# Set up qwen
+loaded_qwen_models = {}
 try:
-    from helm.common.authentication import Authentication
-    from helm.common.request import Request, RequestResult
-    from helm.proxy.accounts import Account
-    from helm.proxy.services.remote_service import RemoteService
-    # setup CRFM API
-    auth = Authentication(api_key=open("crfm_api_key.txt").read().strip())
-    service = RemoteService("https://crfm-models.stanford.edu")
-    account: Account = service.get_account(auth)
-
-
-    # AS: Moved inside the try 
-    # AS: CRFM: Looks like this function takes a prompt, uses the auth key that was set  at the top to send the prompt and get the return 
-    def get_embedding_crfm(text, model="openai/gpt-4-0314"):
-        request = Request(model="openai/text-embedding-ada-002", prompt=text, embedding=True)
-        request_result: RequestResult = service.make_request(auth, request)
-        return request_result.embedding 
-
-
-    def complete_text_crfm(prompt="", stop_sequences = [], model="openai/gpt-4-0314",  max_tokens_to_sample=2000, temperature = 0.5, log_file=None, messages = None, **kwargs): 
-        random = log_file
-        if messages:
-            request = Request(
-                    prompt=prompt, 
-                    messages=messages,
-                    model=model, 
-                    stop_sequences=stop_sequences,
-                    temperature = temperature,
-                    max_tokens = max_tokens_to_sample,
-                    random = random
-                )
-        else:
-            # print("model", model)
-            # print("max_tokens", max_tokens_to_sample)
-            request = Request(
-                    # model_deployment=model,
-                    prompt=prompt, 
-                    model=model, 
-                    stop_sequences=stop_sequences,
-                    temperature = temperature,
-                    max_tokens = max_tokens_to_sample,
-                    random = random
-            )
-
-        try:      
-            request_result: RequestResult = service.make_request(auth, request)
-        except Exception as e:
-            # probably too long prompt
-            print(e)
-            raise TooLongPromptError()
-
-        if request_result.success == False:
-            print(request.error)
-            raise LLMError(request.error)
-        completion = request_result.completions[0].text
-        if log_file is not None:
-            log_to_file(log_file, prompt if not messages else str(messages), completion, model, max_tokens_to_sample)
-        return completion
-    # AS: ---
-
+    # Need export HF_HOME=/datasets/ai/qwen
+    # qwen_= "Qwen/Qwen2-72B-Instruct" # Denide
+    # qwen_= "Qwen/Qwen2.5-72B-Instruct"
+    quant_config = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_quant_type="nf4", bnb_4bit_compute_dtype=torch.float16)
+    tokenizer = AutoTokenizer.from_pretrained(qwen_)
+    model = AutoModelForCausalLM.from_pretrained(qwen_, quantization_config = quant_config, device_map="auto",torch_dtype=torch.float16)
+    loaded_qwen_models = {"qwen": (model, tokenizer)}
+    print(f"Loaded local {qwen_} successfuly using device: {model.device}.")
 except Exception as e:
-    print(e)
-    print("Could not load CRFM API key crfm_api_key.txt.")
+    print(f"Failed to load local qwen - Current device:{device}\nIssue: {e}")
+
+
+def complete_text_qwen(prompt, stop_sequences=[], model="qwen", max_tokens_to_sample = 2000, temperature=0.5, log_file=None, **kwargs):
+    if model in loaded_qwen_models:
+        qwen_model, tokenizer = loaded_qwen_models[model]
+    else:
+        model = "Qwen/Qwen2.5-72B-Instruct"
+        quant_config = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_quant_type="nf4", bnb_4bit_compute_dtype=torch.float16)
+        tokenizer = AutoTokenizer.from_pretrained(model)
+        qwen_model = AutoModelForCausalLM.from_pretrained(model, quantization_config = quant_config, device_map="auto",torch_dtype=torch.float16)
+        loaded_qwen_models["qwen"] = (qwen_model, tokenizer)
+        print(f"Loaded {model} successfuly using device:{qwen_model.device}")
+
+        
+    encoded_input = tokenizer(
+        prompt, 
+        return_tensors="pt", 
+        return_token_type_ids=False).to("cuda")
+
+    stop_sequence_ids = tokenizer(stop_sequences, return_token_type_ids=False, add_special_tokens=False)
+    stopping_criteria = StoppingCriteriaList()
+
+    for stop_sequence_input_ids in stop_sequence_ids.input_ids:
+        type(stop_sequence_input_ids)
+        stopping_criteria.append(StopAtSpecificTokenCriteria(stop_sequence=stop_sequence_input_ids))
+    
+    output = qwen_model.generate(
+        **encoded_input,
+        temperature=temperature,
+        max_new_tokens=max_tokens_to_sample,
+        do_sample=True,
+        return_dict_in_generate=True,
+        output_scores=True,
+        stopping_criteria = stopping_criteria,
+        **kwargs,
+    )
+    sequences = output.sequences
+    sequences = [sequence[len(encoded_input.input_ids[0]) :] for sequence in sequences]
+    all_decoded_text = tokenizer.batch_decode(sequences)
+    completion = all_decoded_text[0]
+    if log_file is not None:
+        log_to_file(log_file, prompt, completion, model, max_tokens_to_sample)
+    return completion
+
+
+
+
+
+
+# Set up granite
+loaded_granite_models = {}
+try:
+    # Need export HF_HOME=/datasets/ai/ibm-granite
+    # granite_= "ibm-granite/granite-3.0-8b-instruct" # Denide
+    # granite_= "ibm-granite/granite-3.1-8b-instruct" # Denide
+    quant_config = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_quant_type="nf4", bnb_4bit_compute_dtype=torch.float16)
+    tokenizer = AutoTokenizer.from_pretrained(granite_)
+    model = AutoModelForCausalLM.from_pretrained(granite_, quantization_config = quant_config, device_map="auto",torch_dtype=torch.float16)
+    loaded_granite_models = {"granite": (model, tokenizer)}
+    print(f"Loaded local {granite_} successfuly using device: {model.device}.")
+except Exception as e:
+    print(f"Failed to load local granite - Current device:{device}\nIssue: {e}")
+
+
+def complete_text_granite(prompt, stop_sequences=[], model="granite", max_tokens_to_sample = 2000, temperature=0.5, log_file=None, **kwargs):
+    if model in loaded_granite_models:
+        granite_model, tokenizer = loaded_granite_models[model]
+    else:
+        model = "ibm-granite/granite-3.1-8b-instruct"
+        quant_config = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_quant_type="nf4", bnb_4bit_compute_dtype=torch.float16)
+        tokenizer = AutoTokenizer.from_pretrained(model)
+        granite_model = AutoModelForCausalLM.from_pretrained(model, quantization_config = quant_config, device_map="auto",torch_dtype=torch.float16)
+        loaded_granite_models["granite"] = (granite_model, tokenizer)
+        print(f"Loaded {model} successfuly using device:{granite_model.device}")
+
+        
+    encoded_input = tokenizer(
+        prompt, 
+        return_tensors="pt", 
+        return_token_type_ids=False).to("cuda")
+
+    stop_sequence_ids = tokenizer(stop_sequences, return_token_type_ids=False, add_special_tokens=False)
+    stopping_criteria = StoppingCriteriaList()
+
+    for stop_sequence_input_ids in stop_sequence_ids.input_ids:
+        type(stop_sequence_input_ids)
+        stopping_criteria.append(StopAtSpecificTokenCriteria(stop_sequence=stop_sequence_input_ids))
+    
+    output = granite_model.generate(
+        **encoded_input,
+        temperature=temperature,
+        max_new_tokens=max_tokens_to_sample,
+        do_sample=True,
+        return_dict_in_generate=True,
+        output_scores=True,
+        stopping_criteria = stopping_criteria,
+        **kwargs,
+    )
+    sequences = output.sequences
+    sequences = [sequence[len(encoded_input.input_ids[0]) :] for sequence in sequences]
+    all_decoded_text = tokenizer.batch_decode(sequences)
+    completion = all_decoded_text[0]
+    if log_file is not None:
+        log_to_file(log_file, prompt, completion, model, max_tokens_to_sample)
+    return completion
+
+
+
+
 
 
 
@@ -213,18 +286,93 @@ except Exception as e:
 
 
 
+
+
+# AS: CRFM
+try:
+    from helm.common.authentication import Authentication
+    from helm.common.request import Request, RequestResult
+    from helm.proxy.accounts import Account
+    from helm.proxy.services.remote_service import RemoteService
+    # setup CRFM API
+    auth = Authentication(api_key=open("crfm_api_key.txt").read().strip())
+    service = RemoteService("https://crfm-models.stanford.edu")
+    account: Account = service.get_account(auth)
+
+
+    # AS: Moved inside the try 
+    # AS: CRFM: Looks like this function takes a prompt, uses the auth key that was set  at the top to send the prompt and get the return 
+    def get_embedding_crfm(text, model="openai/gpt-4-0314"):
+        request = Request(model="openai/text-embedding-ada-002", prompt=text, embedding=True)
+        request_result: RequestResult = service.make_request(auth, request)
+        return request_result.embedding 
+
+
+    def complete_text_crfm(prompt="", stop_sequences = [], model="openai/gpt-4-0314",  max_tokens_to_sample=2000, temperature = 0.5, log_file=None, messages = None, **kwargs): 
+        random = log_file
+        if messages:
+            request = Request(
+                    prompt=prompt, 
+                    messages=messages,
+                    model=model, 
+                    stop_sequences=stop_sequences,
+                    temperature = temperature,
+                    max_tokens = max_tokens_to_sample,
+                    random = random
+                )
+        else:
+            # print("model", model)
+            # print("max_tokens", max_tokens_to_sample)
+            request = Request(
+                    # model_deployment=model,
+                    prompt=prompt, 
+                    model=model, 
+                    stop_sequences=stop_sequences,
+                    temperature = temperature,
+                    max_tokens = max_tokens_to_sample,
+                    random = random
+            )
+
+        try:      
+            request_result: RequestResult = service.make_request(auth, request)
+        except Exception as e:
+            # probably too long prompt
+            print(e)
+            raise TooLongPromptError()
+
+        if request_result.success == False:
+            print(request.error)
+            raise LLMError(request.error)
+        completion = request_result.completions[0].text
+        if log_file is not None:
+            log_to_file(log_file, prompt if not messages else str(messages), completion, model, max_tokens_to_sample)
+        return completion
+    # AS: ---
+
+except Exception as e:
+    print(e)
+    print("Could not load CRFM API key crfm_api_key.txt.")
+
+
+
+
+
 # AS: gpt
 # AS: Setup openai API key and complete text function
 try:
     import openai
     # setup OpenAI API key
-    openai.organization, openai.api_key  =  open("openai_api_key.txt").read().strip().split(":")    
-    os.environ["OPENAI_API_KEY"] = openai.api_key 
+    # openai.organization, openai.api_key  =  open("openai_api_key.txt").read().strip().split(":")    
+    openai.api_key  =  open("openai_api_key.txt").read()   
+    # os.environ["OPENAI_API_KEY"] = openai.api_key 
 
 
     # AS: Possibly move inside the try  -- Moved :D
-    def complete_text_openai(prompt, stop_sequences=[], model="gpt-3.5-turbo", max_tokens_to_sample=500, temperature=0.2, log_file=None, **kwargs):
+    def complete_text_openai(prompt, stop_sequences=[], model="gpt-4o", max_tokens_to_sample=500, temperature=0.2, log_file=None, **kwargs):
         """ Call the OpenAI API to complete a prompt."""
+        
+        # AS: Old code that was in old version of openai
+        """ 
         raw_request = {
               "model": model,
               "temperature": temperature,
@@ -232,12 +380,46 @@ try:
               "stop": stop_sequences or None,  # API doesn't like empty list
               **kwargs
         }
+        """
+        """
+        response = client.chat.completions.create(
+          model="gpt-4o-mini",
+          messages=[],
+          response_format={
+            "type": "text"
+          },
+          temperature=temperature,
+          max_completion_tokens=max_tokens_to_sample,
+          stop=stop_sequences or None,
+          **kwargs
+        )
+        """
+
         if model.startswith("gpt-3.5") or model.startswith("gpt-4"):
-            messages = [{"role": "user", "content": prompt}]
-            response = openai.ChatCompletion.create(**{"messages": messages,**raw_request})
-            completion = response["choices"][0]["message"]["content"]
+            response = openai.chat.completions.create(
+                model=model,
+                messages=[{"role": "user", "content": prompt}],
+                response_format={
+                  "type": "text"
+                },
+                temperature=temperature,
+                max_completion_tokens=max_tokens_to_sample,
+                stop=stop_sequences or None,
+                **kwargs
+            )
+            completion = response.choices[0].message.content
         else:
-            response = openai.Completion.create(**{"prompt": prompt,**raw_request})
+            response = openai.chat.completions.create(
+                model=model,
+                prompt=[{"role": "user", "content": prompt}],
+                response_format={
+                  "type": "text"
+                },
+                temperature=temperature,
+                max_completion_tokens=max_tokens_to_sample,
+                stop=stop_sequences or None,
+                **kwargs
+            )
             completion = response["choices"][0]["text"]
         if log_file is not None:
             log_to_file(log_file, prompt, completion, model, max_tokens_to_sample)
@@ -323,24 +505,32 @@ def complete_text(prompt, log_file, model, **kwargs):
     
     if model.startswith("claude"):
         # use anthropic API
+        # print("\n\nAS: claude!! \n\n")
         completion = complete_text_claude(prompt, stop_sequences=[anthropic.HUMAN_PROMPT, "Observation:"], log_file=log_file, model=model, **kwargs)
     elif model.startswith("gemini"):
         completion = complete_text_gemini(prompt, stop_sequences=["Observation:"], log_file=log_file, model=model, **kwargs)
-    elif model.startswith("codellama"):
+    elif model.startswith("llama"):
         completion = complete_text_hf(prompt, stop_sequences=["Observation:"], log_file=log_file, model=model, **kwargs)
+    elif model.startswith("qwen"):
+        completion = complete_text_qwen(prompt, stop_sequences=["Observation:"], log_file=log_file, model=model, **kwargs)
+    elif model.startswith("granite"):
+        completion = complete_text_granite(prompt, stop_sequences=["Observation:"], log_file=log_file, model=model, **kwargs)
     elif "/" in model:
         # use CRFM API since this specifies organization like "openai/..."
         completion = complete_text_crfm(prompt, stop_sequences=["Observation:"], log_file=log_file, model=model, **kwargs)
     else:
         # use OpenAI API
+        # print("\n\nAS: gpt!! \n\n")
         completion = complete_text_openai(prompt, stop_sequences=["Observation:"], log_file=log_file, model=model, **kwargs)
     return completion
 
 
-# specify fast models for summarization etc
+# specify fast models for summarization etc  AS: (just the default in case it wasn't passed....)
 # AS: 
 # FAST_MODEL = "claude-v1"
-FAST_MODEL = "codellama/CodeLlama-7b-hf"
+# FAST_MODEL = "llama"
+# FAST_MODEL = "claude-3-opus-20240229"
+FAST_MODEL = "gpt-4o-mini"
 
 def complete_text_fast(prompt, **kwargs):
     return complete_text(prompt = prompt, model = FAST_MODEL, temperature =0.01, **kwargs)
