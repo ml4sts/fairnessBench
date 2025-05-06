@@ -14,16 +14,16 @@ lr.fit(train_X, train_y)
 
 pred_y = lr.predict(test_X)
 
-prot_attr = test_X['sex']  
+prot_attr = test_X['gender']  
 
-output = pd.DataFrame({"Actual_y": test_y.values.ravel(), "Predicted_y": pred_y, "sex" : prot_attr})
+output = pd.DataFrame({"Actual_y": test_y.values.ravel(), "Predicted_y": pred_y, "gender" : prot_attr})
 
-privileged_groups = [{'sex': 1}]
-unprivileged_groups = [{'sex': 0}]
+privileged_groups = [{'gender': 1}]
+unprivileged_groups = [{'gender': 0}]
 
 binaryLabelDataset = BinaryLabelDataset(favorable_label=1, unfavorable_label=0, 
                                         df=output, label_names=['Actual_y'], 
-                                        protected_attribute_names=['sex'])
+                                        protected_attribute_names=['gender'])
 
 binaryLabelDataset_pred = binaryLabelDataset.copy()
 binaryLabelDataset_pred.labels = output['Predicted_y'].values.reshape(-1, 1)
@@ -34,10 +34,9 @@ metric = ClassificationMetric(binaryLabelDataset, binaryLabelDataset_pred,
 
 accuracy = metric.accuracy()
 
-false_omission_rate_diff = metric.false_omission_rate_difference()
+di = disparate_impact = metric.disparate_impact()
 
 print('accuracy score:', accuracy)
-print('false omission rate difference', false_omission_rate_diff)
+print('disparate impact', di)
 
 output.to_csv("submission.csv", index=False) 
-output

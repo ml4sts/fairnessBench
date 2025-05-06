@@ -9,12 +9,12 @@ def get_score(agent_files):
     submission_path = os.path.join(agent_files, "submission.csv")
     submission = pd.read_csv(submission_path)
     
-    privileged_groups = [{'sex': 1}]
-    unprivileged_groups = [{'sex': 0}]
+    privileged_groups = [{'gender': 1}]
+    unprivileged_groups = [{'gender': 0}]
 
     binaryLabelDataset = BinaryLabelDataset(favorable_label=1, unfavorable_label=0, 
                                             df=submission, label_names=['Actual_y'], 
-                                            protected_attribute_names=['sex'])
+                                            protected_attribute_names=['gender'])
 
     binaryLabelDataset_pred = binaryLabelDataset.copy()
     binaryLabelDataset_pred.labels = submission['Predicted_y'].values.reshape(-1, 1)
