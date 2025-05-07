@@ -14,7 +14,7 @@ class Fairnessevaluator:
         self.issues = []
     def run(self): 
         self.check_data_collection()
-        #self.check_missing_value_handling
+        #self.check_missing_value_handling()
         self.check_column_identification()
         self.check_preprocessing()
         self.check_categorical_encoding()
@@ -128,17 +128,13 @@ class Fairnessevaluator:
             fstr = ", ".join(found)
             mstr = ", ".join(missing)
             self.add_issue(anchor,
-                f"FNA103: Found {fstr} column identification, but didn’t find {mstr}, +{weight}",
-                0
+                f"FNA103: Found {fstr} column identification, but didn’t find {mstr}, +{weight}"
             )
         else:
-            # none found → deduct full weight
-            self.score -= weight
             self.add_issue(anchor,
                 "FNA103: No numeric or categorical column identification found "
                 "(e.g., df.select_dtypes(include=['int64','float64']).columns and "
-                "df.select_dtypes(include=['object']).columns)",
-                weight
+                "df.select_dtypes(include=['object']).columns)"
             )
 
     def check_preprocessing(self):
@@ -235,7 +231,7 @@ class Fairnessevaluator:
             )
 
     def check_fairness_metrics(self):
-        mets = ["equalized_odds", "demographic_parity", "statistical_parity", "disparate_impact_ratio", "accuracy","average_abs_odds_difference", "average_odds_difference", "consistency","false_discovery_rate","Equal_opporutnity_differenace","Equalized_odds_difference","Error_rte_difference","Error_rate_ratio","false ommisionate_difference"]
+        mets = ["equalized_odds", "demographic_parity", "statistical_parity", "disparate_impact_ratio", "accuracy","average_abs_odds_difference", "average_odds_difference", "consistency","false_discovery_rate","Equal_opporutnity_differenace","Equalized_odds_difference","Error_rate_difference","Error_rate_ratio","false_ommisionate_difference","disparate_impact"]
         found = []
         for node in ast.walk(self.tree):
             if isinstance(node, ast.FunctionDef) and node.name in mets:
