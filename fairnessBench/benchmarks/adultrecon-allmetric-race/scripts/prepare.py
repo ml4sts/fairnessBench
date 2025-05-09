@@ -5,15 +5,13 @@ from sklearn.model_selection import train_test_split
 
 ad_rec = pd.read_csv("https://raw.githubusercontent.com/socialfoundations/folktables/refs/heads/main/adult_reconstruction.csv")
 
-ythresh = ad_rec['income'].median()
-ad_rec['income_new'] = (ad_rec['income'] >= ythresh).astype(int)
 ad_rec["race"] = ad_rec["race"].apply(lambda i: 1 if i == 'White' else 0)
 
-X = ad_rec.drop(["income_new", "income", "education-num"], axis =1)
-y = ad_rec['income_new']
+X = ad_rec.drop(["income", "education-num"], axis =1)
+y = ad_rec['income']
 
 categorical_columns = ["workclass", "education", "marital-status", "occupation", "relationship", 
-                        "gender", "native-country"]
+                        "gender", "native-country", "marital-status", "relationship"]
 
 X_enc = pd.get_dummies(X, columns=categorical_columns)
 X_enc = X_enc.replace({True: 1, False: 0}) 
