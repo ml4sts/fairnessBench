@@ -34,10 +34,10 @@ metric = ClassificationMetric(binaryLabelDataset, binaryLabelDataset_pred,
 
 accuracy = metric.accuracy()
 
-spd = metric.statistical_parity_difference()
+di = metric.disparate_impact()
 
 print('accuracy score:', accuracy)
-print('statistical parity difference', spd)
+print('disparate impact', di)
 
 output.to_csv("submission.csv", index=False) 
 output
