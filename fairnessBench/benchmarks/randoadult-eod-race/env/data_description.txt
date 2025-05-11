@@ -8,13 +8,16 @@ workclass : Categorical feature
     Local-gov
     State-gov
     Without-pay
-    Never-worked.
+    Never-worked
+    
+fnlwgt : Integer
 
 education : Categorical
     Education Level
     Bachelors
     Some-college
-    11th, HS-grad
+    11th
+    HS-grad
     Prof-school
     Assoc-acdm
     Assoc-voc
@@ -28,6 +31,8 @@ education : Categorical
     5th-6th
     Preschool
     
+education-num : Integer
+        
 marital-status : Categorical
     Married-civ-spouse, 
     Divorced, 
@@ -36,7 +41,7 @@ marital-status : Categorical
     Widowed, 
     Married-spouse-absent, 
     Married-AF-spouse
-
+ 
 occupation : Categorical
     Tech-support, 
     Craft-repair, 
@@ -60,13 +65,10 @@ relationship : Categorical
     Not-in-family, 
     Other-relative, 
     Unmarried
-
-race : Categorical
-    White, 
-    Asian-Pac-Islander, 
-    Amer-Indian-Eskimo, 
-    Other, 
-    Black
+    
+race : Binary
+    1: White, 
+    0 : (Asian-Pac-Islander, Amer-Indian-Eskimo, Other, Black)
 
 sex : Binary
     Female
@@ -104,7 +106,8 @@ native-country : Categorical
     Ireland, 
     France, 
     Dominican-Republic, 
-    Laos, Ecuador, 
+    Laos, 
+    Ecuador, 
     Taiwan, 
     Haiti, 
     Columbia, 
@@ -121,5 +124,5 @@ native-country : Categorical
     Holand-Netherlands
 
 income : binary target
-        <=50K
-        >50K.
+        0: <=50K
+        1: >50K.

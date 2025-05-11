@@ -14,12 +14,10 @@ data = pd.concat([X, y], axis=1)
 data["income"] = data["income"].str.rstrip('.')
 data["income"] = data["income"].apply(lambda i: 1 if i == '>50K' else 0)
 data["race"] = data["race"].apply(lambda i: 1 if i == 'White' else 0)
-data['age_bins'] = pd.cut(data['age'],10)
-data['age_bins'] = data['age_bins'].astype(str)
 data = data.replace('?', np.nan)
 
 
-protected_attributes = ['sex','race','age_bins', 'marital-status', 'relationship']
+protected_attributes = ['sex','race', 'age', 'marital-status', 'relationship']
 feature_cat = ['workclass','education', 'occupation','native-country']
 features = protected_attributes+feature_cat
 target = 'income'
@@ -31,16 +29,16 @@ ros = RandomOverSampler()
 X_resampled, y_resampled = ros.fit_resample(data.drop(columns='all_p_att'), data['all_p_att'])
 resampled_df = X_resampled
 resampled_df['all_p_att'] = y_resampled
-resampled_df = resampled_df.drop(['age','sex','marital-status', 'race', 'relationship','age_bins'], axis = 1)
+resampled_df = resampled_df.drop(['age','sex','marital-status', 'race', 'relationship'], axis = 1)
 
-p_cols = ['sex', 'race', 'age_bins', 'marital-status', 'relationship']
+p_cols = ['sex', 'race', 'age', 'marital-status', 'relationship']
 final_df = resampled_df['all_p_att'].str.split('_', expand=True)
 resampled_df[p_cols] = final_df
 resampled_df = resampled_df.drop(columns=['all_p_att'])
 
-categorical_columns = ["workclass", "education", "marital-status", "occupation", "relationship", 
-                       "sex", "native-country", "age_bins", "marital-status", "relationship"]
-
+categorical_columns = ["workclass", "education", "occupation", "sex", 
+                       "native-country", "marital-status", "relationship"]
+#print(resampled_df.columns)
 X_enc = pd.get_dummies(resampled_df, columns=categorical_columns)
 X_enc = X_enc.replace({True: 1, False: 0})
 
