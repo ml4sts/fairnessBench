@@ -1,0 +1,26 @@
+age: Integer
+
+employment_score : Float
+
+education_score : Float
+    
+marital-status : Categorical
+                Married  
+                Single    
+                Divorced 
+
+sex : Categorical
+    Male
+    Female
+
+cap_gain : Float
+
+cap_loss : Float
+
+race : Binary
+    1 : White
+    0 : others (black, hispanic etc)
+    
+income : binary target
+        0 : <=50K
+        1 : >50K.
