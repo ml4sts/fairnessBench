@@ -18,33 +18,30 @@ data = data.replace('?', np.nan)
 
 
 protected_attributes = ['sex','race', 'age', 'marital-status', 'relationship']
-feature_cat = ['workclass','education', 'occupation','native-country']
-features = protected_attributes+feature_cat
-target = 'income'
+categorical_columns = ["workclass", "education", "occupation", "sex", "native-country", 
+                       "marital-status", "relationship"]
 
 data['all_p_att'] = data[protected_attributes].apply(lambda p_att: '_'.join(p_att.astype(str)), axis=1)
 
 ros = RandomOverSampler()  
 
 X_resampled, y_resampled = ros.fit_resample(data.drop(columns='all_p_att'), data['all_p_att'])
-resampled_df = X_resampled
-resampled_df['all_p_att'] = y_resampled
-resampled_df = resampled_df.drop(['age','sex','marital-status', 'race', 'relationship'], axis = 1)
 
-p_cols = ['sex', 'race', 'age', 'marital-status', 'relationship']
+resampled_df = X_resampled.copy()
+resampled_df['all_p_att'] = y_resampled
+
+resampled_df = resampled_df.drop(protected_attributes, axis=1)
+
 final_df = resampled_df['all_p_att'].str.split('_', expand=True)
-resampled_df[p_cols] = final_df
+resampled_df[protected_attributes] = final_df
 resampled_df = resampled_df.drop(columns=['all_p_att'])
 
-categorical_columns = ["workclass", "education", "occupation", "sex", 
-                       "native-country", "marital-status", "relationship"]
-#print(resampled_df.columns)
 X_enc = pd.get_dummies(resampled_df, columns=categorical_columns)
 X_enc = X_enc.replace({True: 1, False: 0})
 
 train_X, test_X, train_y, test_y = train_test_split(X_enc, X_enc['income'], test_size=0.2, random_state=1)
 
-os.chdir("../env/")
+#os.chdir("../env/")
 train_X.to_csv("train_X.csv")
 train_y.to_csv("train_y.csv")
 test_X.to_csv("test_X.csv")

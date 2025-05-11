@@ -13,12 +13,12 @@ y = adult.data.targets.copy()
 data = pd.concat([X, y], axis=1)
 data["income"] = data["income"].str.rstrip('.')
 data["income"] = data["income"].apply(lambda i: 1 if i == '>50K' else 0)
-data["race"] = data["race"].apply(lambda i: 1 if i == 'White' else 0)
+data["sex"] = data["sex"].apply(lambda i: 1 if i == 'Male' else 0)
 data = data.replace('?', np.nan)
 
 
 protected_attributes = ['sex','race', 'age', 'marital-status', 'relationship']
-categorical_columns = ["workclass", "education", "occupation", "sex", "native-country", 
+categorical_columns = ["workclass", "education", "occupation", "race", "native-country", 
                        "marital-status", "relationship"]
 
 data['all_p_att'] = data[protected_attributes].apply(lambda p_att: '_'.join(p_att.astype(str)), axis=1)
