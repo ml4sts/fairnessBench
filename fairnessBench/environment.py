@@ -59,6 +59,7 @@ class Environment:
             self._benchmark_folder_name, self._research_problem = get_task_info(args.task)
             self._work_dir = os.path.join(args.work_dir, self.benchmark_folder_name)
             self._read_only_files = []
+            self._env_read_only_files = []
             self._initialize_task_env() # set up work dir and log dir
 
         else: # AS: If --interactive was passed: you can input prompt during runtime
@@ -70,6 +71,7 @@ class Environment:
             if w != "":
                 self._work_dir = w
             self._read_only_files = []
+            self._env_read_only_files = []
 
             self._initialize_interactive_env() # set up work dir and log dir
 
@@ -85,6 +87,7 @@ class Environment:
             "work_dir": self.work_dir,
             "args": args,
             "read_only_files": self.read_only_files,
+            "env_read_only_files":self.env_read_only_files
             "research_problem": self.research_problem,
         }
         self._trace = self._initialize_trace()
@@ -111,6 +114,9 @@ class Environment:
     @property
     def read_only_files(self):
         return self._read_only_files
+    @property
+    def read_only_files(self):
+        return self._env_read_only_files
 
     @property
     def action_infos(self):
@@ -181,6 +187,18 @@ class Environment:
                 for ignore in ignore_files:
                     ignore_filenames = [n for n in filenames if fnmatch.fnmatch(n, ignore)]
                     self.read_only_files.extend(ignore_filenames)
+
+        # find all read only files
+        if os.path.exists(os.path.join(benchmark_dir, "scripts", "env_read_only_files.txt")):
+            llm_ignore_files = open(os.path.join(benchmark_dir, "scripts", "env_read_only_files.txt"), "r").read().split("\n")
+            for path, subdirs, files in os.walk(os.path.join(work_dir)):
+
+                relpath = os.path.relpath(path, work_dir)
+                # filter out the files that are read only
+                filenames = [os.path.join(relpath, filename) for filename in files]
+                for llm_ignore in llm_ignore_files:
+                    llm_ignore_filenames = [n for n in filenames if fnmatch.fnmatch(n, llm_ignore)]
+                    self.env_read_only_files.extend(llm_ignore_filenames)
 
 
         # init backup folder and remove all content if it exists
