@@ -10,11 +10,11 @@ from functools import partial
 from .schema import TooLongPromptError, LLMError
 from transformers import StoppingCriteria, StoppingCriteriaList
 # AS: Adding pipeline and BitsAndBytes to compress the llm
-# from transformers import AutoModelForCausalLM, AutoTokenizer 
 from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline, BitsAndBytesConfig
 
 enc = tiktoken.get_encoding("cl100k_base")
-torch.cuda.empty_cache()
+
+# torch.cuda.empty_cache()
 
 # AS: Setup llama
 loaded_hf_models = {}
@@ -24,10 +24,9 @@ try:
     # llama_= "meta-llama/Llama-3.3-70B-Instruct" # Gave us decent results.
     # llama_= "meta-llama/Llama-3.1-405B-Instruct" # Terrible hallusinations
     # llama_= "meta-llama/Llama-3.1-8B-Instruct" # Trying smaller models for test runs 
-    # Define the quantization config
-    quant_config = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_quant_type="nf4", bnb_4bit_compute_dtype=torch.float16)
+
     tokenizer = AutoTokenizer.from_pretrained(llama_)
-    # model = AutoModelForCausalLM.from_pretrained(llama_)
+    quant_config = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_quant_type="nf4", bnb_4bit_compute_dtype=torch.float16)
     model = AutoModelForCausalLM.from_pretrained(llama_, quantization_config = quant_config, device_map="auto",torch_dtype=torch.float16)
     loaded_hf_models = {"llama": (model, tokenizer)}
     print(f"Loaded local {llama_} successfuly using device: {model.device}.")
@@ -35,20 +34,21 @@ except Exception as e:
     print(f"Failed to load local llama - Current device:{device}\nIssue: {e}")
 
 
-def complete_text_hf(prompt, stop_sequences=[], model="llama", max_tokens_to_sample = 2000, temperature=0.5, log_file=None, **kwargs):
+def complete_text_hf(prompt, stop_sequences=[], model="llama", max_tokens_to_sample = 2000, temperature=0.5, log_file=None, device=0, **kwargs):
     if model in loaded_hf_models:
         hf_model, tokenizer = loaded_hf_models[model]
     else:
         model = "meta-llama/Llama-3.3-70B-Instruct"
-        quant_config = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_quant_type="nf4", bnb_4bit_compute_dtype=torch.float16)
         tokenizer = AutoTokenizer.from_pretrained(model)
+        quant_config = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_quant_type="nf4", bnb_4bit_compute_dtype=torch.float16)
         # hf_model = AutoModelForCausalLM.from_pretrained(model)#.to("cuda:0") AS: This was causing an issue...
-        hf_model = AutoModelForCausalLM.from_pretrained(model, quantization_config = quant_config, device_map="auto",torch_dtype=torch.float16)
+        # hf_model = AutoModelForCausalLM.from_pretrained(model, quantization_config = quant_config, device_map="auto",torch_dtype=torch.float16)
+        hf_model = AutoModelForCausalLM.from_pretrained(model, quantization_config = quant_config, device_map=f"cuda:{device}",torch_dtype=torch.float16) # AS: attempt. WORKS!
         loaded_hf_models["llama"] = (hf_model, tokenizer)
         print(f"Loaded {model} successfuly using device:{hf_model.device}")
 
         
-    encoded_input = tokenizer(prompt, return_tensors="pt", return_token_type_ids=False).to("cuda")
+    encoded_input = tokenizer(prompt, return_tensors="pt", return_token_type_ids=False).to(f"cuda:{device}")
     # print(encoded_input.keys())
     # encoded_input["input_ids"] = encoded_input["input_ids"].to(hf_model.device)#.to(torch.float32)
 
@@ -92,16 +92,14 @@ def complete_text_hf(prompt, stop_sequences=[], model="llama", max_tokens_to_sam
 
 
 
-
-
 # Set up qwen
 loaded_qwen_models = {}
 try:
     # Need export HF_HOME=/datasets/ai/qwen
     # qwen_= "Qwen/Qwen2-72B-Instruct" # Denide
     # qwen_= "Qwen/Qwen2.5-72B-Instruct"
-    quant_config = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_quant_type="nf4", bnb_4bit_compute_dtype=torch.float16)
     tokenizer = AutoTokenizer.from_pretrained(qwen_)
+    quant_config = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_quant_type="nf4", bnb_4bit_compute_dtype=torch.float16)
     model = AutoModelForCausalLM.from_pretrained(qwen_, quantization_config = quant_config, device_map="auto",torch_dtype=torch.float16)
     loaded_qwen_models = {"qwen": (model, tokenizer)}
     print(f"Loaded local {qwen_} successfuly using device: {model.device}.")
@@ -109,14 +107,15 @@ except Exception as e:
     print(f"Failed to load local qwen - Current device:{device}\nIssue: {e}")
 
 
-def complete_text_qwen(prompt, stop_sequences=[], model="qwen", max_tokens_to_sample = 2000, temperature=0.5, log_file=None, **kwargs):
+def complete_text_qwen(prompt, stop_sequences=[], model="qwen", max_tokens_to_sample = 2000, temperature=0.5, log_file=None, device=0, **kwargs):
     if model in loaded_qwen_models:
         qwen_model, tokenizer = loaded_qwen_models[model]
     else:
         model = "Qwen/Qwen2.5-72B-Instruct"
         quant_config = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_quant_type="nf4", bnb_4bit_compute_dtype=torch.float16)
         tokenizer = AutoTokenizer.from_pretrained(model)
-        qwen_model = AutoModelForCausalLM.from_pretrained(model, quantization_config = quant_config, device_map="auto",torch_dtype=torch.float16)
+        # qwen_model = AutoModelForCausalLM.from_pretrained(model, quantization_config = quant_config, device_map="auto",torch_dtype=torch.float16)
+        qwen_model = AutoModelForCausalLM.from_pretrained(model, quantization_config = quant_config, device_map=f"cuda:{device}",torch_dtype=torch.float16) 
         loaded_qwen_models["qwen"] = (qwen_model, tokenizer)
         print(f"Loaded {model} successfuly using device:{qwen_model.device}")
 
@@ -124,7 +123,7 @@ def complete_text_qwen(prompt, stop_sequences=[], model="qwen", max_tokens_to_sa
     encoded_input = tokenizer(
         prompt, 
         return_tensors="pt", 
-        return_token_type_ids=False).to("cuda")
+        return_token_type_ids=False).to(f"cuda:{device}")
 
     stop_sequence_ids = tokenizer(stop_sequences, return_token_type_ids=False, add_special_tokens=False)
     stopping_criteria = StoppingCriteriaList()
@@ -153,17 +152,14 @@ def complete_text_qwen(prompt, stop_sequences=[], model="qwen", max_tokens_to_sa
 
 
 
-
-
-
 # Set up granite
 loaded_granite_models = {}
 try:
     # Need export HF_HOME=/datasets/ai/ibm-granite
     # granite_= "ibm-granite/granite-3.0-8b-instruct" # Denide
     # granite_= "ibm-granite/granite-3.1-8b-instruct" # Denide
-    quant_config = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_quant_type="nf4", bnb_4bit_compute_dtype=torch.float16)
     tokenizer = AutoTokenizer.from_pretrained(granite_)
+    quant_config = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_quant_type="nf4", bnb_4bit_compute_dtype=torch.float16)
     model = AutoModelForCausalLM.from_pretrained(granite_, quantization_config = quant_config, device_map="auto",torch_dtype=torch.float16)
     loaded_granite_models = {"granite": (model, tokenizer)}
     print(f"Loaded local {granite_} successfuly using device: {model.device}.")
@@ -171,7 +167,7 @@ except Exception as e:
     print(f"Failed to load local granite - Current device:{device}\nIssue: {e}")
 
 
-def complete_text_granite(prompt, stop_sequences=[], model="granite", max_tokens_to_sample = 2000, temperature=0.5, log_file=None, **kwargs):
+def complete_text_granite(prompt, stop_sequences=[], model="granite", max_tokens_to_sample = 2000, temperature=0.5, log_file=None, device=0, **kwargs):
     if model in loaded_granite_models:
         granite_model, tokenizer = loaded_granite_models[model]
     else:
@@ -216,9 +212,6 @@ def complete_text_granite(prompt, stop_sequences=[], model="granite", max_tokens
 
 
 
-
-
-
 # AS: Claude
 try:   
     import anthropic
@@ -234,7 +227,7 @@ try:
             ai_prompt = kwargs["ai_prompt"]
 
         try:
-            if model == "claude-3-opus-20240229":
+            if model.startswith("claude-3"):
                 while True:
                     try:
                         message = anthropic_client.messages.create(
@@ -283,8 +276,6 @@ try:
 except Exception as e:
     print(e)
     print("Could not load anthropic API key claude_api_key.txt.")
-
-
 
 
 
@@ -500,7 +491,7 @@ def log_to_file(log_file, prompt, completion, model, max_tokens_to_sample):
 
 
 # AS: Pick a model from the arg model and call the complete function of that model. We want to use hf (huggingface)
-def complete_text(prompt, log_file, model, **kwargs):
+def complete_text(prompt, log_file, model, device=0, **kwargs):
     """ Complete text using the specified model with appropriate API. """
     
     if model.startswith("claude"):
@@ -510,11 +501,11 @@ def complete_text(prompt, log_file, model, **kwargs):
     elif model.startswith("gemini"):
         completion = complete_text_gemini(prompt, stop_sequences=["Observation:"], log_file=log_file, model=model, **kwargs)
     elif model.startswith("llama"):
-        completion = complete_text_hf(prompt, stop_sequences=["Observation:"], log_file=log_file, model=model, **kwargs)
+        completion = complete_text_hf(prompt, stop_sequences=["Observation:"], log_file=log_file, model=model, device=device, **kwargs)
     elif model.startswith("qwen"):
-        completion = complete_text_qwen(prompt, stop_sequences=["Observation:"], log_file=log_file, model=model, **kwargs)
+        completion = complete_text_qwen(prompt, stop_sequences=["Observation:"], log_file=log_file, model=model, device=device, **kwargs)
     elif model.startswith("granite"):
-        completion = complete_text_granite(prompt, stop_sequences=["Observation:"], log_file=log_file, model=model, **kwargs)
+        completion = complete_text_granite(prompt, stop_sequences=["Observation:"], log_file=log_file, model=model, device=device, **kwargs)
     elif "/" in model:
         # use CRFM API since this specifies organization like "openai/..."
         completion = complete_text_crfm(prompt, stop_sequences=["Observation:"], log_file=log_file, model=model, **kwargs)
@@ -532,7 +523,7 @@ def complete_text(prompt, log_file, model, **kwargs):
 # FAST_MODEL = "claude-3-opus-20240229"
 FAST_MODEL = "gpt-4o-mini"
 
-def complete_text_fast(prompt, **kwargs):
-    return complete_text(prompt = prompt, model = FAST_MODEL, temperature =0.01, **kwargs)
+def complete_text_fast(prompt, device=0, **kwargs):
+    return complete_text(prompt = prompt, model = FAST_MODEL, temperature =0.01, device = device, **kwargs)
 # complete_text_fast = partial(complete_text_openai, temperature= 0.01)
 

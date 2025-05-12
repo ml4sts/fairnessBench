@@ -22,6 +22,7 @@ Follow these instructions and do not forget them:
 - Follow the plan and try to achieve the goal as straightforwardly as possible.
 - Highlight the supporting experiment results and reasoning before drawing any conclusions. 
 - Do not try installing any new packages or libraries.
+- Do not inspect or try to understand the contents of any CSV files
 - If you believe you have solved the problem, you can use the Final Answer action to submit your answer. You can only submit once, so double check that you have achieved the goal before submitting.
 
 Always respond in this format exactly:
@@ -119,7 +120,7 @@ class ResearchAgent(Agent):
             valid_response = False
             for _ in range(self.args.max_retries):
                 log_file = os.path.join(self.log_dir , f"step_{curr_step}_log.log")
-                completion = complete_text(prompt, log_file, self.args.llm_name)
+                completion = complete_text(prompt, log_file, self.args.llm_name, self.args.device)
 
                 try:
                     entries = self.parse_entries(completion, self.valid_format_entires)
