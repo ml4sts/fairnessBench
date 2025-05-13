@@ -73,7 +73,9 @@ def understand_file( file_name, things_to_look_for, work_dir = ".", **kwargs):
 
         return completion
 
-EDIT_SCRIPT_MODEL = "claude-v1"
+# EDIT_SCRIPT_MODEL = "claude-v1" # AS: ?? Also, why is it hardcoded
+# EDIT_SCRIPT_MODEL = "claude-3-opus-20240229" # AS: attempt to use claude
+EDIT_SCRIPT_MODEL = "gpt-4o"
 EDIT_SCRIPT_MAX_TOKENS = 4000
 def edit_script(script_name, edit_instruction, save_name, work_dir = ".", **kwargs):
     #TODO: handle long file editing
@@ -102,6 +104,10 @@ def edit_script(script_name, edit_instruction, save_name, work_dir = ".", **kwar
     shutil.copyfile(os.path.join(work_dir,script_name), backup_name)
 
     write_file(save_name, new_content, work_dir = work_dir, **kwargs)
+    # AS: Now rewrite he content of train.py for eval 
+    write_file("train.py", new_content, work_dir = work_dir, **kwargs)
+    # print("\n\nAS: Modified train.py\n\n")
+
 
     diff = list(difflib.unified_diff(content.splitlines(keepends=True), new_content.splitlines(keepends=True)))
     diff = "".join(diff)
@@ -152,8 +158,16 @@ def edit_script_lines( script_name, start_line_number, end_line_number,edit_inst
     diff = list(difflib.unified_diff(content.splitlines(keepends=True), new_content.splitlines(keepends=True)))
     diff = "".join(diff)
 
-    return f"The edited file is saved to {save_name}. Here is the diff, please check if the edit is correct and desirable:\n\n" + diff
+    # AS: After modifying the script and backing up the data, Put the content of the newly modified script in train.py for evaluation
+    try:
+        # shutil.copyfile(os.path.join(work_dir, save_name), os.path.join(work_dir, "train.py"))
+        write_file("train.py", new_content, work_dir = work_dir, **kwargs)
+        # print("\n\nAS: Modified train.py\n\n")
+    except:
+        TODO
 
+
+    return f"The edited file is saved to {save_name}. Here is the diff, please check if the edit is correct and desirable:\n\n" + diff
 
 def inspect_script_lines( script_name, start_line_number, end_line_number, work_dir = ".", **kwargs):
     try:
