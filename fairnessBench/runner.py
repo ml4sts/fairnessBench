@@ -13,10 +13,10 @@ from fairnessBench.environment import Environment
 from fairnessBench.agents.agent import Agent, SimpleActionAgent, ReasoningActionAgent
 from fairnessBench.agents.agent_research import ResearchAgent
 from fairnessBench.agents.agent_langchain  import LangChainAgent
-try:
-    from fairnessBench.agents.agent_autogpt  import AutoGPTAgent
-except:
-    print("Failed to import AutoGPTAgent; Make sure you have installed the autogpt dependencies if you want to use it.")
+# try:
+#     from fairnessBench.agents.agent_autogpt  import AutoGPTAgent
+# except:
+#     print("Failed to import AutoGPTAgent; Make sure you have installed the autogpt dependencies if you want to use it.")
 
 
 def run(agent_cls, args):
@@ -58,11 +58,11 @@ if __name__ == "__main__":
     # general agent configs
     parser.add_argument("--agent-type", type=str, default="ResearchAgent", help="agent type")
     # parser.add_argument("--llm-name", type=str, default="claude-v1", help="llm name")
-    parser.add_argument("--llm-name", type=str, default="codellama/CodeLlama-7b-hf", help="llm name")
-    # parser.add_argument("--fast-llm-name", type=str, default="claude-v1", help="llm name")
-    parser.add_argument("--fast-llm-name", type=str, default="codellama/CodeLlama-7b-hf", help="llm name")
-    # parser.add_argument("--edit-script-llm-name", type=str, default="claude-v1", help="llm name")
-    parser.add_argument("--edit-script-llm-name", type=str, default="codellama/CodeLlama-7b-hf", help="llm name")
+    parser.add_argument("--llm-name", type=str, default="llama", help="llm name") # AS
+    parser.add_argument("--fast-llm-name", type=str, default="claude-v1", help="llm name")
+    # parser.add_argument("--fast-llm-name", type=str, default="llama", help="llm name") # AS
+    parser.add_argument("--edit-script-llm-name", type=str, default="claude-v1", help="llm name")
+    # parser.add_argument("--edit-script-llm-name", type=str, default="llama", help="llm name") # AS
     parser.add_argument("--edit-script-llm-max-tokens", type=int, default=4000, help="llm max tokens")
     parser.add_argument("--agent-max-steps", type=int, default=50, help="max iterations for agent")
 
