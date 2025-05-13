@@ -41,7 +41,7 @@ X_enc = X_enc.replace({True: 1, False: 0})
 
 train_X, test_X, train_y, test_y = train_test_split(X_enc, X_enc['income'], test_size=0.2, random_state=1)
 
-#os.chdir("../env/")
+os.chdir("../env/")
 train_X.to_csv("train_X.csv")
 train_y.to_csv("train_y.csv")
 test_X.to_csv("test_X.csv")
