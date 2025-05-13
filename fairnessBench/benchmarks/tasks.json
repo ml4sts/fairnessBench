@@ -160,6 +160,10 @@
         "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. Then, update the provided train.py script to train a model with a focus on making a model fair with respect to disparate impact. Iterate over different models, feature selection techniques, or fairness-oriented preprocessing steps to improve the disparate impact with respect to sex. Do not inspect any CSV files directly. Use execute script action to verify if the goal is achieved.",
         "benchmark_folder_name": "germancredit-di-sex"
     },
+    "german_di_target10-sex": {
+       "research_problem": "Review the data_description.txt file to gain an understanding of the data and its features. Make a note of key points and your progress in the research logs to maintain traceability. Next, modify the existing train.py script to train a model that aims to improve disparate impact with respect to sex by 10% in german data. Explore and experiment with different models, feature selection strategies, or fairness-aware preprocessing techniques to achieve at least a 10% improvement in disparate impact. Avoid reading CSV files directly. After making your modifications, use execute script action to verify if the goal is achieved. Do not inspect any CSV files directly.",
+       "benchmark_folder_name": "germancredit-di-sex"
+    },
     "german_di_balance-sex": {
         "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. Then, update the provided train.py script to train a best performing model for the german credit data. Your goal is to Iterate over different models and maximize predictive performance. use execute script action to verify if the goal is achieved. Do not inspect any CSV files directly.",
         "benchmark_folder_name": "germancredit-di-sex"
@@ -168,6 +172,10 @@
         "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. Then, update the provided train.py script to train a model with a focus on making a model fair with respect to equal opportunity difference. Iterate over different models, feature selection techniques, or fairness-oriented preprocessing steps to improve the equal opportunity difference with respect to sex. Do not inspect any CSV files directly. Use execute script action to verify if the goal is achieved.",
         "benchmark_folder_name": "germancredit-eod-sex"
     },
+    "german_eod_target10-sex": {
+       "research_problem": "Review the data_description.txt file to gain an understanding of the data and its features. Make a note of key points and your progress in the research logs to maintain traceability. Next, modify the existing train.py script to train a model that aims to improve  equal opportunity difference with respect to sex by 10% in german data. Explore and experiment with different models, feature selection strategies, or fairness-aware preprocessing techniques to achieve at least a 10% improvement in  equal opportunity difference. After making your modifications, use execute script action to verify if the goal is achieved. Do not inspect any CSV files directly.",
+       "benchmark_folder_name": "germancredit-eod-sex"
+    },
     "german_eod_balance-sex": {
         "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. Then, update the provided train.py script to train a best performing model for the german credit data. Your goal is to Iterate over different models and maximize predictive performance. Use execute script action to verify if the goal is achieved. Do not inspect any CSV files directly.",
         "benchmark_folder_name": "germancredit-eod-sex"
@@ -175,6 +183,10 @@
     "creditdefault_di_best-gender": {
         "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. Then, update the provided train.py script to train a model with a focus on making a model fair with respect to disparate impact. Iterate over different models, feature selection techniques, or fairness-oriented preprocessing steps to improve the disparate impact with respect to gender. Do not inspect any CSV files directly. Use execute script action to verify if the goal is achieved.",
         "benchmark_folder_name": "creditdefault-di-gender"
+    },
+    "creditdefault_di_target10-gender": {
+       "research_problem": "Review the data_description.txt file to gain an understanding of the data and its features. Make a note of key points and your progress in the research logs to maintain traceability. Next, modify the existing train.py script to train a model that aims to improve disparate impact with respect to gender by 10% in credit default data. Explore and experiment with different models, feature selection strategies, or fairness-aware preprocessing techniques to achieve at least a 10% improvement in disparate impact. After making your modifications, use execute script action to verify if the goal is achieved. Do not inspect any CSV files directly.",
+       "benchmark_folder_name": "creditdefault-di-gender"
     },
     "creditdefault_di_balance-gender": {
         "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. Then, update the provided train.py script to train a best performing model for the credit default data. Your goal is to Iterate over different models and maximize predictive performance. Use execute script action to verify if the goal is achieved. Do not inspect any CSV files directly.",
@@ -200,6 +212,10 @@
         "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. Then, update the provided train.py script to train a model with a focus on making a model fair with respect to disparate impact. Iterate over different models, feature selection techniques, or fairness-oriented preprocessing steps to improve the disparate impact with respect to race. Do not inspect any CSV files directly. Use execute script action to verify if the goal is achieved.",
         "benchmark_folder_name": "randoadult-di-race"
     },
+    "randoadult_di_target10-race": {
+       "research_problem": "Review the data_description.txt file to gain an understanding of the data and its features. Make a note of key points and your progress in the research logs to maintain traceability. Next, modify the existing train.py script to train a model that aims to improve disparate impact with respect to race by 10% in randomly over sampled adult data. Explore and experiment with different models, feature selection strategies, or fairness-aware preprocessing techniques to achieve at least a 10% improvement in disparate impact. After making your modifications, use execute script action to verify if the goal is achieved. Do not inspect any CSV files directly.",
+       "benchmark_folder_name": "randoadult-di-race"
+    },
     "randoadult_di_balance-race": {
         "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. Then, update the provided train.py script to train a best performing model for the randomly over sampled adult data. Your goal is to Iterate over different models and maximize predictive performance. Use execute script action to verify if the goal is achieved. Do not inspect any CSV files directly.",
         "benchmark_folder_name": "randoadult-di-race"
@@ -217,6 +233,10 @@
         "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. Then, update the provided train.py script to train a model with a focus on making a model fair with respect to disparate impact. Iterate over different models, feature selection techniques, or fairness-oriented preprocessing steps to improve the disparate impact with respect to sex. Do not inspect any CSV files directly. Use execute script action to verify if the goal is achieved.",
         "benchmark_folder_name": "randoadult-di-sex"
     },
+    "randosdult_di_target10-sex": {
+       "research_problem": "Review the data_description.txt file to gain an understanding of the data and its features. Make a note of key points and your progress in the research logs to maintain traceability. Next, modify the existing train.py script to train a model that aims to improve disparate impact with respect to sex by 10% in randomly over sampled adult data. Explore and experiment with different models, feature selection strategies, or fairness-aware preprocessing techniques to achieve at least a 10% improvement in disparate impact. After making your modifications, use execute script action to verify if the goal is achieved. Do not inspect any CSV files directly.",
+       "benchmark_folder_name": "randoadult-di-sex"
+    },
     "randoadult_di_balance-sex": {
         "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. Then, update the provided train.py script to train a best performing model for the randomly over sampled adult data. Your goal is to Iterate over different models and maximize predictive performance. Use execute script action to verify if the goal is achieved. Do not inspect any CSV files directly.",
         "benchmark_folder_name": "randoadult-di-sex"
@@ -233,6 +253,10 @@
         "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. Then, update the provided train.py script to train a model with a focus on making a model fair with respect to disparate impact. Iterate over different models, feature selection techniques, or fairness-oriented preprocessing steps to improve the disparate impact with respect to race. Do not inspect any CSV files directly. Use execute script action to verify if the goal is achieved.",
         "benchmark_folder_name": "sampadult-di-race"
     },
+    "sampadult_di_target10-race": {
+       "research_problem": "Review the data_description.txt file to gain an understanding of the data and its features. Make a note of key points and your progress in the research logs to maintain traceability. Next, modify the existing train.py script to train a model that aims to improve disparate impact with respect to race by 10% in synthetic adult data. Explore and experiment with different models, feature selection strategies, or fairness-aware preprocessing techniques to achieve at least a 10% improvement in disparate impact. After making your modifications, use execute script action to verify if the goal is achieved. Do not inspect any CSV files directly.",
+       "benchmark_folder_name": "sampadult-di-race"
+    },
     "sampadult_di_balance-race": {
         "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. Then, update the provided train.py script to train a best performing model for the synthetic adult data. Your goal is to Iterate over different models and maximize predictive performance. Use execute script action to verify if the goal is achieved. Do not inspect any CSV files directly.",
         "benchmark_folder_name": "sampadult-di-race"
@@ -240,6 +264,10 @@
     "sampadult_di_best-sex": {
         "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. Then, update the provided train.py script to train a model with a focus on making a model fair with respect to disparate impact. Iterate over different models, feature selection techniques, or fairness-oriented preprocessing steps to improve the disparate impact with respect to sex. Do not inspect any CSV files directly. Use execute script action to verify if the goal is achieved.",
         "benchmark_folder_name": "sampadult-di-sex"
+    },
+    "sampadult_di_target10-sex": {
+       "research_problem": "Review the data_description.txt file to gain an understanding of the data and its features. Make a note of key points and your progress in the research logs to maintain traceability. Next, modify the existing train.py script to train a model that aims to improve disparate impact with respect to sex by 10% in synthetic adult data. Explore and experiment with different models, feature selection strategies, or fairness-aware preprocessing techniques to achieve at least a 10% improvement in disparate impact. After making your modifications, use execute script action to verify if the goal is achieved. Do not inspect any CSV files directly.",
+       "benchmark_folder_name": "sampadult-di-sex"
     },
     "sampadult_di_balance-sex": {
         "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. Then, update the provided train.py script to train a best performing model for the synthetic adult data. Your goal is to Iterate over different models and maximize predictive performance. Use execute script action to verify if the goal is achieved. Do not inspect any CSV files directly.",
