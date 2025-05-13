@@ -14,7 +14,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline, BitsAndB
 
 enc = tiktoken.get_encoding("cl100k_base")
 
-# torch.cuda.empty_cache()
+torch.cuda.empty_cache()
 
 # AS: Setup llama
 loaded_hf_models = {}
@@ -119,9 +119,17 @@ def complete_text_qwen(prompt, stop_sequences=[], model="qwen", max_tokens_to_sa
         loaded_qwen_models["qwen"] = (qwen_model, tokenizer)
         print(f"Loaded {model} successfuly using device:{qwen_model.device}")
 
-        
+    message=[
+        {"role": "user", "content": prompt}
+    ]
+    text=tokenizer.apply_chat_template(
+        message,
+        tokenize=False,
+        add_generation_prompt=True
+    )
     encoded_input = tokenizer(
-        prompt, 
+        # prompt, 
+        [text],
         return_tensors="pt", 
         return_token_type_ids=False).to(f"cuda:{device}")
 
@@ -144,7 +152,7 @@ def complete_text_qwen(prompt, stop_sequences=[], model="qwen", max_tokens_to_sa
     )
     sequences = output.sequences
     sequences = [sequence[len(encoded_input.input_ids[0]) :] for sequence in sequences]
-    all_decoded_text = tokenizer.batch_decode(sequences)
+    all_decoded_text = tokenizer.batch_decode(sequences, skip_special_tokens=True)
     completion = all_decoded_text[0]
     if log_file is not None:
         log_to_file(log_file, prompt, completion, model, max_tokens_to_sample)
@@ -171,18 +179,27 @@ def complete_text_granite(prompt, stop_sequences=[], model="granite", max_tokens
     if model in loaded_granite_models:
         granite_model, tokenizer = loaded_granite_models[model]
     else:
-        model = "ibm-granite/granite-3.1-8b-instruct"
+        model = "ibm-granite/granite-34b-code-instruct-8k"
         quant_config = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_quant_type="nf4", bnb_4bit_compute_dtype=torch.float16)
         tokenizer = AutoTokenizer.from_pretrained(model)
-        granite_model = AutoModelForCausalLM.from_pretrained(model, quantization_config = quant_config, device_map="auto",torch_dtype=torch.float16)
+        granite_model = AutoModelForCausalLM.from_pretrained(model, quantization_config = quant_config, device_map=f"cuda:{device}",torch_dtype=torch.float16)
+        granite_model.eval()
         loaded_granite_models["granite"] = (granite_model, tokenizer)
         print(f"Loaded {model} successfuly using device:{granite_model.device}")
 
-        
+    chat = [
+        {"role": "user", "content": prompt},
+    ]
+    chat = tokenizer.apply_chat_template(chat, tokenize=False, add_generation_prompt=True)
+
     encoded_input = tokenizer(
-        prompt, 
-        return_tensors="pt", 
-        return_token_type_ids=False).to("cuda")
+        chat, 
+        return_tensors="pt").to(f"cuda:{device}")
+    
+    """
+    # transfer tokenized inputs to the device
+    for i in encoded_input:
+        encoded_input[i] = encoded_input[i].to(f"cuda:{device}")"""
 
     stop_sequence_ids = tokenizer(stop_sequences, return_token_type_ids=False, add_special_tokens=False)
     stopping_criteria = StoppingCriteriaList()
@@ -203,7 +220,7 @@ def complete_text_granite(prompt, stop_sequences=[], model="granite", max_tokens
     )
     sequences = output.sequences
     sequences = [sequence[len(encoded_input.input_ids[0]) :] for sequence in sequences]
-    all_decoded_text = tokenizer.batch_decode(sequences)
+    all_decoded_text = tokenizer.batch_decode(sequences, skip_special_tokens=True)
     completion = all_decoded_text[0]
     if log_file is not None:
         log_to_file(log_file, prompt, completion, model, max_tokens_to_sample)
