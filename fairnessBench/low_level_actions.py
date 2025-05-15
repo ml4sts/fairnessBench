@@ -68,6 +68,21 @@ def check_file_read_only(arg_names, **kwargs):
     return inner
 
 
+def check_file_env_read_only(arg_names, **kwargs):
+    """ This decorator checks if the file is only for reading locally, not by the agent. """
+    
+    def inner(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            new_kwargs = normalize_args_kwargs(func, *args, **kwargs)
+            for arg_name in arg_names:
+                if new_kwargs[arg_name] in new_kwargs["kwargs"]["env_read_only_files"]:
+                    raise EnvException(f"cannot write file {new_kwargs[arg_name]} because it is a dataset file.")
+            return func(*args, **kwargs)
+        return wrapper
+    return inner
+
+
 def check_file_in_work_dir(arg_names, **kwargs):
     """ This decorator checks if the file is in the work directory. """
     def inner(func):
@@ -98,6 +113,7 @@ def list_files( dir_path, work_dir = ".", **kwargs):
 
 
 @check_file_in_work_dir(["file_name"])
+@check_file_env_read_only(["file_name"])
 @record_low_level_step
 def read_file(file_name, work_dir = '.', **kwargs):
     try:
