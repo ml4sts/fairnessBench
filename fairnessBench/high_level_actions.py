@@ -4,7 +4,7 @@ import os
 import datetime
 import shutil
 import difflib
-from .low_level_actions import read_file, write_file, append_file
+from .low_level_actions import read_file, write_file, append_file, check_file_env_read_only
 from .schema import ActionInfo, EnvException
 from .LLM import complete_text_fast, complete_text
 
@@ -24,7 +24,7 @@ def reflection( things_to_reflect_on, work_dir = ".", research_problem = "", **k
     reflection = complete_text_fast(prompt, log_file=kwargs["log_file"])
     return f"Reflection: {reflection}\n"
 
-
+@check_file_env_read_only(["file_name"])
 def understand_file( file_name, things_to_look_for, work_dir = ".", **kwargs):
 
     lines = read_file(file_name, work_dir = work_dir, **kwargs).split("\n")
@@ -165,10 +165,11 @@ def edit_script_lines( script_name, start_line_number, end_line_number,edit_inst
         # print("\n\nAS: Modified train.py\n\n")
     except:
         TODO
-
-
     return f"The edited file is saved to {save_name}. Here is the diff, please check if the edit is correct and desirable:\n\n" + diff
 
+
+
+@check_file_env_read_only(["script_name"])
 def inspect_script_lines( script_name, start_line_number, end_line_number, work_dir = ".", **kwargs):
     try:
         start_line_number = int(start_line_number)

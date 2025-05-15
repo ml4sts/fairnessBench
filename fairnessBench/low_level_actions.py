@@ -77,7 +77,7 @@ def check_file_env_read_only(arg_names, **kwargs):
             new_kwargs = normalize_args_kwargs(func, *args, **kwargs)
             for arg_name in arg_names:
                 if new_kwargs[arg_name] in new_kwargs["kwargs"]["env_read_only_files"]:
-                    raise EnvException(f"cannot write file {new_kwargs[arg_name]} because it is a read-only file.")
+                    raise EnvException(f"cannot write file {new_kwargs[arg_name]} because it is a dataset file.")
             return func(*args, **kwargs)
         return wrapper
     return inner

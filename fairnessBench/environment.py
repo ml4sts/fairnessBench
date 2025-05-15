@@ -24,7 +24,8 @@ from dacite import from_dict
 from .low_level_actions import LOW_LEVEL_ACTIONS
 from .high_level_actions import HIGH_LEVEL_ACTIONS
 from .schema import Step, Trace, EnvException, TooLongPromptError, LLMError, EnhancedJSONEncoder 
-from .LLM import complete_text_fast as complete_text_claude # AS: They hard code claude but I have to use llama...
+from .LLM import complete_text_fast as complete_text_claude # AS: They hard code claude but I want to use the arg
+# from .LLM import complete_text_claude
 from .prepare_task import prepare_task, get_task_info
 
 class TimeoutException(Exception): pass
@@ -87,7 +88,7 @@ class Environment:
             "work_dir": self.work_dir,
             "args": args,
             "read_only_files": self.read_only_files,
-            "env_read_only_files":self.env_read_only_files
+            "env_read_only_files":self.env_read_only_files,
             "research_problem": self.research_problem,
         }
         self._trace = self._initialize_trace()
@@ -115,7 +116,7 @@ class Environment:
     def read_only_files(self):
         return self._read_only_files
     @property
-    def read_only_files(self):
+    def env_read_only_files(self):
         return self._env_read_only_files
 
     @property
@@ -197,7 +198,8 @@ class Environment:
                 # filter out the files that are read only
                 filenames = [os.path.join(relpath, filename) for filename in files]
                 for llm_ignore in llm_ignore_files:
-                    llm_ignore_filenames = [n for n in filenames if fnmatch.fnmatch(n, llm_ignore)]
+                    # llm_ignore_filenames = [n for n in filenames if fnmatch.fnmatch(n, llm_ignore)]
+                    llm_ignore_filenames = [n for n in filenames if n in llm_ignore]
                     self.env_read_only_files.extend(llm_ignore_filenames)
 
 
@@ -338,6 +340,7 @@ class Environment:
 
             if isinstance(action_input, dict):
                 try:
+                    # AS: This is where we call the action from either action files and get the return value into observation
                     observation = self.action_infos[action_name].function(**action_input, log_file=log_file, trace=trace, **self.static_kwargs_for_tools)
                 except TooLongPromptError:
                     observation="EnvError: too long input for the tool"
