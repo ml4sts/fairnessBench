@@ -1,2 +1,4 @@
-train_*.csv
-test_*.csv
+train_X.csv
+train_y.csv
+test_X.csv
+test_y.csv
