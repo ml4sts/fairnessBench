@@ -12,11 +12,13 @@ from importlib import util
 import argparse
 import importlib 
 import matplotlib.pyplot as plt
+import glob
 
-# from .LLM import complete_text_gpt4, complete_text_claude
-# from .environment import get_task_info
+#from .LLM import complete_text
+#from .environment import get_task_info
 from .prepare_task import get_task_info
 from .llm_eval import llm_eval
+from .llm_eval_log import llm_eval_log
 from flake8.main import application
 app = application.Application()
 
@@ -58,7 +60,43 @@ def long_prompt_error(path):
     main_log = path.replace("trace.json", "../agent_log/main_log")
     return "EnvError: too long input for the tool" in open(main_log, "r").read()
 
-
+def get_latest_agent_history_step(subdir):
+    # find all agent step files in the directory
+    agent_steps = glob.glob(os.path.join(subdir.rsplit('/',1)[0], "agent_log/agent_*_*.json"))
+    
+    if not agent_steps:
+        return None  
+    
+    # sort files by their step numbers
+    def extract_step_numbers(file_path):
+        base_name = os.path.basename(file_path)
+        # extract agent_number and step_number from file name like agent_0_0.json
+        parts = base_name.replace('.json', '').split('_')
+        if len(parts) >= 3:
+            try:
+                agent_num = int(parts[1])
+                step_num = int(parts[2])
+                return (agent_num, step_num)
+            except ValueError:
+                return (-1, -1)
+        return (-1, -1)
+    
+    # getting the file with the highest agent and step numbers
+    latest_agent_step = max(agent_steps, key=extract_step_numbers)
+    #return latest_agent_step
+    # loading the JSON content from the file
+    # Now open that file and extract history_steps
+    try:
+        with open(latest_agent_step, 'r') as f:
+            agent_data = json.load(f)
+        stepwise_thinking = []
+        for step in agent_data['history_steps']:
+            # print(step)
+            stepwise_thinking.append(step['action']['Thought'])
+        thinking = '\n'.join(stepwise_thinking)
+        return thinking
+    except:
+        return None
 # AS: TODO: check if calling this function multiple times with different scripts affects the app or is initialize enough
 def get_flake8(train_script):
     app.initialize([train_script])
@@ -81,12 +119,13 @@ class EvaluationResult:
     summary: str
     rubric_questions: Dict[str, str]
     score: List[float]
-    llm_score: List[List[str]]
+    llm_score: List[List[dict]]
     flake8_score: List[str]
     score_steps: List[float]
     submitted_final_answer: bool
     final_score: float
-    final_llm_score: List[str]
+    final_llm_score: List[dict]
+    final_log_score: List[dict]
     final_flake8_score: str
     total_time: float
     error: str
@@ -112,6 +151,7 @@ def run_eval(log_folder, benchmark_folder_name, eval_model = "qwen", eval_interm
                     score_steps=[],
                     final_score = -1,
                     final_llm_score=[],
+                    final_log_score=[],
                     final_flake8_score = "",
                     submitted_final_answer = False,
                     total_time = 0,
@@ -150,46 +190,23 @@ def run_eval(log_folder, benchmark_folder_name, eval_model = "qwen", eval_interm
                 if eval_intermediate:
                     for step in subsampled_list:
                         eval_step_score = 0
+                        folder_path = os.path.join(subdir, f'traces/step_{step}_files')
+                        train_script = os.path.join(folder_path, "train.py")
                         try:
-                            folder_path = os.path.join(subdir, f'traces/step_{step}_files')
                             if os.path.exists(folder_path):
                                 print(folder_path)
-                                # module = importlib.import_module(f'fairnessBench.benchmarks.{benchmark_folder_name}.scripts.eval')
                                 eval_step_score = module.get_score(folder_path)
                                 result.score.append(eval_step_score)
-                                # AS: Attempting to get llm_eval here
-                                try:
-                                    train_script = os.path.join(folder_path, "train.py")
-                                    llm_score = llm_eval(train_script, eval_model)
-                                    result.llm_score.append(llm_score)
-                                    flake8_score = get_flake8(train_script)
-                                    result.flake8_score.append(flake8_score)
-                                except Exception as e:
-                                    print(e)
-                                    pass
-                                    
                         except Exception as e:
                             print(e)
                             result.score.append(eval_step_score)
-                    # Add the ids of the steps that were evaluated to the JSON file
-                    result.score_steps = list(subsampled_list)
-                
-                # Evaluate the final step
-                folder_path = os.path.join(subdir, 'traces/step_final_files')
-                try:
-                    if os.path.exists(folder_path):
-                        # module = importlib.import_module(f'fairnessBench.benchmarks.{benchmark_folder_name}.scripts.eval')
-                        eval_final_score = module.get_score(folder_path)
-                        result.score.append(eval_final_score)
-                        result.final_score = eval_final_score
                         # AS: Attempting to get llm_eval here
-                        train_script = os.path.join(folder_path, "train.py")
                         try:
                             llm_score = llm_eval(train_script, eval_model)
                             result.final_llm_score = llm_score
                         except Exception as e:
                             print("\nllm_eval didn't work\n")
-                            # print(e)
+                            print(e)
                             pass
                         # AS: Attempting to get Flake8 score here
                         try:
@@ -198,12 +215,66 @@ def run_eval(log_folder, benchmark_folder_name, eval_model = "qwen", eval_interm
                             print(flake8_score)
                         except Exception as e:
                             print("\nFlake8_eval didn't work\n")
-                            # print(e)
+                            print(e)
                             pass
+                                
+                                    
+                    # Add the ids of the steps that were evaluated to the JSON file
+                    result.score_steps = list(subsampled_list)
+                
+                # Evaluate the final step
+                folder_path = os.path.join(subdir, 'traces/step_final_files')
+                train_script = os.path.join(folder_path, "train.py")
+                if os.path.exists(folder_path):
+                    try:
+                        eval_final_score = module.get_score(folder_path)
+                        result.score.append(eval_final_score)
+                        result.final_score = eval_final_score
                         print(eval_final_score)
+                    except Exception as e:
+                        print(e)
+                        pass
+                # AS: Attempting to get llm_eval here
+                try:
+                        llm_score = llm_eval(train_script, eval_model)
+                        result.final_llm_score = llm_score
                 except Exception as e:
+                        print("\nllm_eval didn't work\n")
+                        print(e)
+                        pass
+                # AS: Attempting to get Flake8 score here
+                try:
+                    flake8_score = get_flake8(train_script)
+                    result.final_flake8_score = flake8_score
+                    print(flake8_score)
+                except Exception as e:
+                    print("\nFlake8_eval didn't work\n")
                     print(e)
                     pass
+                # Attempting to get llm_eval_logs.
+                log_file=os.path.join(subdir.rsplit('/',1)[0], "agent_log/main_log")
+                try:
+                    # use path to get the latest history step
+                    history_step = get_latest_agent_history_step(subdir)
+                    # use the latest step in the eval
+                    if history_step:
+                        # create a temporary file with the history_step content
+                        #history_text = "\n\n".join(history_step)
+                        temp_txt_path = os.path.join(subdir.rsplit('/',1)[0], "agent_log/temp_history_step.txt")
+                        with open(temp_txt_path, 'w') as f:
+                            lines = [line.strip() for line in history_step.splitlines() ]
+                            f.write('\n'.join(lines))
+                        print(f"Using history_steps from {temp_txt_path} for evaluation")
+                        log_score = llm_eval_log(temp_txt_path, eval_model)
+                    else:
+                        # if there's no agent step which i doubt fallback to the main_log(will be tooo long and make model fail. lol)
+                        print("No history step files found.")
+                        log_score = llm_eval_log(log_file, eval_model)
+                    result.final_log_score = log_score
+                except Exception as e:
+                    print("\nllm_eval_log didn't work\n")
+                    print(e)
+                    pass                    
                 
                 # If environment error occurred we log it in the result JSON
                 if os.path.exists(os.path.join(subdir, "error.txt")):

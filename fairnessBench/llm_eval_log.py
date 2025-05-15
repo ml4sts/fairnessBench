@@ -5,7 +5,7 @@ import json
 # Read code from file
 # -------------------
 
-def read_code(file_path: str) -> str:
+def read_file(file_path: str) -> str:
     with open(file_path, 'r') as file:
         return file.read()
 
@@ -20,11 +20,13 @@ def read_prompts(file_path: str):
             prompts = [prompt.strip() for prompt in file.read().split('---')]  # Split by the delimiter (---)
         return prompts 
 
-def llm_evaluation_by_section(code: str, system_prompt: str, rubric: str, eval_model: str) -> dict:
+def llm_evaluation_by_section(log: str, system_prompt: str, rubric: str, eval_model: str) -> dict:
     """
     Evaluate code by sending one rubric section at a time to the LLM and collecting both scores and justifications.
     """
     rubric_sections = [
+        "Model Overview",
+        "Stakeholder Identification and Fairness Definition",
         "Data Collection and Processing",
         "Bias Detection and Mitigation",
         "Fairness Metric Selection",
@@ -45,10 +47,8 @@ def llm_evaluation_by_section(code: str, system_prompt: str, rubric: str, eval_m
 RUBRIC:
 {rubric}
 
-USER CODE:
-```python
-{code}
-```
+USER LOG:
+{log}
 
 Respond ONLY with:
 {{
@@ -59,8 +59,7 @@ Respond ONLY with:
 }}
 """
         )
-        
-        response_text = complete_text(prompt, "test.txt", eval_model)
+        response_text = complete_text(prompt, "test1.txt", eval_model)
         try:
             # Extract JSON from response
             start_idx = response_text.find('{')
@@ -125,6 +124,8 @@ def compute_llm_score(raw_scores: dict) -> dict:
         }
     """
     weights = {
+        "Model Overview" : 0.10,
+        "Stakeholder Identification and Fairness Definition":0.15,
         "Data Collection and Processing": 0.30,
         "Bias Detection and Mitigation": 0.15,
         "Fairness Metric Selection": 0.10,
@@ -149,20 +150,20 @@ def compute_llm_score(raw_scores: dict) -> dict:
         'total_llm_score': total_percentage
     }
 
-def llm_eval(file_path="/work/pi_brownsarahm_uri_edu/Ritta_uri/fairnessBench/train.py", eval_model="granite"):
+def llm_eval_log(file_path="/work/pi_brownsarahm_uri_edu/Ritta_uri/fairnessBench/fairnessBench/main_log", eval_model="granite"):
     # Read the code from the file
-    code = read_code(file_path)
+    log = read_file(file_path)
 
     # Read the prompts from a file (for evaluation)
-    system_prompt_path = '/work/pi_brownsarahm_uri_edu/Ritta_uri/fairnessBench/system_prompt.txt'
-    rubric_path = '/work/pi_brownsarahm_uri_edu/Ritta_uri/fairnessBench/rubric.txt'
+    system_prompt_path = '/work/pi_brownsarahm_uri_edu/Ritta_uri/fairnessBench/fairnessBench/system_prompt_log.txt'
+    rubric_path = '/work/pi_brownsarahm_uri_edu/Ritta_uri/fairnessBench/log_rubric.txt'
     
     # Read the system_prompts and rubric
     system_prompt = read_prompts(system_prompt_path)[0]  # Assuming the first prompt is what i want
     rubric = read_prompts(rubric_path)[0]  # Assuming the first rubric is what i want
 
     # Get raw scores and justifications from LLM, section by section
-    evaluation_results = llm_evaluation_by_section(code, system_prompt, rubric, eval_model)
+    evaluation_results = llm_evaluation_by_section(log, system_prompt, rubric, eval_model)
     raw_scores = evaluation_results["scores"]
     justifications = evaluation_results["justifications"]
     # Compute weighted scores
