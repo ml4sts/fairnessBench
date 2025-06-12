@@ -17,8 +17,8 @@ import glob
 #from .LLM import complete_text
 #from .environment import get_task_info
 from .prepare_task import get_task_info
-from .llm_eval import llm_eval
-from .llm_eval_log import llm_eval_log
+from .llm_eval import  repeat_llm_eval
+from .llm_eval_log import  repeat_llm_eval_log
 from flake8.main import application
 app = application.Application()
 
@@ -132,7 +132,7 @@ class EvaluationResult:
     extra: Dict[str, bool]
 
 
-def run_eval(log_folder, benchmark_folder_name, eval_model = "qwen", eval_intermediate=False):
+def run_eval(log_folder, benchmark_folder_name, eval_model = "granite", eval_intermediate=False):
     results = {}    
 
     # Log folder is the specific log folder for one model and one task
@@ -211,7 +211,7 @@ def run_eval(log_folder, benchmark_folder_name, eval_model = "qwen", eval_interm
                         # AS: Attempting to get Flake8 score here
                         try:
                             flake8_score = get_flake8(train_script)
-                            result.final_flake8_score = flake8_score
+                            result.flake8_score.append(flake8_score)
                             print(flake8_score)
                         except Exception as e:
                             print("\nFlake8_eval didn't work\n")
@@ -236,7 +236,7 @@ def run_eval(log_folder, benchmark_folder_name, eval_model = "qwen", eval_interm
                         pass
                 # AS: Attempting to get llm_eval here
                 try:
-                        llm_score = llm_eval(train_script, eval_model)
+                        llm_score = repeat_llm_eval(5, train_script, eval_model)
                         result.final_llm_score = llm_score
                 except Exception as e:
                         print("\nllm_eval didn't work\n")
@@ -265,11 +265,11 @@ def run_eval(log_folder, benchmark_folder_name, eval_model = "qwen", eval_interm
                             lines = [line.strip() for line in history_step.splitlines() ]
                             f.write('\n'.join(lines))
                         print(f"Using history_steps from {temp_txt_path} for evaluation")
-                        log_score = llm_eval_log(temp_txt_path, eval_model)
+                        log_score = repeat_llm_eval_log(5, temp_txt_path, eval_model)
                     else:
                         # if there's no agent step which i doubt fallback to the main_log(will be tooo long and make model fail. lol)
                         print("No history step files found.")
-                        log_score = llm_eval_log(log_file, eval_model)
+                        log_score = repeat_llm_eval_log(5, log_file, eval_model)
                     result.final_log_score = log_score
                 except Exception as e:
                     print("\nllm_eval_log didn't work\n")
@@ -304,7 +304,7 @@ if __name__ == "__main__":
     parser.add_argument("--log-folder", type=str, default="logs")
     parser.add_argument("--task", type=str, default="adult")
     parser.add_argument("--output-file", type=str, default="results.json")
-    parser.add_argument("--eval_model", type=str, default="qwen")
+    parser.add_argument("--eval_model", type=str, default="granite")
     parser.add_argument("--eval-intermediate", action="store_true")
     args = parser.parse_args()
     

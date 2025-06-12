@@ -175,7 +175,7 @@ except Exception as e:
     print(f"Failed to load local granite - Current device:{device}\nIssue: {e}")
 
 
-def complete_text_granite(prompt, stop_sequences=[], model="granite", max_tokens_to_sample = 2000, temperature=0.5, log_file=None, device=0, **kwargs):
+def complete_text_granite(prompt, stop_sequences=[], model="granite", max_tokens_to_sample = 8000, temperature=0.5, log_file=None, device=0, **kwargs):
     if model in loaded_granite_models:
         granite_model, tokenizer = loaded_granite_models[model]
     else:
@@ -225,7 +225,6 @@ def complete_text_granite(prompt, stop_sequences=[], model="granite", max_tokens
     if log_file is not None:
         log_to_file(log_file, prompt, completion, model, max_tokens_to_sample)
     return completion
-
 
 
 
