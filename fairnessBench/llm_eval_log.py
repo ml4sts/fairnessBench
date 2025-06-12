@@ -59,7 +59,7 @@ Respond ONLY with:
 }}
 """
         )
-        response_text = complete_text(prompt, "test1.txt", eval_model)
+        response_text = complete_text(prompt, "test3.txt", eval_model)
         try:
             # Extract JSON from response
             start_idx = response_text.find('{')
@@ -174,3 +174,14 @@ def llm_eval_log(file_path="/work/pi_brownsarahm_uri_edu/Ritta_uri/fairnessBench
         "justifications": justifications,
         **final_scores
     }
+
+def repeat_llm_eval_log(n=5, file_path="/work/pi_brownsarahm_uri_edu/Ritta_uri/fairnessBench/fairnessBench/main_log", eval_model="granite"):
+    """
+    Run `llm_eval` multiple times and return a list of results.
+    """
+    results = []
+    for i in range(n):
+        print(f"Running evaluation {i + 1}...")
+        result = llm_eval_log(file_path=file_path, eval_model=eval_model)
+        results.append(result)
+    return results
