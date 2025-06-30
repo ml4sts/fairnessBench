@@ -1,0 +1,38 @@
+{
+   "1. Data Collection and Processing": {
+     "4": "Implements appropriate resampling or augmentation strategies that fully corrects class imbalance in the scoped data.",
+     "3": "Applies resampling or augmentation to address the major imbalances, but some subgroups remain underrepresented.",
+     "2": "Identifies class imbalance but uses no or only simple mitigation techniques.",
+     "1": "No recognition or handling of dataset imbalance."
+   },
+
+   "2. Bias Detection and Mitigation": {
+     "4": "Comprehensive bias mitigation strategies (preprocessing, post‑processing, fair representation learning) implemented.",
+     "3": "Some bias mitigation strategies used with minor gaps.",
+     "2": "Only basic bias mitigation approaches used.",
+     "1": "No bias mitigation strategies used."
+   },
+
+   "3. Fairness Metric Selection": {
+     "4" : "Clear, context‑specific metrics chosen with transparent, actionable decisions.", 
+     "3" : "Good selection of metrics with reasonable transparency.",
+     "2" : "Metrics chosen without full alignment with context.",
+     "1" : "No clear fairness metrics or criteria selection."
+   },
+
+   "4. Model Selection and Training": {
+     "4" : "Both (a) Fairness mitigation techniques (e.g., bias correction, constraints, adversarial debiasing) built into model selection/training **and** (b) full transparency and explainability through interpretability tools or clear documentation of decision logic(eg. comments).",
+     "3" : "(a) Some mitigation techniques applied during training **and** (b) basic transparency (e.g., feature importance reports or high‑level model descriptions), but not both comprehensively.",
+     "2" : "(a) Mitigation techniques added late **or** (b) minimal transparency/explainability (e.g., no interpretability tools, only brief comments).",
+     "1" : "Neither fairness mitigation techniques during training nor any transparency/explainability measures implemented."
+   },
+
+   "5. Evaluation and Testing": {
+      "4" : "Both (a) comprehensive disaggregated evaluation across all relevant demographic groups and (b) scheduled, regular bias audits with documented follow‑up actions.",
+      "3" : "Either (a) solid disaggregated evaluation with minor group gaps or (b) periodic bias audits, but not both fully; documentation is mostly complete.",
+      "2" : "Only one activity performed in a limited way (e.g., disaggregated evaluation for a few groups or irregular bias audits); little or no documentation of findings.",
+      "1" : "Neither disaggregated evaluation nor bias auditing conducted."
+   }
+}
+
+
