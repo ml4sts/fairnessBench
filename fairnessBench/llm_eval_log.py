@@ -59,7 +59,7 @@ Respond ONLY with:
 }}
 """
         )
-        response_text = complete_text(prompt, "test3.txt", eval_model)
+        response_text = complete_text(prompt, None, eval_model)
         try:
             # Extract JSON from response
             start_idx = response_text.find('{')
@@ -155,8 +155,8 @@ def llm_eval_log(file_path="/work/pi_brownsarahm_uri_edu/Ritta_uri/fairnessBench
     log = read_file(file_path)
 
     # Read the prompts from a file (for evaluation)
-    system_prompt_path = '/work/pi_brownsarahm_uri_edu/Ritta_uri/fairnessBench/fairnessBench/system_prompt_log.txt'
-    rubric_path = '/work/pi_brownsarahm_uri_edu/Ritta_uri/fairnessBench/log_rubric.txt'
+    system_prompt_path = 'system_prompt_log.txt'
+    rubric_path = 'log_rubric.txt'
     
     # Read the system_prompts and rubric
     system_prompt = read_prompts(system_prompt_path)[0]  # Assuming the first prompt is what i want
