@@ -202,8 +202,8 @@ def run_eval(log_folder, benchmark_folder_name, eval_model = "granite", eval_int
                             result.score.append(eval_step_score)
                         # AS: Attempting to get llm_eval here
                         try:
-                            llm_score = llm_eval(train_script, eval_model)
-                            result.final_llm_score = llm_score
+                            llm_score = repeat_llm_eval(5, train_script, eval_model)
+                            result.llm_score.append(llm_score)
                         except Exception as e:
                             print("\nllm_eval didn't work\n")
                             print(e)

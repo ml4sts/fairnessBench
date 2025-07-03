@@ -34,7 +34,8 @@ def llm_evaluation_by_section(code: str, system_prompt: str, rubric_dict: dict, 
 {system_prompt}
 
 RUBRIC_SECTION:
-{section}: {rubric_text}
+{section}: 
+{rubric_text}
 
 USER CODE:
 ```python
@@ -51,7 +52,8 @@ Respond ONLY with:
 """
         )
         
-        response_text = complete_text(prompt, "test.txt", eval_model)
+
+        response_text = complete_text(prompt, None, eval_model)
         try:
             # Extract JSON from response
             start_idx = response_text.find('{')
@@ -145,8 +147,9 @@ def llm_eval(file_path="../train.py", eval_model="granite"):
     code = read_code(file_path)
 
     # Read the prompts from a file (for evaluation)
-    system_prompt_path = '../fairnessBench/system_prompt.txt'
-    rubric_path = '../fairnessBench/rubric.json'
+
+    system_prompt_path = 'system_prompt.txt'
+    rubric_path = 'rubric.json'
     
     # Read the system_prompts and rubric
     system_prompt = read_prompts(system_prompt_path)  
