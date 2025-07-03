@@ -5,9 +5,12 @@ prepared
 project_status.md
 clean.sh
 *api_key*
-*.json
+results/*.json
 .vscode/
 fairnessBench/eval/test/
+run_experiments_*.sh
+eval*.sh
+
 
 
 # Byte-compiled / optimized / DLL files

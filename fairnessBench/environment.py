@@ -140,6 +140,12 @@ class Environment:
         return self._start_time
     
     ############################## internal functions ########################################
+
+    def skip_duplicate_data_files(src,names):
+        data_ext = ['csv']
+        all_data = [n for n in names if n.split('.')[-1] in data_ext]
+        duplicate_data = [df for df in all_data if not 'submission' in df]
+        return duplicate_data
     
     def _setup_log_dir(self):
         # set up log dir
