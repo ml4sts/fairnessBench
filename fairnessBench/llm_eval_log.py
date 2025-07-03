@@ -11,41 +11,32 @@ def read_file(file_path: str) -> str:
 
 # Function to read the prompts from a file
 def read_prompts(file_path: str):
-        with open(file_path, 'r') as file:
-            # 1. Data representation
-            # 2. Data collection and preprocessing
-            # 3. Model training ( Transparency and explainability)
-            # 4. Evaluation and testing ( Disaggregated Evaluation)
-            # 5. Evaluation and testing ( Bias Auditing)
-            prompts = [prompt.strip() for prompt in file.read().split('---')]  # Split by the delimiter (---)
-        return prompts 
+        with open(file_path, 'r', encoding='utf-8') as file:
+            return file.read() 
 
-def llm_evaluation_by_section(log: str, system_prompt: str, rubric: str, eval_model: str) -> dict:
+# Function to read the rubrics from a file
+def read_rubric(file_path):
+    with open(file_path,'r', encoding='utf-8') as f:
+         rubric_dict = json.load(f)
+    return rubric_dict
+
+def llm_evaluation_by_section(log: str, system_prompt: str, rubric_dict: dict, eval_model: str) -> dict:
     """
     Evaluate code by sending one rubric section at a time to the LLM and collecting both scores and justifications.
     """
-    rubric_sections = [
-        "Model Overview",
-        "Stakeholder Identification and Fairness Definition",
-        "Data Collection and Processing",
-        "Bias Detection and Mitigation",
-        "Fairness Metric Selection",
-        "Model Selection and Training",
-        "Evaluation and Testing"
-    ]
     
     results = {
         "scores": {},
         "justifications": {}
     }
     
-    for section in rubric_sections:
+    for section , rubric_text in rubric_dict.items():
         prompt = (
             f"""SYSTEM:
 {system_prompt}
 
 RUBRIC:
-{rubric}
+{section}:{rubric_text}
 
 USER LOG:
 {log}
@@ -59,6 +50,7 @@ Respond ONLY with:
 }}
 """
         )
+
         response_text = complete_text(prompt, None, eval_model)
         try:
             # Extract JSON from response
@@ -124,13 +116,13 @@ def compute_llm_score(raw_scores: dict) -> dict:
         }
     """
     weights = {
-        "Model Overview" : 0.10,
-        "Stakeholder Identification and Fairness Definition":0.15,
-        "Data Collection and Processing": 0.30,
-        "Bias Detection and Mitigation": 0.15,
-        "Fairness Metric Selection": 0.10,
-        "Model Selection and Training": 0.10,
-        "Evaluation and Testing": 0.10
+        "1. Model Overview" : 0.10,
+        "2. Stakeholder Identification and Fairness Definition":0.15,
+        "3. Data Collection and Processing": 0.30,
+        "4. Bias Detection and Mitigation": 0.15,
+        "5. Fairness Metric Selection": 0.10,
+        "6. Model Selection and Training": 0.10,
+        "7. Evaluation and Testing": 0.10
     }
      # here i am collecting each criterion's weighted percentage in this dict.
     subtotals = {}
@@ -150,20 +142,21 @@ def compute_llm_score(raw_scores: dict) -> dict:
         'total_llm_score': total_percentage
     }
 
-def llm_eval_log(file_path="/work/pi_brownsarahm_uri_edu/Ritta_uri/fairnessBench/fairnessBench/main_log", eval_model="granite"):
+def llm_eval_log(file_path="main_log", eval_model="granite"):
     # Read the code from the file
     log = read_file(file_path)
 
     # Read the prompts from a file (for evaluation)
+
     system_prompt_path = 'system_prompt_log.txt'
-    rubric_path = 'log_rubric.txt'
+    rubric_path = 'log_rubric.json'
     
     # Read the system_prompts and rubric
-    system_prompt = read_prompts(system_prompt_path)[0]  # Assuming the first prompt is what i want
-    rubric = read_prompts(rubric_path)[0]  # Assuming the first rubric is what i want
+    system_prompt = read_prompts(system_prompt_path)  
+    rubric_dict = read_rubric(rubric_path) 
 
     # Get raw scores and justifications from LLM, section by section
-    evaluation_results = llm_evaluation_by_section(log, system_prompt, rubric, eval_model)
+    evaluation_results = llm_evaluation_by_section(log, system_prompt, rubric_dict, eval_model)
     raw_scores = evaluation_results["scores"]
     justifications = evaluation_results["justifications"]
     # Compute weighted scores
@@ -175,7 +168,7 @@ def llm_eval_log(file_path="/work/pi_brownsarahm_uri_edu/Ritta_uri/fairnessBench
         **final_scores
     }
 
-def repeat_llm_eval_log(n=5, file_path="/work/pi_brownsarahm_uri_edu/Ritta_uri/fairnessBench/fairnessBench/main_log", eval_model="granite"):
+def repeat_llm_eval_log(n=5, file_path="main_log", eval_model="granite"):
     """
     Run `llm_eval` multiple times and return a list of results.
     """
