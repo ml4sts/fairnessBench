@@ -2,24 +2,16 @@ from fairnessBench.LLM import complete_text
 import re
 import json
 
-# Read code from file
-# -------------------
-
 def read_code(file_path: str) -> str:
     with open(file_path, 'r') as file:
         return file.read()
 
-# Function to read the prompts from a file
+# Function to read the system prompts from a file
 def read_prompts(file_path: str):
         with open(file_path, 'r', encoding='utf-8') as file:
-            # 1. Data representation
-            # 2. Data collection and preprocessing
-            # 3. Model training ( Transparency and explainability)
-            # 4. Evaluation and testing ( Disaggregated Evaluation)
-            # 5. Evaluation and testing ( Bias Auditing)
-            prompts = [prompt.strip() for prompt in file.read().split('---')]  # Split by the delimiter (---)
-        return prompts 
-        
+            return file.read() 
+
+# Function to read the rubric files                    
 def read_rubric(file_path):
     with open(file_path,'r', encoding='utf-8') as f:
          rubric_dict = json.load(f)
@@ -59,7 +51,7 @@ Respond ONLY with:
 """
         )
         
-        response_text = complete_text(prompt, "test2.txt", eval_model)
+        response_text = complete_text(prompt, "test.txt", eval_model)
         try:
             # Extract JSON from response
             start_idx = response_text.find('{')
@@ -148,17 +140,17 @@ def compute_llm_score(raw_scores: dict) -> dict:
         'total_llm_score': total_percentage
     }
 
-def llm_eval(file_path="/work/pi_brownsarahm_uri_edu/Ritta_uri/fairnessBench/train.py", eval_model="granite"):
+def llm_eval(file_path="../train.py", eval_model="granite"):
     # Read the code from the file
     code = read_code(file_path)
 
     # Read the prompts from a file (for evaluation)
-    system_prompt_path = '/work/pi_brownsarahm_uri_edu/Ritta_uri/fairnessBench/system_prompt.txt'
-    rubric_path = '/work/pi_brownsarahm_uri_edu/Ritta_uri/fairnessBench/rubric.json'
+    system_prompt_path = '../fairnessBench/system_prompt.txt'
+    rubric_path = '../fairnessBench/rubric.json'
     
     # Read the system_prompts and rubric
-    system_prompt = read_prompts(system_prompt_path)  # Assuming the first prompt is what i want
-    rubric_dict = read_rubric(rubric_path)  # Assuming the first rubric is what i want
+    system_prompt = read_prompts(system_prompt_path)  
+    rubric_dict = read_rubric(rubric_path) 
 
     # Get raw scores and justifications from LLM, section by section
     evaluation_results = llm_evaluation_by_section(code, system_prompt, rubric_dict, eval_model)
@@ -173,7 +165,7 @@ def llm_eval(file_path="/work/pi_brownsarahm_uri_edu/Ritta_uri/fairnessBench/tra
         **final_scores
     }
 
-def repeat_llm_eval(n=5, file_path="/work/pi_brownsarahm_uri_edu/Ritta_uri/fairnessBench/train.py", eval_model="granite"):
+def repeat_llm_eval(n=5, file_path="../train.py", eval_model="granite"):
     """
     Run `llm_eval` multiple times and return a list of results.
     """
