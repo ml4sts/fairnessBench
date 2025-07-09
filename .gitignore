@@ -8,8 +8,11 @@ clean.sh
 results/*.json
 .vscode/
 fairnessBench/eval/test/
+Run_scripts/*
 run_experiments_*.sh
+test*.txt
 eval*.sh
+
 
 
 
