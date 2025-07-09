@@ -8,9 +8,9 @@ import glob
 import copy
 from argparse import Namespace
 import anthropic
-import MLAgentBench.high_level_actions as high_level_actions
-from MLAgentBench.schema import Action, EnhancedJSONEncoder
-from MLAgentBench.LLM import complete_text
+import fairnessBench.high_level_actions as high_level_actions
+from fairnessBench.schema import Action, EnhancedJSONEncoder
+from fairnessBench.LLM import complete_text
 
 initial_prompt = """You are a helpful research assistant. You have access to the following tools:
 {tools_prompt}

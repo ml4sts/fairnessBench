@@ -2,6 +2,10 @@
 This file is the entry point for fairnessBench.
 """
 
+### AS ###
+# Stop 4: 
+
+# Setting up classes and defining functions. Are these scripts also creating objects?
 import argparse
 import sys
 from fairnessBench import LLM
@@ -9,31 +13,33 @@ from fairnessBench.environment import Environment
 from fairnessBench.agents.agent import Agent, SimpleActionAgent, ReasoningActionAgent
 from fairnessBench.agents.agent_research import ResearchAgent
 from fairnessBench.agents.agent_langchain  import LangChainAgent
-try:
-    from fairnessBench.agents.agent_autogpt  import AutoGPTAgent
-except:
-    print("Failed to import AutoGPTAgent; Make sure you have installed the autogpt dependencies if you want to use it.")
+# try:
+#     from fairnessBench.agents.agent_autogpt  import AutoGPTAgent
+# except:
+#     print("Failed to import AutoGPTAgent; Make sure you have installed the autogpt dependencies if you want to use it.")
 
 
 def run(agent_cls, args):
     # AS: Create an Environment object using args
-    with Environment(args) as env:
-
+    with Environment(args) as env: # AS: Create Environment object using arguments 
+        # AS: All these get printed just fine
         print("=====================================")
         research_problem, benchmark_folder_name = env.get_task_description()
         print("Benchmark folder name: ", benchmark_folder_name)
         print("Research problem: ", research_problem)
         print("Lower level actions enabled: ", [action.name for action in env.low_level_actions])
         print("High level actions enabled: ", [action.name for action in env.high_level_actions])
-        print("Read only files: ", env.read_only_files, file=sys.stderr)
+        print("Read only files: ", env.read_only_files, file=sys.stderr) 
+        print("Env read only files: ", env.env_read_only_files, file=sys.stderr) 
         print("=====================================")  
 
-        agent = agent_cls(args, env)
-        final_message = agent.run(env)
+        # AS: Create agent object from whichever agent was requested in agrs 
+        agent = agent_cls(args, env) # AS: (example: --agent-type = researchAgent -> agent_cls() is constructor for ResearchAgent class)
+        final_message = agent.run(env) # AS: This run function generates all the outputted logs related to the steps the agent is taking and agent responses
         print("=====================================")
-        print("Final message: ", final_message)
+        print("Final message: ", final_message) # AS: final message?
 
-    env.save("final")
+    env.save("final") # AS: ???
 
 
 
@@ -52,9 +58,12 @@ if __name__ == "__main__":
 
     # general agent configs
     parser.add_argument("--agent-type", type=str, default="ResearchAgent", help="agent type")
-    parser.add_argument("--llm-name", type=str, default="claude-v1", help="llm name")
+    # parser.add_argument("--llm-name", type=str, default="claude-v1", help="llm name")
+    parser.add_argument("--llm-name", type=str, default="llama", help="llm name") # AS
     parser.add_argument("--fast-llm-name", type=str, default="claude-v1", help="llm name")
+    # parser.add_argument("--fast-llm-name", type=str, default="llama", help="llm name") # AS
     parser.add_argument("--edit-script-llm-name", type=str, default="claude-v1", help="llm name")
+    # parser.add_argument("--edit-script-llm-name", type=str, default="llama", help="llm name") # AS
     parser.add_argument("--edit-script-llm-max-tokens", type=int, default=4000, help="llm max tokens")
     parser.add_argument("--agent-max-steps", type=int, default=50, help="max iterations for agent")
 
@@ -73,11 +82,11 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     print(args, file=sys.stderr)
-    # if not args.retrieval or args.agent_type != "ResearchAgent":
-    #     # should not use these actions when there is no retrieval
-    #     args.actions_remove_from_prompt.extend(["Retrieval from Research Log", "Append Summary to Research Log", "Reflection"])
-    # # AS: This line is useless??
-    # LLM.FAST_MODEL = args.fast_llm_name
+    if not args.retrieval or args.agent_type != "ResearchAgent":
+        # should not use these actions when there is no retrieval
+        args.actions_remove_from_prompt.extend(["Retrieval from Research Log", "Append Summary to Research Log", "Reflection"])
+    # # AS: This line is useless?? Not it isn't. It's assigning the fast model passed in args to the one in LLM
+    LLM.FAST_MODEL = args.fast_llm_name
     # # AS: getattr has something to do with applying or creating a function (check python conversation)
-    # run(getattr(sys.modules[__name__], args.agent_type), args)
+    run(getattr(sys.modules[__name__], args.agent_type), args)
     
