@@ -198,15 +198,15 @@ def run_eval(log_folder, benchmark_folder_name, eval_model = "granite", eval_int
                                 eval_step_score = module.get_score(folder_path)
                                 result.score.append(eval_step_score)
                         except Exception as e:
-                            print(e)
                             result.score.append(eval_step_score)
+                            print(e, file=sys.stderr)
                         # AS: Attempting to get llm_eval here
                         try:
                             llm_score = repeat_llm_eval(5, train_script, eval_model)
                             result.llm_score.append(llm_score)
                         except Exception as e:
                             print("\nllm_eval didn't work\n")
-                            print(e)
+                            print(e, file=sys.stderr)
                             pass
                         # AS: Attempting to get Flake8 score here
                         try:
@@ -215,7 +215,7 @@ def run_eval(log_folder, benchmark_folder_name, eval_model = "granite", eval_int
                             print(flake8_score)
                         except Exception as e:
                             print("\nFlake8_eval didn't work\n")
-                            print(e)
+                            print(e, file=sys.stderr)
                             pass
                                 
                                     
@@ -232,7 +232,7 @@ def run_eval(log_folder, benchmark_folder_name, eval_model = "granite", eval_int
                         result.final_score = eval_final_score
                         print(eval_final_score)
                     except Exception as e:
-                        print(e)
+                        print(e, file=sys.stderr)
                         pass
                 # AS: Attempting to get llm_eval here
                 try:
@@ -240,7 +240,8 @@ def run_eval(log_folder, benchmark_folder_name, eval_model = "granite", eval_int
                         result.final_llm_score = llm_score
                 except Exception as e:
                         print("\nllm_eval didn't work\n")
-                        print(e)
+                        print(e, file=sys.stderr)
+                        exit()
                         pass
                 # AS: Attempting to get Flake8 score here
                 try:
@@ -249,7 +250,7 @@ def run_eval(log_folder, benchmark_folder_name, eval_model = "granite", eval_int
                     print(flake8_score)
                 except Exception as e:
                     print("\nFlake8_eval didn't work\n")
-                    print(e)
+                    print(e, file=sys.stderr)
                     pass
                 # Attempting to get llm_eval_logs.
                 log_file=os.path.join(subdir.rsplit('/',1)[0], "agent_log/main_log")
@@ -273,7 +274,7 @@ def run_eval(log_folder, benchmark_folder_name, eval_model = "granite", eval_int
                     result.final_log_score = log_score
                 except Exception as e:
                     print("\nllm_eval_log didn't work\n")
-                    print(e)
+                    print(e, file=sys.stderr)
                     pass                    
                 
                 # If environment error occurred we log it in the result JSON
