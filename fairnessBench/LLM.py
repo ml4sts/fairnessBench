@@ -94,19 +94,6 @@ def complete_text_hf(prompt, stop_sequences=[], model="llama", max_tokens_to_sam
 
 # Set up qwen
 loaded_qwen_models = {}
-try:
-    # Need export HF_HOME=/datasets/ai/qwen
-    # qwen_= "Qwen/Qwen2-72B-Instruct" # Denide
-    # qwen_= "Qwen/Qwen2.5-72B-Instruct"
-    tokenizer = AutoTokenizer.from_pretrained(qwen_)
-    quant_config = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_quant_type="nf4", bnb_4bit_compute_dtype=torch.float16)
-    model = AutoModelForCausalLM.from_pretrained(qwen_, quantization_config = quant_config, device_map="auto",torch_dtype=torch.float16)
-    loaded_qwen_models = {"qwen": (model, tokenizer)}
-    print(f"Loaded local {qwen_} successfuly using device: {model.device}.")
-except Exception as e:
-    print(f"Failed to load local qwen - Current device:{device}\nIssue: {e}")
-
-
 def complete_text_qwen(prompt, stop_sequences=[], model="qwen", max_tokens_to_sample = 2000, temperature=0.5, log_file=None, device=0, **kwargs):
     if model in loaded_qwen_models:
         qwen_model, tokenizer = loaded_qwen_models[model]
@@ -162,20 +149,7 @@ def complete_text_qwen(prompt, stop_sequences=[], model="qwen", max_tokens_to_sa
 
 # Set up granite
 loaded_granite_models = {}
-try:
-    # Need export HF_HOME=/datasets/ai/ibm-granite
-    # granite_= "ibm-granite/granite-3.0-8b-instruct" # Denide
-    # granite_= "ibm-granite/granite-3.1-8b-instruct" # Denide
-    tokenizer = AutoTokenizer.from_pretrained(granite_)
-    quant_config = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_quant_type="nf4", bnb_4bit_compute_dtype=torch.float16)
-    model = AutoModelForCausalLM.from_pretrained(granite_, quantization_config = quant_config, device_map="auto",torch_dtype=torch.float16)
-    loaded_granite_models = {"granite": (model, tokenizer)}
-    print(f"Loaded local {granite_} successfuly using device: {model.device}.")
-except Exception as e:
-    print(f"Failed to load local granite - Current device:{device}\nIssue: {e}")
-
-
-def complete_text_granite(prompt, stop_sequences=[], model="granite", max_tokens_to_sample = 2000, temperature=0.5, log_file=None, device=0, **kwargs):
+def complete_text_granite(prompt, stop_sequences=[], model="granite", max_tokens_to_sample = 2000, temperature=0.2, log_file=None, device=0, **kwargs):
     if model in loaded_granite_models:
         granite_model, tokenizer = loaded_granite_models[model]
     else:
@@ -216,6 +190,125 @@ def complete_text_granite(prompt, stop_sequences=[], model="granite", max_tokens
         return_dict_in_generate=True,
         output_scores=True,
         stopping_criteria = stopping_criteria,
+        **kwargs,
+    )
+    sequences = output.sequences
+    sequences = [sequence[len(encoded_input.input_ids[0]) :] for sequence in sequences]
+    all_decoded_text = tokenizer.batch_decode(sequences, skip_special_tokens=True)
+    completion = all_decoded_text[0]
+    if log_file is not None:
+        log_to_file(log_file, prompt, completion, model, max_tokens_to_sample)
+    return completion
+
+
+
+
+# Set up deepseek
+loaded_deepseek_models = {}
+def complete_text_deepseek(prompt, stop_sequences=[], model="deepseek", max_tokens_to_sample = 2000, temperature=0.2, log_file=None, device=0, **kwargs):
+    if model in loaded_deepseek_models:
+        deepseek_model, tokenizer = loaded_deepseek_models[model]
+    else:
+        model = "deepseek-ai/deepseek-coder-33b-instruct"
+        quant_config = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_quant_type="nf4", bnb_4bit_compute_dtype=torch.float16)
+        tokenizer = AutoTokenizer.from_pretrained(model, trust_remote_code=True)
+        deepseek_model = AutoModelForCausalLM.from_pretrained(model, trust_remote_code=True, quantization_config = quant_config, device_map=f"cuda:{device}",torch_dtype=torch.float16)
+        loaded_deepseek_models["deepseek"] = (deepseek_model, tokenizer)
+        print(f"Loaded {model} successfuly using device:{deepseek_model.device}")
+
+    message=[
+    { 'role': 'user', 'content': prompt}
+]
+
+    chat = tokenizer.apply_chat_template(message, tokenize=False, add_generation_prompt=True)
+    encoded_input = tokenizer(
+        chat, 
+        return_tensors="pt").to(f"cuda:{device}")
+    
+
+    stop_sequence_ids = tokenizer(stop_sequences, return_token_type_ids=False, add_special_tokens=False)
+    stopping_criteria = StoppingCriteriaList()
+
+    for stop_sequence_input_ids in stop_sequence_ids.input_ids:
+        type(stop_sequence_input_ids)
+        stopping_criteria.append(StopAtSpecificTokenCriteria(stop_sequence=stop_sequence_input_ids))
+    
+    output = deepseek_model.generate(
+        **encoded_input,
+        temperature=temperature,
+        max_new_tokens=max_tokens_to_sample,
+        do_sample=True,
+        top_k=50,
+        top_p=0.95,
+        return_dict_in_generate=True,
+        output_scores=True,
+        stopping_criteria = stopping_criteria,
+        **kwargs
+    )
+   
+    sequences = output.sequences
+    sequences = [sequence[len(encoded_input.input_ids[0]) :] for sequence in sequences]
+    all_decoded_text = tokenizer.batch_decode(sequences, skip_special_tokens=True)
+    completion = all_decoded_text[0]
+
+    if log_file is not None:
+        log_to_file(log_file, prompt, completion, model, max_tokens_to_sample)
+    return completion
+
+
+
+# Set up gemma
+loaded_gemma_models = {}
+def complete_text_gemma(prompt, stop_sequences=[], model="gemma", max_tokens_to_sample = 2000, temperature=0.2, log_file=None, device=0, **kwargs):
+    if model in loaded_gemma_models:
+        gemma_model, tokenizer = loaded_gemma_models[model]
+    else:
+        model = "google/gemma-3-27b-it"
+        # quant_config = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_quant_type="nf4", bnb_4bit_compute_dtype=torch.float16)
+        quant_config = BitsAndBytesConfig(load_in_8bit=True)
+        tokenizer = AutoTokenizer.from_pretrained(model, trust_remote_code=True)
+        gemma_model = AutoModelForCausalLM.from_pretrained(model, quantization_config = quant_config, device_map=f"cuda:{device}",torch_dtype=torch.bfloat16, trust_remote_code=True)
+        gemma_model.eval()
+        loaded_gemma_models["gemma"] = (gemma_model, tokenizer)
+        print(f"Loaded {model} successfuly using device:{gemma_model.device}")
+
+    chat = [
+        {"role": "user", "content": prompt},
+    ]
+    chat = tokenizer.apply_chat_template(chat, tokenize=False, add_generation_prompt=True)
+
+    encoded_input = tokenizer(
+        chat, 
+        return_tensors="pt").to(f"cuda:{device}")
+    
+    """
+    # transfer tokenized inputs to the device
+    for i in encoded_input:
+        encoded_input[i] = encoded_input[i].to(f"cuda:{device}")"""
+
+    # stop_sequence_ids = tokenizer(stop_sequences, return_token_type_ids=False, add_special_tokens=False)
+    # stopping_criteria = StoppingCriteriaList()
+
+    # for stop_sequence_input_ids in stop_sequence_ids.input_ids:
+    #     type(stop_sequence_input_ids)
+    #     stopping_criteria.append(StopAtSpecificTokenCriteria(stop_sequence=stop_sequence_input_ids))
+    
+
+    # print(f"Input text: {chat}\n\n")
+    # print(f"Tokenized input IDs: {encoded_input['input_ids']}\n\n")
+    # print(f"Max token value: {encoded_input['input_ids'].max()}\n\n")
+    # print(f"Min token value: {encoded_input['input_ids'].min()}\n\n")
+    # print("Tokenizer vocab size:", tokenizer.vocab_size, "\n\n")
+
+    output = gemma_model.generate(
+        **encoded_input,
+        temperature=temperature,
+        max_new_tokens=max_tokens_to_sample,
+        do_sample=True,
+        return_dict_in_generate=True,
+        output_scores=True,
+        stopping_criteria = None,
+        # stopping_criteria = stopping_criteria,
         **kwargs,
     )
     sequences = output.sequences
@@ -485,7 +578,6 @@ class StopAtSpecificTokenCriteria(StoppingCriteria):
     def __call__(self, input_ids, scores, **kwargs):
         # Create a tensor from the stop_sequence
         stop_sequence_tensor = torch.tensor(self.stop_sequence, device=input_ids.device, dtype=input_ids.dtype)
-
         # Check if the current sequence ends with the stop_sequence
         current_sequence = input_ids[:, -len(self.stop_sequence) :]
         return bool(torch.all(current_sequence == stop_sequence_tensor).item())
@@ -512,31 +604,30 @@ def complete_text(prompt, log_file, model, device=0, **kwargs):
     
     if model.startswith("claude"):
         # use anthropic API
-        # print("\n\nAS: claude!! \n\n")
-        completion = complete_text_claude(prompt, stop_sequences=[anthropic.HUMAN_PROMPT, "Observation:"], log_file=log_file, model=model, **kwargs)
+        completion = complete_text_claude(prompt, stop_sequences=[anthropic.HUMAN_PROMPT,"Observation:",  "Observation"], log_file=log_file, model=model, **kwargs)
     elif model.startswith("gemini"):
-        completion = complete_text_gemini(prompt, stop_sequences=["Observation:"], log_file=log_file, model=model, **kwargs)
+        completion = complete_text_gemini(prompt, stop_sequences=["Observation:", "Observation"], log_file=log_file, model=model, **kwargs)
     elif model.startswith("llama"):
-        completion = complete_text_hf(prompt, stop_sequences=["Observation:"], log_file=log_file, model=model, device=device, **kwargs)
+        completion = complete_text_hf(prompt, stop_sequences=["Observation:", "Observation"], log_file=log_file, model=model, device=device, **kwargs)
     elif model.startswith("qwen"):
-        completion = complete_text_qwen(prompt, stop_sequences=["Observation:"], log_file=log_file, model=model, device=device, **kwargs)
+        completion = complete_text_qwen(prompt, stop_sequences=["Observation:", "Observation"], log_file=log_file, model=model, device=device, **kwargs)
     elif model.startswith("granite"):
-        completion = complete_text_granite(prompt, stop_sequences=["Observation:"], log_file=log_file, model=model, device=device, **kwargs)
+        completion = complete_text_granite(prompt, stop_sequences=["}"], log_file=log_file, model=model, device=device, **kwargs)
+    elif model.startswith("deepseek"):
+        completion = complete_text_deepseek(prompt, stop_sequences=["}"], log_file=log_file, model=model, device=device, **kwargs)
+    elif model.startswith("gemma"):
+        completion = complete_text_gemma(prompt, stop_sequences=["}"], log_file=log_file, model=model, device=device, **kwargs)
     elif "/" in model:
         # use CRFM API since this specifies organization like "openai/..."
-        completion = complete_text_crfm(prompt, stop_sequences=["Observation:"], log_file=log_file, model=model, **kwargs)
+        completion = complete_text_crfm(prompt, stop_sequences=["Observation:", "Observation"], log_file=log_file, model=model, **kwargs)
     else:
         # use OpenAI API
-        # print("\n\nAS: gpt!! \n\n")
-        completion = complete_text_openai(prompt, stop_sequences=["Observation:"], log_file=log_file, model=model, **kwargs)
+        completion = complete_text_openai(prompt, stop_sequences=["Observation:", "Observation"], log_file=log_file, model=model, **kwargs)
     return completion
 
 
 # specify fast models for summarization etc  AS: (just the default in case it wasn't passed....)
 # AS: 
-# FAST_MODEL = "claude-v1"
-# FAST_MODEL = "llama"
-# FAST_MODEL = "claude-3-opus-20240229"
 FAST_MODEL = "gpt-4o-mini"
 
 def complete_text_fast(prompt, device=0, **kwargs):
