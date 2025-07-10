@@ -36,3 +36,25 @@ Roles:
 ## Instructions for running the benchmark:
 Pick a task/ list of tasks to run from tasks.json.
 Run using run_experiment.sh
+
+### run_experiment.sh
+
+- log_dir
+  - The directory name for the llm to create logs
+- models
+  - The models you want to use for the tasks
+  - claude-2.1, gpt-4-0125-preview, gemini-pro, gpt-4o-mini, gpt-4o, llama, qwen, granite, claude-3-7-sonnet-20250219, claude-3-5-haiku-20241022, claude-3-opus-20240229
+- edit_script_model
+
+- fast_llm
+### eval.sh
+
+- log_dir
+  - directory that the llm placed the experiment logs
+- json_folder
+  - 
+- all_tasks
+  - list of tasks to be evaluated
+- models
+  - Models being used to evaluate results
+- eval_model
