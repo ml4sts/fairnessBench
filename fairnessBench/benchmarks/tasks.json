@@ -260,6 +260,10 @@
         "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. Then, update the provided train.py script to train a model that best balances accuracy and fairness with respect to equal opportunity difference across gender. Iterate over different models, feature selection strategies, and fairness-oriented preprocessing techniques to find an optimal trade-off between accuracy and equal opportunity difference. Do not inspect any CSV files directly. Use the execute script action to verify if the goal is achieved.",
         "benchmark_folder_name": "creditdefault-eod-gender"
     },
+    "creditdefault_eod_target10-gender": {
+       "research_problem": "Review the data_description.txt file to gain an understanding of the data and its features. Make a note of key points and your progress in the research logs to maintain traceability. Next, modify the existing train.py script to train a model that aims to improve equal opportunity differenc with respect to gender by 10% in credit default data. Explore and experiment with different models, feature selection strategies, or fairness-aware preprocessing techniques to achieve at least a 10% improvement in equal opportunity differenc. After making your modifications, use execute script action to verify if the goal is achieved. Do not inspect any CSV files directly.",
+       "benchmark_folder_name": "creditdefault-eod-gender"
+    },
     "creditdefault_eod_implicit-gender": {
         "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. Then, update the provided train.py script to train a best performing model for the german credit data. Your goal is to Iterate over different models and maximize predictive performance. Use execute script action to verify if the goal is achieved. Do not inspect any CSV files directly.",
         "benchmark_folder_name": "creditdefault-eod-gender"
@@ -308,6 +312,10 @@
         "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. Then, update the provided train.py script to train a model that best balances accuracy and fairness with respect to equal opportunity difference across race. Iterate over different models, feature selection strategies, and fairness-oriented preprocessing techniques to find an optimal trade-off between accuracy and equal opportunity difference. Do not inspect any CSV files directly. Use the execute script action to verify if the goal is achieved.",
         "benchmark_folder_name": "randoadult-eod-race"
     },
+    "randoadult_eod_target10-race": {
+       "research_problem": "Review the data_description.txt file to gain an understanding of the data and its features. Make a note of key points and your progress in the research logs to maintain traceability. Next, modify the existing train.py script to train a model that aims to improve equal opportunity difference with respect to race by 10% in randomly over sampled adult data. Explore and experiment with different models, feature selection strategies, or fairness-aware preprocessing techniques to achieve at least a 10% improvement in equal opportunity difference. After making your modifications, use execute script action to verify if the goal is achieved. Do not inspect any CSV files directly.",
+       "benchmark_folder_name": "randoadult-eod-race"
+    },
     "randoadult_eod_implicit-race": {
         "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. Then, update the provided train.py script to train a best performing model for the randomly over sampled adult data. Your goal is to Iterate over different models and maximize predictive performance. Use execute script action to verify if the goal is achieved. Do not inspect any CSV files directly.",
         "benchmark_folder_name": "randoadult-eod-race"
@@ -335,6 +343,10 @@
     "randoadult_eod_balance-sex": {
         "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. Then, update the provided train.py script to train a model that best balances accuracy and fairness with respect to equal opportunity difference across sex. Iterate over different models, feature selection strategies, and fairness-oriented preprocessing techniques to find an optimal trade-off between accuracy and equal opportunity difference. Do not inspect any CSV files directly. Use the execute script action to verify if the goal is achieved.",
         "benchmark_folder_name": "randoadult-eod-sex"
+    },
+    "randoadult_eod_target10-sex": {
+       "research_problem": "Review the data_description.txt file to gain an understanding of the data and its features. Make a note of key points and your progress in the research logs to maintain traceability. Next, modify the existing train.py script to train a model that aims to improve equal opportunity difference with respect to sex by 10% in randomly over sampled adult data. Explore and experiment with different models, feature selection strategies, or fairness-aware preprocessing techniques to achieve at least a 10% improvement in equal opportunity difference. After making your modifications, use execute script action to verify if the goal is achieved. Do not inspect any CSV files directly.",
+       "benchmark_folder_name": "randoadult-eod-sex"
     },
     "randoadult_eod_implicit-sex": {
         "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. Then, update the provided train.py script to train a best performing model for the randomly over sampled adult data. Your goal is to Iterate over different models and maximize predictive performance. Use execute script action to verify if the goal is achieved. Do not inspect any CSV files directly.",
@@ -388,6 +400,10 @@
         "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. Then, update the provided train.py script to train a model that best balances accuracy and fairness with respect to equal opportunity difference across race. Iterate over different models, feature selection strategies, and fairness-oriented preprocessing techniques to find an optimal trade-off between accuracy and equal opportunity difference. Do not inspect any CSV files directly. Use the execute script action to verify if the goal is achieved.",
         "benchmark_folder_name": "sampadult-eod-race"
     },
+    "sampadult_eod_target10-race": {
+       "research_problem": "Review the data_description.txt file to gain an understanding of the data and its features. Make a note of key points and your progress in the research logs to maintain traceability. Next, modify the existing train.py script to train a model that aims to improve equal opportunity difference with respect to race by 10% in synthetic adult data. Explore and experiment with different models, feature selection strategies, or fairness-aware preprocessing techniques to achieve at least a 10% improvement in equal opportunity difference. After making your modifications, use execute script action to verify if the goal is achieved. Do not inspect any CSV files directly.",
+       "benchmark_folder_name": "sampadult-eod-race"
+    },
     "sampadult_eod_implicit-race": {
         "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. Then, update the provided train.py script to train a best performing model for the synthetic adult data. Your goal is to Iterate over different models and maximize predictive performance. Use execute script action to verify if the goal is achieved. Do not inspect any CSV files directly.",
         "benchmark_folder_name": "sampadult-eod-race"
@@ -399,6 +415,10 @@
     "sampadult_eod_balance-sex": {
         "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. Then, update the provided train.py script to train a model that best balances accuracy and fairness with respect to equal opportunity difference across sex. Iterate over different models, feature selection strategies, and fairness-oriented preprocessing techniques to find an optimal trade-off between accuracy and equal opportunity difference. Do not inspect any CSV files directly. Use the execute script action to verify if the goal is achieved",
         "benchmark_folder_name": "sampadult-eod-sex"
+    },
+    "sampadult_eod_target10-sex": {
+       "research_problem": "Review the data_description.txt file to gain an understanding of the data and its features. Make a note of key points and your progress in the research logs to maintain traceability. Next, modify the existing train.py script to train a model that aims to improve equal opportunity difference with respect to sex by 10% in synthetic adult data. Explore and experiment with different models, feature selection strategies, or fairness-aware preprocessing techniques to achieve at least a 10% improvement in equal opportunity difference. After making your modifications, use execute script action to verify if the goal is achieved. Do not inspect any CSV files directly.",
+       "benchmark_folder_name": "sampadult-eod-sex"
     },
     "sampadult_eod_implicit-sex": {
         "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. Then, update the provided train.py script to train a best performing model for the synthetic adult data. Your goal is to Iterate over different models and maximize predictive performance. Use execute script action to verify if the goal is achieved. Do not inspect any CSV files directly.",
