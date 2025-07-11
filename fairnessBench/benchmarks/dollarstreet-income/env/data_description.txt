@@ -1,0 +1,17 @@
+id: unique identifier for each row.     
+
+country.name: name of the country where the image was taken.                                                                 
+
+country.id: a short code or identifier representing the country.                                                 
+
+region.id: code indicating the region or continent to which the country belongs.                                            
+
+type: the type of data.
+
+imageRelPath: the relative file path to the image within the dataset directory.                                             
+
+topics: string representing one or more topics depicted in the image.   
+
+place: the specific location where the image was taken.
+
+income: household income level associated with the image.
