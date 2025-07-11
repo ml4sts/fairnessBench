@@ -24,7 +24,8 @@ from dacite import from_dict
 from .low_level_actions import LOW_LEVEL_ACTIONS
 from .high_level_actions import HIGH_LEVEL_ACTIONS
 from .schema import Step, Trace, EnvException, TooLongPromptError, LLMError, EnhancedJSONEncoder 
-from .LLM import complete_text_fast as complete_text_claude # AS: They hard code claude but I have to use llama...
+from .LLM import complete_text_fast as complete_text_claude # AS: They hard code claude but I want to use the arg
+# from .LLM import complete_text_claude
 from .prepare_task import prepare_task, get_task_info
 
 class TimeoutException(Exception): pass
@@ -59,6 +60,7 @@ class Environment:
             self._benchmark_folder_name, self._research_problem = get_task_info(args.task)
             self._work_dir = os.path.join(args.work_dir, self.benchmark_folder_name)
             self._read_only_files = []
+            self._env_read_only_files = []
             self._initialize_task_env() # set up work dir and log dir
 
         else: # AS: If --interactive was passed: you can input prompt during runtime
@@ -70,6 +72,7 @@ class Environment:
             if w != "":
                 self._work_dir = w
             self._read_only_files = []
+            self._env_read_only_files = []
 
             self._initialize_interactive_env() # set up work dir and log dir
 
@@ -85,6 +88,7 @@ class Environment:
             "work_dir": self.work_dir,
             "args": args,
             "read_only_files": self.read_only_files,
+            "env_read_only_files":self.env_read_only_files,
             "research_problem": self.research_problem,
         }
         self._trace = self._initialize_trace()
@@ -111,6 +115,9 @@ class Environment:
     @property
     def read_only_files(self):
         return self._read_only_files
+    @property
+    def env_read_only_files(self):
+        return self._env_read_only_files
 
     @property
     def action_infos(self):
@@ -133,6 +140,12 @@ class Environment:
         return self._start_time
     
     ############################## internal functions ########################################
+
+    def skip_duplicate_data_files(src,names):
+        data_ext = ['csv']
+        all_data = [n for n in names if n.split('.')[-1] in data_ext]
+        duplicate_data = [df for df in all_data if not 'submission' in df]
+        return duplicate_data
     
     def _setup_log_dir(self):
         # set up log dir
@@ -181,6 +194,19 @@ class Environment:
                 for ignore in ignore_files:
                     ignore_filenames = [n for n in filenames if fnmatch.fnmatch(n, ignore)]
                     self.read_only_files.extend(ignore_filenames)
+
+        # find all read only files
+        if os.path.exists(os.path.join(benchmark_dir, "scripts", "env_read_only_files.txt")):
+            llm_ignore_files = open(os.path.join(benchmark_dir, "scripts", "env_read_only_files.txt"), "r").read().split("\n")
+            for path, subdirs, files in os.walk(os.path.join(work_dir)):
+
+                # relpath = os.path.relpath(path, work_dir)
+                # filter out the files that are read only
+                # filenames = [os.path.join(relpath, filename) for filename in files]
+                for llm_ignore_file in llm_ignore_files:
+                    # llm_ignore_filenames = [n for n in filenames if fnmatch.fnmatch(n, llm_ignore)]
+                    if llm_ignore_file in files:
+                        self.env_read_only_files.append(llm_ignore_file)
 
 
         # init backup folder and remove all content if it exists
@@ -320,6 +346,7 @@ class Environment:
 
             if isinstance(action_input, dict):
                 try:
+                    # AS: This is where we call the action from either action files and get the return value into observation
                     observation = self.action_infos[action_name].function(**action_input, log_file=log_file, trace=trace, **self.static_kwargs_for_tools)
                 except TooLongPromptError:
                     observation="EnvError: too long input for the tool"

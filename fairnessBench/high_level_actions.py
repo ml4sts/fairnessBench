@@ -4,7 +4,7 @@ import os
 import datetime
 import shutil
 import difflib
-from .low_level_actions import read_file, write_file, append_file
+from .low_level_actions import read_file, write_file, append_file, check_file_env_read_only
 from .schema import ActionInfo, EnvException
 from .LLM import complete_text_fast, complete_text
 
@@ -24,7 +24,7 @@ def reflection( things_to_reflect_on, work_dir = ".", research_problem = "", **k
     reflection = complete_text_fast(prompt, log_file=kwargs["log_file"])
     return f"Reflection: {reflection}\n"
 
-
+@check_file_env_read_only(["file_name"])
 def understand_file( file_name, things_to_look_for, work_dir = ".", **kwargs):
 
     lines = read_file(file_name, work_dir = work_dir, **kwargs).split("\n")
@@ -73,7 +73,9 @@ def understand_file( file_name, things_to_look_for, work_dir = ".", **kwargs):
 
         return completion
 
-EDIT_SCRIPT_MODEL = "claude-v1"
+# EDIT_SCRIPT_MODEL = "claude-v1" # AS: ?? Also, why is it hardcoded
+# EDIT_SCRIPT_MODEL = "claude-3-opus-20240229" # AS: attempt to use claude
+EDIT_SCRIPT_MODEL = "gpt-4o"
 EDIT_SCRIPT_MAX_TOKENS = 4000
 def edit_script(script_name, edit_instruction, save_name, work_dir = ".", **kwargs):
     #TODO: handle long file editing
@@ -102,6 +104,10 @@ def edit_script(script_name, edit_instruction, save_name, work_dir = ".", **kwar
     shutil.copyfile(os.path.join(work_dir,script_name), backup_name)
 
     write_file(save_name, new_content, work_dir = work_dir, **kwargs)
+    # AS: Now rewrite he content of train.py for eval 
+    write_file("train.py", new_content, work_dir = work_dir, **kwargs)
+    # print("\n\nAS: Modified train.py\n\n")
+
 
     diff = list(difflib.unified_diff(content.splitlines(keepends=True), new_content.splitlines(keepends=True)))
     diff = "".join(diff)
@@ -152,9 +158,18 @@ def edit_script_lines( script_name, start_line_number, end_line_number,edit_inst
     diff = list(difflib.unified_diff(content.splitlines(keepends=True), new_content.splitlines(keepends=True)))
     diff = "".join(diff)
 
+    # AS: After modifying the script and backing up the data, Put the content of the newly modified script in train.py for evaluation
+    try:
+        # shutil.copyfile(os.path.join(work_dir, save_name), os.path.join(work_dir, "train.py"))
+        write_file("train.py", new_content, work_dir = work_dir, **kwargs)
+        # print("\n\nAS: Modified train.py\n\n")
+    except:
+        TODO
     return f"The edited file is saved to {save_name}. Here is the diff, please check if the edit is correct and desirable:\n\n" + diff
 
 
+
+@check_file_env_read_only(["script_name"])
 def inspect_script_lines( script_name, start_line_number, end_line_number, work_dir = ".", **kwargs):
     try:
         start_line_number = int(start_line_number)
