@@ -1,0 +1,8 @@
+model,task,1. Data Collection and Processing,2. Bias Detection and Mitigation,3. Fairness Metric Selection,4. Model Selection and Training,5. Evaluation and Testing
+claude-3-7-sonnet-20250219,adult_err_balance-race,0.15946509441945983,0.11649810905340587,0.0,0.15946509441945983,0.0
+claude-3-7-sonnet-20250219,adult_err_balance-sex,0.17494570236436235,0.0,0.0,0.1957400731715678,0.0
+gpt-4o,adult_err_balance-race,0.0,0.0,0.0,0.0,0.0
+gpt-4o,adult_err_balance-sex,0.0,0.0,0.0,0.0,0.0
+llama,adult_err_balance-race,0.20573779994945587,0.19716158838352976,0.0,0.12297509238026914,0.0
+llama,adult_err_balance-sex,0.3043212760213842,0.12426253043692712,0.0,0.16886551261045996,0.0
+qwen,adult_err_balance-sex,0.2138089935299395,0.19716158838352973,0.0,0.19716158838352973,0.0
