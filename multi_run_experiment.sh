@@ -1,6 +1,5 @@
 #/bin/bash
 
-### AS ###
 # Stop 2: 
 # This script prepares the task called, creates necessary log folders and runs the task with runner
 # For every task this script will be run at least 3 times; model, retrival, agent/s
@@ -12,7 +11,7 @@ task=$2
 n_device=$3
 shift 3
 
-# The values here are normally {0..7}
+# Devices are the number of GPUs to run separate runs on
 declare -a devices=()
 
 # Get X numbers
@@ -25,7 +24,6 @@ done
 
 
 extra_args="${@}"
-# Don't know what this name change is doing 
 folder=$exp_path
 python=$(which python)
 
@@ -37,29 +35,31 @@ echo "extra_args: $extra_args"
 
 echo "Logs will be saved to $folder"
 
-# Looks like simply the number if times this will happen
+# Create a run ID for each device 
 for i in "${devices[@]}"
 do 
   # time in current Unix timestamp
   ts=$(date +%s)
 
   # Check for log folder with a time-named folder in it or create one
-  if [ -d $folder/$ts ]; then
-      echo "Folder $folder/$ts already exists. removing it"
-      rm -rf $folder/$ts
+  if [ -d "/project/pi_brownsarahm_uri_edu/ayman_uri/fairnessBench/new_$folder/$ts" ]; then
+      echo "Folder /project/pi_brownsarahm_uri_edu/ayman_uri/fairnessBench/new_$folder/$ts already exists. removing it"
+      rm -rf /project/pi_brownsarahm_uri_edu/ayman_uri/fairnessBench/new_$folder/$ts
   fi
-  mkdir -p $folder/$ts
+  mkdir -p "/project/pi_brownsarahm_uri_edu/ayman_uri/fairnessBench/new_$folder/$ts"
 
   # Call the prepare task script
   python -u -m fairnessBench.prepare_task $task $python
   
   # Printing command for debugging purposes and executing task with runner.py
-  echo "python -u -m fairnessBench.runner --python $python --task $task --device $i --log-dir $folder/$ts  --work-dir workspaces/$folder/$ts ${extra_args} > $folder/$ts/log 2>&1"
-  eval "python -u -m fairnessBench.runner --python $python --task $task --device $i --log-dir $folder/$ts  --work-dir workspaces/$folder/$ts ${extra_args}" > $folder/$ts/log 2>&1 &
+  echo "python -u -m fairnessBench.runner --python $python --task $task --device $i --log-dir /project/pi_brownsarahm_uri_edu/ayman_uri/fairnessBench/new_$folder/$ts  --work-dir /scratch3/workspace/ayman_sandouk_uri_edu-fairness/fairnessBench/workspaces/$folder/$ts ${extra_args}" > /project/pi_brownsarahm_uri_edu/ayman_uri/fairnessBench/new_$folder/$ts/log 2>&1 &
+  
+  eval "python -u -m fairnessBench.runner --python $python --task $task --device $i --log-dir /project/pi_brownsarahm_uri_edu/ayman_uri/fairnessBench/new_$folder/$ts  --work-dir /scratch3/workspace/ayman_sandouk_uri_edu-fairness/fairnessBench/workspaces/$folder/$ts ${extra_args}" > /project/pi_brownsarahm_uri_edu/ayman_uri/fairnessBench/new_$folder/$ts/log 2>&1 &
 
-  # Are we sleeping to allow the LLM to finish its work?
+  # 2 seconds between runs
   sleep 2
 done
-# Why??
+
+# Shouldn't run more than n devices at a time (all GPUs are occupied)
 wait
 
