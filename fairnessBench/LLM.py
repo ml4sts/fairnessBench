@@ -34,7 +34,7 @@ except Exception as e:
     print(f"Failed to load local llama - Current device:{device}\nIssue: {e}")
 
 
-def complete_text_hf(prompt, stop_sequences=[], model="llama", max_tokens_to_sample = 2000, temperature=0.5, log_file=None, device=0, **kwargs):
+def complete_text_hf(prompt, stop_sequences=[], model="llama", max_tokens_to_sample = 2500, temperature=0.5, log_file=None, device=0, **kwargs):
     if model in loaded_hf_models:
         hf_model, tokenizer = loaded_hf_models[model]
     else:
@@ -94,7 +94,7 @@ def complete_text_hf(prompt, stop_sequences=[], model="llama", max_tokens_to_sam
 
 # Set up qwen
 loaded_qwen_models = {}
-def complete_text_qwen(prompt, stop_sequences=[], model="qwen", max_tokens_to_sample = 2000, temperature=0.5, log_file=None, device=0, **kwargs):
+def complete_text_qwen(prompt, stop_sequences=[], model="qwen", max_tokens_to_sample = 2500, temperature=0.5, log_file=None, device=0, **kwargs):
     if model in loaded_qwen_models:
         qwen_model, tokenizer = loaded_qwen_models[model]
     else:
@@ -218,7 +218,7 @@ def complete_text_deepseek(prompt, stop_sequences=[], model="deepseek", max_toke
 
     message=[
     { 'role': 'user', 'content': prompt}
-]
+    ]
 
     chat = tokenizer.apply_chat_template(message, tokenize=False, add_generation_prompt=True)
     encoded_input = tokenizer(
@@ -263,12 +263,14 @@ def complete_text_gemma(prompt, stop_sequences=[], model="gemma", max_tokens_to_
     if model in loaded_gemma_models:
         gemma_model, tokenizer = loaded_gemma_models[model]
     else:
+        torch.cuda.empty_cache()
+
         model = "google/gemma-3-27b-it"
         # quant_config = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_quant_type="nf4", bnb_4bit_compute_dtype=torch.float16)
         quant_config = BitsAndBytesConfig(load_in_8bit=True)
         tokenizer = AutoTokenizer.from_pretrained(model, trust_remote_code=True)
         gemma_model = AutoModelForCausalLM.from_pretrained(model, quantization_config = quant_config, device_map=f"cuda:{device}",torch_dtype=torch.bfloat16, trust_remote_code=True)
-        gemma_model.eval()
+        # gemma_model.eval()
         loaded_gemma_models["gemma"] = (gemma_model, tokenizer)
         print(f"Loaded {model} successfuly using device:{gemma_model.device}")
 
