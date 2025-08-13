@@ -1,2 +1,4 @@
-./train.csv
-./test.csv
+./train_X.csv
+./train_y.csv
+./test_X.csv
+./test_y.csv

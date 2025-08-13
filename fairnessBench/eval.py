@@ -32,7 +32,6 @@ class EnhancedJSONEncoder(json.JSONEncoder):
         #if it is a function, use its string name
         elif hasattr(o, '__call__'):
             return o.__name__
-
         return super().default(o)
 
 def oom_error(path):
@@ -132,7 +131,7 @@ class EvaluationResult:
     extra: Dict[str, bool]
 
 
-def run_eval(log_folder, benchmark_folder_name, eval_model = "granite", eval_intermediate=False):
+def run_eval(log_folder, benchmark_folder_name, eval_model = None, eval_intermediate=False):
     results = {}    
 
     # Log folder is the specific log folder for one model and one task
@@ -191,24 +190,24 @@ def run_eval(log_folder, benchmark_folder_name, eval_model = "granite", eval_int
                     for step in subsampled_list:
                         eval_step_score = 0
                         folder_path = os.path.join(subdir, f'traces/step_{step}_files')
-                        train_script = os.path.join(folder_path, "train.py")
+                        train_script = os.path.join(folder_path, ".train.py") if (os.path.exists(os.path.join(folder_path, ".train.py"))) else os.path.join(folder_path, "train.py")
                         try:
                             if os.path.exists(folder_path):
                                 print(folder_path)
                                 eval_step_score = module.get_score(folder_path)
                                 result.score.append(eval_step_score)
                         except Exception as e:
-                            print(e)
                             result.score.append(eval_step_score)
-                        # AS: Attempting to get llm_eval here
-                        try:
-                            llm_score = llm_eval(train_script, eval_model)
-                            result.final_llm_score = llm_score
-                        except Exception as e:
-                            print("\nllm_eval didn't work\n")
                             print(e)
-                            pass
-                        # AS: Attempting to get Flake8 score here
+                        # Getting llm_eval here using llm_eval_repeat function
+                        # try:
+                        #     llm_score = repeat_llm_eval(5, train_script, eval_model)
+                        #     result.llm_score.append(llm_score)
+                        # except Exception as e:
+                        #     print("\nllm_eval didn't work\n")
+                        #     print(e)
+                        #     pass
+                        # Getting Flake8 score here
                         try:
                             flake8_score = get_flake8(train_script)
                             result.flake8_score.append(flake8_score)
@@ -224,7 +223,7 @@ def run_eval(log_folder, benchmark_folder_name, eval_model = "granite", eval_int
                 
                 # Evaluate the final step
                 folder_path = os.path.join(subdir, 'traces/step_final_files')
-                train_script = os.path.join(folder_path, "train.py")
+                train_script = os.path.join(folder_path, ".train.py") if (os.path.exists(os.path.join(folder_path, ".train.py"))) else os.path.join(folder_path, "train.py")
                 if os.path.exists(folder_path):
                     try:
                         eval_final_score = module.get_score(folder_path)
@@ -234,15 +233,16 @@ def run_eval(log_folder, benchmark_folder_name, eval_model = "granite", eval_int
                     except Exception as e:
                         print(e)
                         pass
-                # AS: Attempting to get llm_eval here
-                try:
-                        llm_score = repeat_llm_eval(5, train_script, eval_model)
-                        result.final_llm_score = llm_score
-                except Exception as e:
-                        print("\nllm_eval didn't work\n")
-                        print(e)
-                        pass
-                # AS: Attempting to get Flake8 score here
+                # Getting llm_eval here using llm_eval_repeat function
+                if eval_model:
+                    try:
+                            llm_score = repeat_llm_eval(1, train_script, eval_model)
+                            result.final_llm_score = llm_score
+                    except Exception as e:
+                            print("\nllm_eval didn't work\n")
+                            print(e)
+                            pass
+                # Getting Flake8 score
                 try:
                     flake8_score = get_flake8(train_script)
                     result.final_flake8_score = flake8_score
@@ -251,30 +251,31 @@ def run_eval(log_folder, benchmark_folder_name, eval_model = "granite", eval_int
                     print("\nFlake8_eval didn't work\n")
                     print(e)
                     pass
-                # Attempting to get llm_eval_logs.
-                log_file=os.path.join(subdir.rsplit('/',1)[0], "agent_log/main_log")
-                try:
-                    # use path to get the latest history step
-                    history_step = get_latest_agent_history_step(subdir)
-                    # use the latest step in the eval
-                    if history_step:
-                        # create a temporary file with the history_step content
-                        #history_text = "\n\n".join(history_step)
-                        temp_txt_path = os.path.join(subdir.rsplit('/',1)[0], "agent_log/temp_history_step.txt")
-                        with open(temp_txt_path, 'w') as f:
-                            lines = [line.strip() for line in history_step.splitlines() ]
-                            f.write('\n'.join(lines))
-                        print(f"Using history_steps from {temp_txt_path} for evaluation")
-                        log_score = repeat_llm_eval_log(5, temp_txt_path, eval_model)
-                    else:
-                        # if there's no agent step which i doubt fallback to the main_log(will be tooo long and make model fail. lol)
-                        print("No history step files found.")
-                        log_score = repeat_llm_eval_log(5, log_file, eval_model)
-                    result.final_log_score = log_score
-                except Exception as e:
-                    print("\nllm_eval_log didn't work\n")
-                    print(e)
-                    pass                    
+                if eval_model:
+                    # Getting LLM log eval here using llm_eval_log_repeat function
+                    log_file=os.path.join(subdir.rsplit('/',1)[0], "agent_log/main_log")
+                    try:
+                        # use path to get the latest history step
+                        history_step = get_latest_agent_history_step(subdir)
+                        # use the latest step in the eval
+                        if history_step:
+                            # create a temporary file with the history_step content
+                            #history_text = "\n\n".join(history_step)
+                            temp_txt_path = os.path.join(subdir.rsplit('/',1)[0], "agent_log/temp_history_step.txt")
+                            with open(temp_txt_path, 'w') as f:
+                                lines = [line.strip() for line in history_step.splitlines() ]
+                                f.write('\n'.join(lines))
+                            print(f"Using history_steps from {temp_txt_path} for evaluation")
+                            log_score = repeat_llm_eval_log(1, temp_txt_path, eval_model)
+                        else:
+                            # if there's no agent step which i doubt fallback to the main_log(will be tooo long and make model fail. lol)
+                            print("No history step files found.")
+                            log_score = repeat_llm_eval_log(1, log_file, eval_model)
+                        result.final_log_score = log_score
+                    except Exception as e:
+                        print("\nllm_eval_log didn't work\n")
+                        print(e)
+                        pass                    
                 
                 # If environment error occurred we log it in the result JSON
                 if os.path.exists(os.path.join(subdir, "error.txt")):
@@ -304,13 +305,30 @@ if __name__ == "__main__":
     parser.add_argument("--log-folder", type=str, default="logs")
     parser.add_argument("--task", type=str, default="adult")
     parser.add_argument("--output-file", type=str, default="results.json")
-    parser.add_argument("--eval_model", type=str, default="granite")
+    parser.add_argument("--eval_model", type=str, default=None)
     parser.add_argument("--eval-intermediate", action="store_true")
     args = parser.parse_args()
     
+
+    if not os.path.exists(args.log_folder):
+        print(f"WARNING\nWARNING\nWARNING: The log folder {args.log_folder} doesn't exist. \nWARNING\nWARNING")
+        exit()
+
+
+    if os.path.exists(args.output_file):
+        with open(args.output_file) as f:
+            content = json.load(f)
+            if content:
+                print(f"WARNING\nWARNING\nWARNING: Results for {args.output_file} already exists\nWARNING\nWARNING")
+                exit()
+
+
     benchmark_folder_name = get_task_info(args.task)[0] 
     results = run_eval(args.log_folder, benchmark_folder_name, eval_model = args.eval_model, eval_intermediate = args.eval_intermediate)
               
-    json.dump(results, open(args.output_file, "w"), indent=4, cls=EnhancedJSONEncoder)
+    if not results:
+        print(f"WARNING\nWARNING\nWARNING: Results for {args.log_folder.rsplit('/')} is empty\nWARNING\nWARNING")
+    else:
+        json.dump(results, open(args.output_file, "w"), indent=4, cls=EnhancedJSONEncoder)
                 
        

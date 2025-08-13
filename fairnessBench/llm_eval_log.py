@@ -50,7 +50,8 @@ Respond ONLY with:
 }}
 """
         )
-        response_text = complete_text(prompt, "test1.txt", eval_model)
+
+        response_text = complete_text(prompt, None, eval_model)
         try:
             # Extract JSON from response
             start_idx = response_text.find('{')
@@ -146,8 +147,9 @@ def llm_eval_log(file_path="main_log", eval_model="granite"):
     log = read_file(file_path)
 
     # Read the prompts from a file (for evaluation)
-    system_prompt_path = '../fairnessBench/system_prompt_log.txt'
-    rubric_path = '../fairnessBench/log_rubric.json'
+
+    system_prompt_path = 'system_prompt_log.txt'
+    rubric_path = 'log_rubric.json'
     
     # Read the system_prompts and rubric
     system_prompt = read_prompts(system_prompt_path)  
@@ -170,9 +172,9 @@ def repeat_llm_eval_log(n=5, file_path="main_log", eval_model="granite"):
     """
     Run `llm_eval` multiple times and return a list of results.
     """
+    print(f"Running llm log evaluation...")
     results = []
     for i in range(n):
-        print(f"Running evaluation {i + 1}...")
         result = llm_eval_log(file_path=file_path, eval_model=eval_model)
         results.append(result)
     return results
