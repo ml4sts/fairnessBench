@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 import numpy as np
 from datetime import datetime 
@@ -5,7 +6,11 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # Loading useful dataframes
-code_eval = pd.read_csv('../fairnessBench/fairnessbench_analysis/Result_Final_code_clean2025-08-06T04:22:08.635847.csv')
+os.chdir('csv_files')
+code_eval = pd.read_csv('Result_Final_code_clean2025-08-13T10:44:12.639136.csv')
+os.chdir('..')
+
+
 # Removing missing rows 
 code_eval= code_eval.dropna(how="any")
 
@@ -33,6 +38,8 @@ g.set_titles(template='{col_var}: {col_name}\n{row_var}: {row_name}')
 for i, ax in enumerate(g.axes.flat):
     ax.axhline(y=85.0, color='black', linestyle='-.', alpha=0.2)
     ax.axvline(x=75.0, color='black', linestyle='-.', alpha=0.2)
+
+os.chdir('graphs/')    
 plt.savefig('performance_flake8_code.png',dpi=300)
 
 

@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 import numpy as np
 from datetime import datetime 
@@ -5,7 +6,10 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # Loading useful dataframes
-perf_alt = pd.read_csv('../fairnessBench/fairnessbench_analysis/Final_step_perfomance2025-08-06T04:21:57.255454.csv')
+os.chdir('csv_files')
+perf_alt = pd.read_csv('Final_step_perfomance2025-08-13T08:50:41.399910.csv')
+os.chdir('..')
+
 # Removing missing rows 
 perf= ['acc','precision', 'recall', 'di', 'statistical_parity_diff', 
                   'equal_opp_diff', 'error_rate_diff', 'error_rate_ratio', 
@@ -54,4 +58,6 @@ for i in range(len(ax)):
         elif i in [1, 2, 4, 5]:  # other fairness metrics
             ax[i,j].axhline(y=0.0, color='black', linestyle='-.', alpha=0.3)
         ax[i,j].axvline(x=1.0, color='black', linestyle='-.', alpha=0.2)
+
+os.chdir('graphs/')    
 plt.savefig('balancing_fairness.png',dpi=400,bbox_inches='tight')

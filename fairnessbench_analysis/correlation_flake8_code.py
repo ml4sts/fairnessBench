@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 import numpy as np
 from datetime import datetime 
@@ -5,7 +6,10 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # Loading useful dataframes
-code_eval = pd.read_csv('../fairnessBench/fairnessbench_analysis/Result_Final_code_clean2025-08-06T04:22:08.635847.csv')
+os.chdir('csv_files')
+code_eval = pd.read_csv('Result_Final_code_clean2025-08-13T10:44:12.639136.csv')
+os.chdir('..')
+
 # Removing missing rows 
 code_eval= code_eval.dropna(how="any")
 
@@ -48,4 +52,6 @@ sns.heatmap(
     yticklabels=['Flake8 score']
 )
 plt.title("Flake8 vs Rubric Correlation (claude-3, adult, balance, erd)")
+
+os.chdir('graphs/')    
 plt.savefig('flake8_vs_code_correlation.png',bbox_inches='tight')

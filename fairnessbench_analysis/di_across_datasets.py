@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 import numpy as np
 from datetime import datetime 
@@ -5,7 +6,10 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # Loading useful dataframes
-perf_alt = pd.read_csv('../fairnessBench/fairnessbench_analysis/Final_step_perfomance2025-08-06T04:21:57.255454.csv')
+os.chdir('csv_files')
+perf_alt = pd.read_csv('Final_step_perfomance2025-08-13T10:44:02.216469.csv')
+os.chdir('..')
+
 # Removing missing rows 
 perf= ['acc','precision', 'recall', 'di', 'statistical_parity_diff', 
                   'equal_opp_diff', 'error_rate_diff', 'error_rate_ratio', 
@@ -37,5 +41,7 @@ g.set_titles(template='{col_var}: {col_name}\n{row_var}: {row_name}')
 for i, ax in enumerate(g.axes.flat):
     ax.axhline(y=1.0, color='black', linestyle='-.', alpha=0.2)
     ax.axvline(x=1.0, color='black', linestyle='-.', alpha=0.2)
+    
 # saving the plot 
+os.chdir('graphs/')    
 plt.savefig('di_vs_acc_scatter.png', dpi=300, bbox_inches='tight')

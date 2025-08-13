@@ -1,9 +1,12 @@
+import os
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-perf_df= pd.read_csv('../fairnessBench/fairnessbench_analysis/Final_step_perfomance2025-08-06T04:21:57.255454.csv')
+os.chdir('csv_files')
+perf_df= pd.read_csv('Final_step_perfomance2025-08-13T10:44:02.216469.csv')
+os.chdir('..') 
 
 # Removing missing rows 
 perf= ['acc','precision', 'recall', 'di', 'statistical_parity_diff', 
@@ -13,7 +16,9 @@ perf_df= perf_df.dropna(subset=perf, how='all')
 perf_df = perf_df.replace([np.inf, -np.inf], np.nan).fillna(0)
 
 # loading baseline 
-baseline_df= pd.read_csv('../fairnessBench/fairnessbench_analysis/Baseline_cleaned_perfomance2025-08-06T06:09:53.582383.csv')
+os.chdir('csv_files')
+baseline_df= pd.read_csv('Baseline_cleaned_perfomance2025-08-13T10:44:21.444178.csv')
+os.chdir('..')
 
 base= ['baseline_acc','baseline_precision', 'baseline_recall', 'baseline_di', 'baseline_statistical_parity_diff', 
                   'baseline_equal_opp_diff', 'baseline_error_rate_diff', 'baseline_error_rate_ratio', 
@@ -97,5 +102,6 @@ df_improvement_stats = df.groupby(['model','task_dataset',])['agent-improvement'
 df_improvement_stats_tall = df_improvement_stats.melt(id_vars=['model','task_dataset'],
                                                       value_vars=['total','success','improvement'],var_name='count_type',value_name='count')
 sns.set_context(context='poster',font_scale = .5)
+os.chdir('graphs/')
 sns.catplot(df_improvement_stats_tall, col = 'model',x='task_dataset', y='count',hue='count_type',kind='bar').savefig('target10_success.png')
 

@@ -8,7 +8,8 @@ clean.sh
 *.json
 .vscode/
 fairnessBench/eval/test/
-
+fairnessbench_analysis/*/*.png
+fairnessbench_analysis/*/*.csv
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

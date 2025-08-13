@@ -1,9 +1,14 @@
+import os
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-res = pd.read_csv('../fairnessBench/fairnessbench_analysis/Final_step_perfomance2025-08-06T04:21:57.255454.csv')
+
+os.chdir('csv_files')
+res = pd.read_csv('Final_step_perfomance2025-08-13T10:44:02.216469.csv')
+os.chdir('..')
+
 task_data_metric = res['task'].str.split('_').apply(pd.Series).rename(columns ={0:'task_dataset',1:'task_metric',2:'task-dem'})
 wider_code = pd.concat([res, task_data_metric],axis=1)
 wider_cols=['model','task','task_dataset','task_metric','task-dem','run_ts','run_id','acc','precision','recall','di','statistical_parity_diff','equal_opp_diff','error_rate_diff','error_rate_ratio','false_omission_rate_diff','score_count']
@@ -51,4 +56,6 @@ for m in low_good:
 
 adrec_long['task_metric'] = adrec_long['task_metrics'].map(metric_rename)
 g = sns.catplot(data=adrec_long,kind='bar',x='task_metric',y='task_metric_value',hue='model',col='dem',height=4,aspect=1.5)
+
+os.chdir('graphs/')
 plt.savefig("adrec_allmetric.png",dpi=400,bbox_inches='tight')

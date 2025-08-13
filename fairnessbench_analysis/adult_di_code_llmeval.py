@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 import numpy as np
 from datetime import datetime 
@@ -5,7 +6,10 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # Loading useful dataframes
-code_eval = pd.read_csv('../fairnessBench/fairnessbench_analysis/Result_Final_code_clean2025-08-06T04:22:08.635847.csv') 
+os.chdir('csv_files')
+code_eval = pd.read_csv('Result_Final_code_clean2025-08-13T08:50:51.905807.csv') 
+os.chdir('..')
+
 # Removing missing rows fairnessBench
 code_eval= code_eval.dropna(how="any")
 
@@ -50,4 +54,6 @@ ax = m.axes
 for ax in m.axes.flatten():
     plt.setp(ax.get_xticklabels(), rotation=30)
     ax.axhline(y=4.0, color='black', linestyle='-.', alpha=0.3)
+
+os.chdir('graphs/')    
 plt.savefig('adult_di_code_llm_eval.png', dpi=400 , bbox_inches='tight')

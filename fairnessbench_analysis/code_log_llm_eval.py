@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 import numpy as np
 from datetime import datetime 
@@ -5,9 +6,11 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # Loading useful dataframes
-code_eval = pd.read_csv('../fairnessBench/fairnessbench_analysis/Result_Final_code_clean2025-08-06T04:22:08.635847.csv')
-log_eval = pd.read_csv('../fairnessBench/fairnessbench_analysis/Results_Final_log_clean2025-08-06T04:22:17.377479.csv')
-perf_df= pd.read_csv('../fairnessBench/fairnessbench_analysis/Final_step_perfomance2025-08-06T04:21:57.255454.csv')
+os.chdir('csv_files')
+code_eval = pd.read_csv('Result_Final_code_clean2025-08-13T10:44:12.639136.csv')
+log_eval = pd.read_csv('Results_Final_log_clean2025-08-13T10:44:21.146989.csv')
+perf_df= pd.read_csv('Final_step_perfomance2025-08-13T10:44:02.216469.csv')
+os.chdir('..')
 
 # Removing missing rows 
 code_eval= code_eval.dropna(how="any")
@@ -42,5 +45,8 @@ wider_log.head()
 score_cols = ["1. Model Overview",	"2. Stakeholder Identification and Fairness Definition","3. Data Collection and Processing","4. Bias Detection and Mitigation","5. Fairness Metric Selection","6. Model Selection and Training","7. Evaluation and Testing"]
 log_tall = wider_log.melt(id_vars=['model','task','task_dataset','task_metric','resrch_prob','dem','run_ts','run_id'],
                             value_vars=score_cols,var_name='score')
+
+                            
+os.chdir('graphs/')    
 sns.catplot(log_tall,col='model',x='resrch_prob',row= 'task_dataset',y='value',hue='score',kind='bar').savefig('logval')
 
