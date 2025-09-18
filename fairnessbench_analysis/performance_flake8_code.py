@@ -4,11 +4,11 @@ import numpy as np
 from datetime import datetime 
 import matplotlib.pyplot as plt
 import seaborn as sns
+from path import CSV_FILES,GRAPHS
 
 # Loading useful dataframes
-os.chdir('csv_files')
-code_eval = pd.read_csv('Result_Final_code_clean2025-08-13T10:44:12.639136.csv')
-os.chdir('..')
+file = CSV_FILES/'Result_Final_code_clean2025-09-18T00:48:40.584077.csv'
+code_eval = pd.read_csv(file) 
 
 
 # Removing missing rows 
@@ -39,7 +39,7 @@ for i, ax in enumerate(g.axes.flat):
     ax.axhline(y=85.0, color='black', linestyle='-.', alpha=0.2)
     ax.axvline(x=75.0, color='black', linestyle='-.', alpha=0.2)
 
-os.chdir('graphs/')    
-plt.savefig('performance_flake8_code.png',dpi=300)
+output = os.path.join(GRAPHS,'performance_flake8_code.png')   
+plt.savefig(output,dpi=300)
 
 

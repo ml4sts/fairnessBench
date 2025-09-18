@@ -4,11 +4,11 @@ import numpy as np
 from datetime import datetime 
 import matplotlib.pyplot as plt
 import seaborn as sns
+from path import CSV_FILES,GRAPHS
 
 # Loading useful dataframes
-os.chdir('csv_files')
-perf_alt = pd.read_csv('Final_step_perfomance2025-08-13T10:44:02.216469.csv')
-os.chdir('..')
+file= CSV_FILES/'Final_step_perfomance2025-09-18T00:48:26.025263.csv'
+perf_alt = pd.read_csv(file)
 
 # Removing missing rows 
 perf= ['acc','precision', 'recall', 'di', 'statistical_parity_diff', 
@@ -43,5 +43,6 @@ for i, ax in enumerate(g.axes.flat):
     ax.axvline(x=1.0, color='black', linestyle='-.', alpha=0.2)
     
 # saving the plot 
-os.chdir('graphs/')    
-plt.savefig('di_vs_acc_scatter.png', dpi=300, bbox_inches='tight')
+output= os.path.join(GRAPHS,'di_vs_acc_scatter.png')  
+
+plt.savefig(output, dpi=300, bbox_inches='tight')

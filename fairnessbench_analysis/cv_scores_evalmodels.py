@@ -1,10 +1,10 @@
 import os
 import pandas as pd
-
-os.chdir('csv_files/')    
-gemma_df = pd.read_csv('Gemma_cv.csv')
-deepseek_df= pd.read_csv('Deepseek_cv.csv')
-granite_df=pd.read_csv('Granite_cv.csv')
+from path import FILES
+ 
+gemma_df = pd.read_csv(FILES/'Gemma_cv.csv')
+deepseek_df= pd.read_csv(FILES/'Deepseek_cv.csv')
+granite_df=pd.read_csv(FILES/'Granite_cv.csv')
 
 gemma_df['eval'] = 'gemma'
 deepseek_df['eval'] = 'deepseek'

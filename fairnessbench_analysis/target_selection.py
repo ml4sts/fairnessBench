@@ -3,11 +3,11 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+from path import CSV_FILES,GRAPHS
 
-
-os.chdir('csv_files')
-res = pd.read_csv('Final_step_perfomance2025-08-13T10:44:02.216469.csv')
-os.chdir('..')
+# Loading useful dataframes
+file = CSV_FILES/'Final_step_perfomance2025-09-18T00:48:26.025263.csv'
+res = pd.read_csv(file)
 
 task_data_metric = res['task'].str.split('_').apply(pd.Series).rename(columns ={0:'task_dataset',1:'task_metric',2:'task-dem'})
 wider_code = pd.concat([res, task_data_metric],axis=1)
@@ -57,5 +57,5 @@ for m in low_good:
 adrec_long['task_metric'] = adrec_long['task_metrics'].map(metric_rename)
 g = sns.catplot(data=adrec_long,kind='bar',x='task_metric',y='task_metric_value',hue='model',col='dem',height=4,aspect=1.5)
 
-os.chdir('graphs/')
-plt.savefig("adrec_allmetric.png",dpi=400,bbox_inches='tight')
+output= os.path.join(GRAPHS,"adrec_allmetric.png")
+plt.savefig(output,dpi=400,bbox_inches='tight')

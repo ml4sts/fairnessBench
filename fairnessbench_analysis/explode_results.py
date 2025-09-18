@@ -3,9 +3,10 @@ import pandas as pd
 import numpy as np
 from datetime import datetime
 import json 
+from path import PROJECT_ROOT,CSV_FILES
 
 # loading the performance results
-perf_path = '/project/pi_brownsarahm_uri_edu/ayman_uri/fairnessBench/results_final_total'
+perf_path = PROJECT_ROOT 
 result_files = [
     os.path.join(perf_path, fname)
     for fname in os.listdir(perf_path)
@@ -44,13 +45,10 @@ cols = ['model', 'task', 'run_ts','run_id'] + [col for col in exploded_score.col
 exploded_score = exploded_score[cols]
 exploded_score = exploded_score.drop(exploded_score.columns[4],axis=1)
 
-os.chdir('csv_files')
-exploded_score.to_csv('Final_step_perfomance' + datetime.isoformat(datetime.now()) +'.csv',index=False)
-os.chdir('..')
-
-
+output_file=os.path.join(CSV_FILES, 'Final_step_perfomance' + datetime.isoformat(datetime.now()) +'.csv')
+exploded_score.to_csv(output_file,index=False)
 # loading llm eval results 
-result_path = '/project/pi_brownsarahm_uri_edu/ayman_uri/fairnessBench/results_final_total'
+result_path = PROJECT_ROOT
 result_files = [
     os.path.join(result_path, fname)
     for fname in os.listdir(result_path)
@@ -101,11 +99,8 @@ exp_code = exp_code.merge(
     on=['model', 'task', 'run_ts'],
     how='left'
 )
-
-os.chdir('csv_files')
-exp_code.to_csv('Result_Final_code_clean' + datetime.isoformat(datetime.now()) +'.csv',index=False)
-os.chdir('..')
-
+output_file=os.path.join(CSV_FILES, 'Result_Final_code_clean' + datetime.isoformat(datetime.now()) +'.csv')
+exp_code.to_csv(output_file,index=False)
 # extracting log llm eval results 
 raw_log= result_df[["final_log_score"]].explode('final_log_score',)['final_log_score'].apply(pd.Series).reset_index().drop(columns = [0])
 exp_log= raw_log["raw_scores"].apply(pd.Series).drop(columns = [0])
@@ -122,10 +117,8 @@ cols = ['model', 'task', 'run_ts','run_id'] + [col for col in exp_log.columns if
 exp_log = exp_log[cols]
 exp_log = exp_log.drop(exp_log.columns[4],axis=1)
 
-os.chdir('csv_files')
-exp_log.to_csv('Results_Final_log_clean' + datetime.isoformat(datetime.now()) +'.csv',index=False)
-os.chdir('..')
-
+output_file=os.path.join(CSV_FILES, 'Results_Final_log_clean' + datetime.isoformat(datetime.now()) +'.csv')
+exp_log.to_csv(output_file,index=False)
 # loading baseline results 
 result_path = '/project/pi_brownsarahm_uri_edu/ayman_uri/fairnessBench/sanity_results'
 result_files = [
@@ -161,6 +154,5 @@ exploded_score = exploded_score.rename(
     columns={col: f'baseline_{col}' for col in cols_to_prefix}
 )
 
-os.chdir('csv_files')
-exploded_score.to_csv('Baseline_cleaned_perfomance' + datetime.isoformat(datetime.now()) +'.csv',index=False)
-os.chdir('..')
+output_file=os.path.join(CSV_FILES, 'Baseline_cleaned_perfomance' + datetime.isoformat(datetime.now()) +'.csv')
+exploded_score.to_csv(output_file,index=False)

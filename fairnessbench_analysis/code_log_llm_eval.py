@@ -4,13 +4,14 @@ import numpy as np
 from datetime import datetime 
 import matplotlib.pyplot as plt
 import seaborn as sns
+from path import CSV_FILES,GRAPHS
+
 
 # Loading useful dataframes
-os.chdir('csv_files')
-code_eval = pd.read_csv('Result_Final_code_clean2025-08-13T10:44:12.639136.csv')
-log_eval = pd.read_csv('Results_Final_log_clean2025-08-13T10:44:21.146989.csv')
-perf_df= pd.read_csv('Final_step_perfomance2025-08-13T10:44:02.216469.csv')
-os.chdir('..')
+code_eval = pd.read_csv(CSV_FILES/'Result_Final_code_clean2025-09-18T00:48:40.584077.csv')
+log_eval = pd.read_csv(CSV_FILES/'Results_Final_log_clean2025-09-18T00:48:52.486398.csv')
+perf_df= pd.read_csv(CSV_FILES/'Final_step_perfomance2025-09-18T00:48:26.025263.csv')
+
 
 # Removing missing rows 
 code_eval= code_eval.dropna(how="any")
@@ -31,7 +32,8 @@ wider_code = wider_code[wider_cols]
 score_cols = ["1. Data Collection and Processing","2. Bias Detection and Mitigation","3. Fairness Metric Selection","4. Model Selection and Training","5. Evaluation and Testing"]
 code_tall = wider_code.melt(id_vars=['model','task','task_dataset','task_metric','resrch_prob','dem','run_ts','run_id'],
                             value_vars=score_cols,var_name='score')
-sns.catplot(code_tall,col='model',row='resrch_prob',x= 'task_dataset',y='value',hue='score',kind='bar').savefig('codeval')
+output= os.path.join(GRAPHS,'codeval')                           
+sns.catplot(code_tall,col='model',row='resrch_prob',x= 'task_dataset',y='value',hue='score',kind='bar').savefig(output)
 
 
 # log eval
@@ -47,6 +49,6 @@ log_tall = wider_log.melt(id_vars=['model','task','task_dataset','task_metric','
                             value_vars=score_cols,var_name='score')
 
                             
-os.chdir('graphs/')    
-sns.catplot(log_tall,col='model',x='resrch_prob',row= 'task_dataset',y='value',hue='score',kind='bar').savefig('logval')
+output=os.path.join(GRAPHS,'logval')   
+sns.catplot(log_tall,col='model',x='resrch_prob',row= 'task_dataset',y='value',hue='score',kind='bar').savefig(output)
 

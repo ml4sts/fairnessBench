@@ -4,11 +4,11 @@ import numpy as np
 from datetime import datetime 
 import matplotlib.pyplot as plt
 import seaborn as sns
+from path import CSV_FILES,GRAPHS
 
 # Loading useful dataframes
-os.chdir('csv_files')
-perf_alt = pd.read_csv('Final_step_perfomance2025-08-13T08:50:41.399910.csv')
-os.chdir('..')
+file = CSV_FILES/'Final_step_perfomance2025-09-18T00:48:26.025263.csv'
+perf_alt = pd.read_csv(file)
 
 # Removing missing rows 
 perf= ['acc','precision', 'recall', 'di', 'statistical_parity_diff', 
@@ -59,5 +59,5 @@ for i in range(len(ax)):
             ax[i,j].axhline(y=0.0, color='black', linestyle='-.', alpha=0.3)
         ax[i,j].axvline(x=1.0, color='black', linestyle='-.', alpha=0.2)
 
-os.chdir('graphs/')    
-plt.savefig('balancing_fairness.png',dpi=400,bbox_inches='tight')
+output = os.path.join(GRAPHS,'balancing_fairness.png')   
+plt.savefig(output,dpi=400,bbox_inches='tight')

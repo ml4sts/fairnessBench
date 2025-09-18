@@ -4,11 +4,11 @@ import numpy as np
 from datetime import datetime 
 import matplotlib.pyplot as plt
 import seaborn as sns
+from path import CSV_FILES,GRAPHS
 
 # Loading useful dataframes
-os.chdir('csv_files')
-code_eval = pd.read_csv('Result_Final_code_clean2025-08-13T10:44:12.639136.csv')
-os.chdir('..')
+file= CSV_FILES/'Result_Final_code_clean2025-09-18T00:48:40.584077.csv'
+code_eval = pd.read_csv(file)
 
 # Removing missing rows 
 code_eval= code_eval.dropna(how="any")
@@ -53,5 +53,5 @@ sns.heatmap(
 )
 plt.title("Flake8 vs Rubric Correlation (claude-3, adult, balance, erd)")
 
-os.chdir('graphs/')    
-plt.savefig('flake8_vs_code_correlation.png',bbox_inches='tight')
+output= os.path.join(GRAPHS,'flake8_vs_code_correlation.png')
+plt.savefig(output,bbox_inches='tight')
