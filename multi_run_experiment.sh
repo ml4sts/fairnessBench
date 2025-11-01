@@ -5,6 +5,9 @@
 # For every task this script will be run at least 3 times; model, retrival, agent/s
 # This scrip calls on the runner.py
 
+# Base path depends on where we want to place out logs (base log folder) (work/scratch/project/...)
+base="/scratch3/workspace/ayman_sandouk_uri_edu-fairness/fairnessBench/"
+
 # grab preliminary info
 exp_path=$1
 task=$2
@@ -21,11 +24,10 @@ do
   shift 
 done
 
-
-
 extra_args="${@}"
 folder=$exp_path
 python=$(which python)
+
 
 echo "exp_path: $exp_path"
 echo "task: $task"
@@ -40,21 +42,21 @@ for i in "${devices[@]}"
 do 
   # time in current Unix timestamp
   ts=$(date +%s)
-
+  echo "Run: #$ts"
   # Check for log folder with a time-named folder in it or create one
-  if [ -d "/project/pi_brownsarahm_uri_edu/ayman_uri/fairnessBench/new_$folder/$ts" ]; then
-      echo "Folder /project/pi_brownsarahm_uri_edu/ayman_uri/fairnessBench/new_$folder/$ts already exists. removing it"
-      rm -rf /project/pi_brownsarahm_uri_edu/ayman_uri/fairnessBench/new_$folder/$ts
+  if [ -d "$base/$folder/$ts" ]; then
+      echo "Folder $base/$folder/$ts already exists. removing it"
+      rm -rf $base/$folder/$ts
   fi
-  mkdir -p "/project/pi_brownsarahm_uri_edu/ayman_uri/fairnessBench/new_$folder/$ts"
+  mkdir -p "$base/$folder/$ts"
 
   # Call the prepare task script
   python -u -m fairnessBench.prepare_task $task $python
   
   # Printing command for debugging purposes and executing task with runner.py
-  echo "python -u -m fairnessBench.runner --python $python --task $task --device $i --log-dir /project/pi_brownsarahm_uri_edu/ayman_uri/fairnessBench/new_$folder/$ts  --work-dir /scratch3/workspace/ayman_sandouk_uri_edu-fairness/fairnessBench/workspaces/$folder/$ts ${extra_args}" > /project/pi_brownsarahm_uri_edu/ayman_uri/fairnessBench/new_$folder/$ts/log 2>&1 &
+  echo "python -u -m fairnessBench.runner --python $python --task $task --device $i --log-dir $base/$folder/$ts  --work-dir $base/workspaces/$folder/$ts ${extra_args}" > $base/$folder/$ts/log 2>&1 &
   
-  eval "python -u -m fairnessBench.runner --python $python --task $task --device $i --log-dir /project/pi_brownsarahm_uri_edu/ayman_uri/fairnessBench/new_$folder/$ts  --work-dir /scratch3/workspace/ayman_sandouk_uri_edu-fairness/fairnessBench/workspaces/$folder/$ts ${extra_args}" > /project/pi_brownsarahm_uri_edu/ayman_uri/fairnessBench/new_$folder/$ts/log 2>&1 &
+  eval "python -u -m fairnessBench.runner --python $python --task $task --device $i --log-dir $base/$folder/$ts  --work-dir $base/workspaces/$folder/$ts ${extra_args}" > $base/$folder/$ts/log 2>&1 &
 
   # 2 seconds between runs
   sleep 2
