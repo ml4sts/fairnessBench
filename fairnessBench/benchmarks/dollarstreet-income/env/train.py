@@ -45,8 +45,8 @@ transform = transforms.Compose([
 train_csv = "./images_v2_imagenet_train.csv"
 test_csv = "./images_v2_imagenet_test.csv"
 
-train_dataset = DollarStreetDataset(train_csv, ".", transform) 
-test_dataset = DollarStreetDataset(test_csv, ".", transform) 
+train_dataset = DollarStreetDataset(csv_path=train_csv, root_dir=".", transform=transform) 
+test_dataset = DollarStreetDataset(csv_path = test_csv, root_dir=".", transform=transform) 
 num_classes = len(train_dataset.synset2idx)
 train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True, num_workers=4)
 test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False, num_workers=4)
