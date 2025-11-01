@@ -200,13 +200,13 @@ class Environment:
             llm_ignore_files = open(os.path.join(benchmark_dir, "scripts", "env_read_only_files.txt"), "r").read().split("\n")
             for path, subdirs, files in os.walk(os.path.join(work_dir)):
 
-                # relpath = os.path.relpath(path, work_dir)
+                relpath = os.path.relpath(path, work_dir)
                 # filter out the files that are read only
-                # filenames = [os.path.join(relpath, filename) for filename in files]
+                filenames = [os.path.join(relpath, filename) for filename in files]
                 for llm_ignore_file in llm_ignore_files:
-                    # llm_ignore_filenames = [n for n in filenames if fnmatch.fnmatch(n, llm_ignore)]
-                    if llm_ignore_file in files:
-                        self.env_read_only_files.append(llm_ignore_file)
+                    llm_ignore_filenames = [n for n in filenames if fnmatch.fnmatch(n, llm_ignore_file)]
+                    #if llm_ignore_file in files:
+                    self.env_read_only_files.extend(llm_ignore_filenames)
 
 
         # init backup folder and remove all content if it exists
