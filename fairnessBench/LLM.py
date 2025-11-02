@@ -606,13 +606,13 @@ def complete_text(prompt, log_file, model, device=0, **kwargs):
     
     if model.startswith("claude"):
         # use anthropic API
-        completion = complete_text_claude(prompt, stop_sequences=[anthropic.HUMAN_PROMPT,"Observation:",  "Observation"], log_file=log_file, model=model, **kwargs)
+        completion = complete_text_claude(prompt, stop_sequences=[anthropic.HUMAN_PROMPT,"Observation:"], log_file=log_file, model=model, **kwargs)
     elif model.startswith("gemini"):
-        completion = complete_text_gemini(prompt, stop_sequences=["Observation:", "Observation"], log_file=log_file, model=model, **kwargs)
+        completion = complete_text_gemini(prompt, stop_sequences=["Observation:"], log_file=log_file, model=model, **kwargs)
     elif model.startswith("llama"):
-        completion = complete_text_hf(prompt, stop_sequences=["Observation:", "Observation"], log_file=log_file, model=model, device=device, **kwargs)
+        completion = complete_text_hf(prompt, stop_sequences=["Observation:"], log_file=log_file, model=model, device=device, **kwargs)
     elif model.startswith("qwen"):
-        completion = complete_text_qwen(prompt, stop_sequences=["Observation:", "Observation"], log_file=log_file, model=model, device=device, **kwargs)
+        completion = complete_text_qwen(prompt, stop_sequences=["Observation:"], log_file=log_file, model=model, device=device, **kwargs)
     elif model.startswith("granite"):
         completion = complete_text_granite(prompt, stop_sequences=["}"], log_file=log_file, model=model, device=device, **kwargs)
     elif model.startswith("deepseek"):
@@ -621,10 +621,10 @@ def complete_text(prompt, log_file, model, device=0, **kwargs):
         completion = complete_text_gemma(prompt, stop_sequences=["}"], log_file=log_file, model=model, device=device, **kwargs)
     elif "/" in model:
         # use CRFM API since this specifies organization like "openai/..."
-        completion = complete_text_crfm(prompt, stop_sequences=["Observation:", "Observation"], log_file=log_file, model=model, **kwargs)
+        completion = complete_text_crfm(prompt, stop_sequences=["Observation:"], log_file=log_file, model=model, **kwargs)
     else:
         # use OpenAI API
-        completion = complete_text_openai(prompt, stop_sequences=["Observation:", "Observation"], log_file=log_file, model=model, **kwargs)
+        completion = complete_text_openai(prompt, stop_sequences=["Observation:"], log_file=log_file, model=model, **kwargs)
     return completion
 
 
