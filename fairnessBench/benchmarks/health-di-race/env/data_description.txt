@@ -1,35 +1,33 @@
-patient-age: Integer 
+patient_age: Integer 
 
-lifestyle : Categorical feature
-    Private
-    Self-emp-not-inc
-    Self-emp-inc
-    Federal-gov
-    Local-gov
-    State-gov
-    Without-pay
-    Never-worked
+lifestyle: Categorical feature
+    Sedentary
+    Moderately-active 
+    Active
+    Highly-active
+    Unhealthy
+    Healthy
+    At-risk
 
 insurance_provider : Categorical
-    Education Level
-    Bachelors
-    Some-college
-    11th
-    HS-grad
-    Prof-school
-    Assoc-acdm
-    Assoc-voc
-    9th
-    7th-8th
-    12th
-    Masters
-    1st-4th
-    10th
-    Doctorate
-    5th-6th
-    Preschool
+    UnitedHealthcare
+    Blue Cross Blue Shield
+    Aetna
+    Cigna
+    Humana
+    Kaiser Permanente
+    Anthem
+    Molina Healthcare
+    Centene Corporation
+    Highmark Health
+    Health Net
+    WellCare Health Plans
+    CareFirst
+    Independence Blue Cross
+    Fidelis Care
+    Oscar Health
     
-marital-status : Categorical
+marital-status: Categorical
     Married-civ-spouse, 
     Divorced, 
     Never-married, 
@@ -39,20 +37,20 @@ marital-status : Categorical
     Married-AF-spouse
 
 procedure_on_the_visit : Categorical
-    Tech-support, 
-    Craft-repair, 
-    Other-service, 
-    Sales, 
-    Exec-managerial, 
-    Prof-specialty, 
-    Handlers-cleaners, 
-    Machine-op-inspct, 
-    Adm-clerical, 
-    Farming-fishing, 
-    Transport-moving, 
-    Priv-house-serv, 
-    Protective-serv, 
-    Armed-Forces
+    Administrative-check
+    Specialist-consultation
+    Minor-procedure
+    Major-surgery
+    General-checkup
+    Diagnostic-test
+    Rehabilitation
+    Emergency
+    Preventive-screening
+    Therapy-session
+    Follow-up
+    Mental-health-consultation
+    Chronic-disease-management
+    Vaccination
 
 relationship : Categorical
     Wife, 
@@ -80,47 +78,48 @@ blood-pressure : Integer
 daily-activity-hours : Integer
 
 reason-for-visit : Categorical
-    United-States, 
-    Cambodia, 
-    England, 
-    Puerto-Rico, 
-    Canada, 
-    Germany, 
-    Outlying-US(Guam-USVI-etc), 
-    India, 
-    Japan, 
-    Greece, 
-    South, 
-    China, 
-    Cuba, 
-    Iran, 
-    Honduras, 
-    Philippines, 
-    Italy, 
-    Poland, 
-    Jamaica, 
-    Vietnam, 
-    Mexico, 
-    Portugal, 
-    Ireland, 
-    France, 
-    Dominican-Republic, 
-    Laos, Ecuador, 
-    Taiwan, 
-    Haiti, 
-    Columbia, 
-    Hungary, 
-    Guatemala, 
-    Nicaragua, 
-    Scotland, 
-    Thailand, 
-    Yugoslavia, 
-    El-Salvador, 
-    Trinadad&Tobago, 
-    Peru, 
-    Hong, 
-    Holand-Netherlands
+    General-checkup
+    Routine-follow-up
+    New-symptom
+    Fever
+    Cold-Flu-Cough
+    Headache-migraine
+    Heart-concerns
+    Respiratory-issue
+    Digestive-issue
+    Pain-related
+    Skin-concern
+    Eye
+    ENT
+    Mental-health-concerns
+    Stress
+    Fatigue-weakness
+    Weight-concerns
+    Diabetes/Bloodsugar
+    BP-concern
+    Cholesterol-lipid-concern
+    Allergy-symptoms
+    Prenatal
+    Gynecological-concern
+    Pediatrics
+    Age-related
+    Chronic-disease
+    Medication-side-effect
+    Injury
+    Trauma
+    Preventive-counseling
+    Genetic-risks
+    Vaccination-inquiry
+    Health-counseling
+    Substance-concern
+    Surgical-consultation
+    Specialist-referral
+    Discharge
+    Lab-result-discussion'
+    Second-opinion
+    Administrative-inquiry
+    Other
 
-health-risk : binary target
+health_risk : binary target
         1 
         0
