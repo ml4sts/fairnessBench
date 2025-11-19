@@ -200,13 +200,13 @@ def run_eval(log_folder, benchmark_folder_name, eval_model = None, eval_intermed
                             result.score.append(eval_step_score)
                             print(e)
                         # Getting llm_eval here using llm_eval_repeat function
-                        # try:
-                        #     llm_score = repeat_llm_eval(5, train_script, eval_model)
-                        #     result.llm_score.append(llm_score)
-                        # except Exception as e:
-                        #     print("\nllm_eval didn't work\n")
-                        #     print(e)
-                        #     pass
+                        try:
+                            llm_score = repeat_llm_eval(5, train_script, eval_model)
+                            result.llm_score.append(llm_score)
+                        except Exception as e:
+                            print("\nllm_eval didn't work\n")
+                            print(e)
+                            pass
                         # Getting Flake8 score here
                         try:
                             flake8_score = get_flake8(train_script)
@@ -236,7 +236,7 @@ def run_eval(log_folder, benchmark_folder_name, eval_model = None, eval_intermed
                 # Getting llm_eval here using llm_eval_repeat function
                 if eval_model:
                     try:
-                            llm_score = repeat_llm_eval(1, train_script, eval_model)
+                            llm_score = repeat_llm_eval(5, train_script, eval_model)
                             result.final_llm_score = llm_score
                     except Exception as e:
                             print("\nllm_eval didn't work\n")
@@ -266,7 +266,7 @@ def run_eval(log_folder, benchmark_folder_name, eval_model = None, eval_intermed
                                 lines = [line.strip() for line in history_step.splitlines() ]
                                 f.write('\n'.join(lines))
                             print(f"Using history_steps from {temp_txt_path} for evaluation")
-                            log_score = repeat_llm_eval_log(1, temp_txt_path, eval_model)
+                            log_score = repeat_llm_eval_log(5, temp_txt_path, eval_model)
                         else:
                             # if there's no agent step which i doubt fallback to the main_log(will be tooo long and make model fail. lol)
                             print("No history step files found.")
