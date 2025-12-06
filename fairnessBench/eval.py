@@ -131,7 +131,7 @@ class EvaluationResult:
     extra: Dict[str, bool]
 
 
-def run_eval(log_folder, benchmark_folder_name, eval_model = None, eval_intermediate=False):
+def run_eval(log_folder, benchmark_folder_name, eval_model=None, eval_intermediate=False, llm_eval=False, log_eval=False, flake8=False):
     results = {}    
 
     # Log folder is the specific log folder for one model and one task
@@ -139,7 +139,8 @@ def run_eval(log_folder, benchmark_folder_name, eval_model = None, eval_intermed
     for subdir, dirs, files in os.walk(log_folder):
         for file in files:
 
-            if file == 'trace.json':
+            # trace.json is an indicator that at least one step occurred
+            if file == 'trace.json': # TODO: Add new keys
                 result = EvaluationResult(
                     path=os.path.join(subdir, file),
                     summary="",
@@ -200,27 +201,29 @@ def run_eval(log_folder, benchmark_folder_name, eval_model = None, eval_intermed
                             result.score.append(eval_step_score)
                             print(e)
                         # Getting llm_eval here using llm_eval_repeat function
-                        try:
-                            llm_score = repeat_llm_eval(5, train_script, eval_model)
-                            result.llm_score.append(llm_score)
-                        except Exception as e:
-                            print("\nllm_eval didn't work\n")
-                            print(e)
-                            pass
+                        if llm_eval and eval_model:
+                            try:
+                                llm_score = repeat_llm_eval(5, train_script, eval_model)
+                                result.llm_score.append(llm_score)
+                            except Exception as e:
+                                print("\nllm_eval didn't work\n")
+                                print(e)
+                                pass
                         # Getting Flake8 score here
-                        try:
-                            flake8_score = get_flake8(train_script)
-                            result.flake8_score.append(flake8_score)
-                            print(flake8_score)
-                        except Exception as e:
-                            print("\nFlake8_eval didn't work\n")
-                            print(e)
-                            pass
+                        if flake8:
+                            try:
+                                flake8_score = get_flake8(train_script)
+                                result.flake8_score.append(flake8_score)
+                                # print(f"Flake8 final score: {flake8_score0}")
+                            except Exception as e:
+                                print("\nFlake8_eval didn't work\n")
+                                print(e)
+                                pass
                                 
-                                    
                     # Add the ids of the steps that were evaluated to the JSON file
                     result.score_steps = list(subsampled_list)
-                
+
+
                 # Evaluate the final step
                 folder_path = os.path.join(subdir, 'traces/step_final_files')
                 train_script = os.path.join(folder_path, ".train.py") if (os.path.exists(os.path.join(folder_path, ".train.py"))) else os.path.join(folder_path, "train.py")
@@ -229,12 +232,12 @@ def run_eval(log_folder, benchmark_folder_name, eval_model = None, eval_intermed
                         eval_final_score = module.get_score(folder_path)
                         result.score.append(eval_final_score)
                         result.final_score = eval_final_score
-                        print(eval_final_score)
+                        print(f"Final score: {eval_final_score}")
                     except Exception as e:
                         print(e)
                         pass
                 # Getting llm_eval here using llm_eval_repeat function
-                if eval_model:
+                if llm_eval and eval_model:
                     try:
                             llm_score = repeat_llm_eval(5, train_script, eval_model)
                             result.final_llm_score = llm_score
@@ -243,15 +246,16 @@ def run_eval(log_folder, benchmark_folder_name, eval_model = None, eval_intermed
                             print(e)
                             pass
                 # Getting Flake8 score
-                try:
-                    flake8_score = get_flake8(train_script)
-                    result.final_flake8_score = flake8_score
-                    print(flake8_score)
-                except Exception as e:
-                    print("\nFlake8_eval didn't work\n")
-                    print(e)
-                    pass
-                if eval_model:
+                if flake8:
+                    try:
+                        flake8_score = get_flake8(train_script)
+                        result.final_flake8_score = flake8_score
+                        print(f"Flake8 final score: {flake8_score}")
+                    except Exception as e:
+                        print("\nFlake8_eval didn't work\n")
+                        print(e)
+                        pass
+                if log_eval and eval_model:
                     # Getting LLM log eval here using llm_eval_log_repeat function
                     log_file=os.path.join(subdir.rsplit('/',1)[0], "agent_log/main_log")
                     try:
@@ -260,7 +264,6 @@ def run_eval(log_folder, benchmark_folder_name, eval_model = None, eval_intermed
                         # use the latest step in the eval
                         if history_step:
                             # create a temporary file with the history_step content
-                            #history_text = "\n\n".join(history_step)
                             temp_txt_path = os.path.join(subdir.rsplit('/',1)[0], "agent_log/temp_history_step.txt")
                             with open(temp_txt_path, 'w') as f:
                                 lines = [line.strip() for line in history_step.splitlines() ]
@@ -296,39 +299,47 @@ def run_eval(log_folder, benchmark_folder_name, eval_model = None, eval_intermed
                     
                 results[os.path.join(subdir, file)] = result
                     
-        
     return results
+
             
 if __name__ == "__main__":
     
     parser = argparse.ArgumentParser()
-    parser.add_argument("--log-folder", type=str, default="logs")
-    parser.add_argument("--task", type=str, default="adult")
-    parser.add_argument("--output-file", type=str, default="results.json")
-    parser.add_argument("--eval_model", type=str, default=None)
-    parser.add_argument("--eval-intermediate", action="store_true")
+    parser.add_argument("--log-folder", type=str, default="final_exp_logs")   # Logs of model/task with multiple runs 
+    parser.add_argument("--task", type=str, default="adult_di_best-sex")      # All runs in a single model/task will be evaluated
+    parser.add_argument("--eval-intermediate", action="store_true")           # Set true to evaluate all steps not just the final step
+    parser.add_argument("--eval_model", type=str, default=None)               # LLM evaluator
+    parser.add_argument("--llm_eval", type=bool, action="store_true")         # Set true to evaluate train.py with llm
+    parser.add_argument("--log_eval", type=bool, action="store_true")         # Set true to evaluate logs (thought-action) with llm
+    parser.add_argument("--flake8", type=bool, action="store_true")           # Set true to evaluate train.py with flake8
+    parser.add_argument("--output-file", type=str, default="results.json")    # JSON result file for model/task
     args = parser.parse_args()
     
 
+    # Report if the task has no logs found
     if not os.path.exists(args.log_folder):
         print(f"WARNING\nWARNING\nWARNING: The log folder {args.log_folder} doesn't exist. \nWARNING\nWARNING")
         exit()
 
-
-    if os.path.exists(args.output_file):
-        with open(args.output_file) as f:
-            content = json.load(f)
-            if content:
-                print(f"WARNING\nWARNING\nWARNING: Results for {args.output_file} already exists\nWARNING\nWARNING")
-                exit()
-
-
-    benchmark_folder_name = get_task_info(args.task)[0] 
-    results = run_eval(args.log_folder, benchmark_folder_name, eval_model = args.eval_model, eval_intermediate = args.eval_intermediate)
+    # To find task/scripts/eval.py
+    benchmark_folder_name = get_task_info(args.task)[0]             # Return is (folder, research problem)
+    results = run_eval(args.log_folder, benchmark_folder_name, eval_intermediate = args.eval_intermediate, eval_model = args.eval_model, llm_eval = args.llm_eval, log_eval = args.log_eval, flake8 = args.flake8)
               
+
+    # Report a failure in the run_eval function - Prevent empty file from being generated
     if not results:
-        print(f"WARNING\nWARNING\nWARNING: Results for {args.log_folder.rsplit('/')} is empty\nWARNING\nWARNING")
+        print(f"WARNING\nWARNING\nWARNING: Eval failed. Results for {args.log_folder.rsplit('/')} were empty\nWARNING\nWARNING")
     else:
+        # Report if json result file already exists so that we don't overwrite
+        if os.path.exists(args.output_file):
+            with open(args.output_file) as f:
+                content = json.load(f)
+                if content: # If file is empty it's ok to overwrite
+                    print(f"WARNING\nWARNING\nWARNING: Results for {args.output_file} already exists. Concatinating...\nWARNING\nWARNING")
+                    # exit()
+                    for key, eval in content.items():
+                        if key not in results.keys():
+                            results.update({key:eval})
+         
         json.dump(results, open(args.output_file, "w"), indent=4, cls=EnhancedJSONEncoder)
-                
-       
+    
