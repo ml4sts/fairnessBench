@@ -18,22 +18,6 @@ torch.cuda.empty_cache()
 
 # AS: Setup llama
 loaded_hf_models = {}
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-try:
-    # Need export HF_HOME=/datasets/ai/llama3
-    # llama_= "meta-llama/Llama-3.3-70B-Instruct" # Gave us decent results.
-    # llama_= "meta-llama/Llama-3.1-405B-Instruct" # Terrible hallusinations
-    # llama_= "meta-llama/Llama-3.1-8B-Instruct" # Trying smaller models for test runs 
-
-    tokenizer = AutoTokenizer.from_pretrained(llama_)
-    quant_config = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_quant_type="nf4", bnb_4bit_compute_dtype=torch.float16)
-    model = AutoModelForCausalLM.from_pretrained(llama_, quantization_config = quant_config, device_map="auto",torch_dtype=torch.float16)
-    loaded_hf_models = {"llama": (model, tokenizer)}
-    print(f"Loaded local {llama_} successfuly using device: {model.device}.")
-except Exception as e:
-    print(f"Failed to load local llama - Current device:{device}\nIssue: {e}")
-
-
 def complete_text_hf(prompt, stop_sequences=[], model="llama", max_tokens_to_sample = 2500, temperature=0.5, log_file=None, device=0, **kwargs):
     if model in loaded_hf_models:
         hf_model, tokenizer = loaded_hf_models[model]
