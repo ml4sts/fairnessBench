@@ -308,9 +308,9 @@ if __name__ == "__main__":
     parser.add_argument("--log-folder", type=str, default="final_exp_logs")   # Logs of model/task with multiple runs 
     parser.add_argument("--task", type=str, default="adult_di_best-sex")      # All runs in a single model/task will be evaluated
     parser.add_argument("--eval-intermediate", action="store_true")           # Set true to evaluate all steps not just the final step
-    parser.add_argument("--eval_model", type=str, default=None)               # LLM evaluator
-    parser.add_argument("--llm_eval", type=bool, action="store_true")         # Set true to evaluate train.py with llm
-    parser.add_argument("--log_eval", type=bool, action="store_true")         # Set true to evaluate logs (thought-action) with llm
+    parser.add_argument("--eval-model", type=str, default=None)               # LLM evaluator
+    parser.add_argument("--llm-eval", type=bool, action="store_true")         # Set true to evaluate train.py with llm
+    parser.add_argument("--log-eval", type=bool, action="store_true")         # Set true to evaluate logs (thought-action) with llm
     parser.add_argument("--flake8", type=bool, action="store_true")           # Set true to evaluate train.py with flake8
     parser.add_argument("--output-file", type=str, default="results.json")    # JSON result file for model/task
     args = parser.parse_args()
