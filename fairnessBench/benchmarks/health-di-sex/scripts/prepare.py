@@ -15,7 +15,7 @@ y = adult.data.targets.copy()
 
 y["income"] = y["income"].str.rstrip('.')
 y["income"] = y["income"].apply(lambda i: 1 if i == '>50K' else 0)
-X["race"] = X["race"].apply(lambda i: 1 if i == 'White' else 0)
+X["sex"] = X["sex"].apply(lambda i: 1 if i == 'Male' else 0)
 X = X.replace('?', np.nan)
 
 ad = pd.concat([X, y], axis=1)
@@ -85,7 +85,7 @@ ad = pd.concat([ad] + new_col_list, axis=1)
 ad = ad.drop(['occupation', 'native-country', 'workclass', 'education'], axis=1)
 ad = ad.rename(columns={'age': 'patient_age', 'sex': 'gender', 'income': 'health_risk'})
 
-cat_cols = ['marital-status', 'relationship', 'gender', 'lifestyle', 
+cat_cols = ['marital-status', 'relationship', 'race', 'lifestyle', 
             'insurance_provider', 'procedure_on_the_day', 'reason_for_visit']
 
 
