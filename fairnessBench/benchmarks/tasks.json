@@ -420,8 +420,129 @@
        "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. Then, update the provided train.py script to train a model that best balances accuracy and fairness with respect to disparate impact across race. Iterate over different models, feature selection strategies, and fairness-oriented preprocessing techniques to find an optimal trade-off between accuracy and disparate impact. Do not inspect any CSV files directly. Use the execute script action to verify if the goal is achieved.",
        "benchmark_folder_name": "health-di-race"
     },
-    "nondescriptive_di_balance-race": {
-       "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. Then, update the provided train.py script to train a model that best balances accuracy and fairness with respect to disparate impact across race. Iterate over different models, feature selection strategies, and fairness-oriented preprocessing techniques to find an optimal trade-off between accuracy and disparate impact. Do not inspect any CSV files directly. Use the execute script action to verify if the goal is achieved.",
-       "benchmark_folder_name": "non_descriptive_ad-di-race"
-    } 
+    "health_di_balance-sex": {
+        "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. Then, update the provided train.py script to train a model that best balances accuracy and fairness with respect to disparate impact across sex. Iterate over different models, feature selection strategies, and fairness-oriented preprocessing techniques to find an optimal trade-off between accuracy and disparate impact. Do not inspect any CSV files directly. Use the execute script action to verify if the goal is achieved.",
+        "benchmark_folder_name": "health-di-sex"
+    },
+    "health_di_best-race": {
+       "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. Then, update the provided train.py script to train a model with a focus on making the model fair with respect to disparate impact. Iterate over different models, feature selection techniques, or fairness-oriented preprocessing steps to improve the disparate impact with respect to race. Do not inspect any CSV files directly. Use execute script action to verify if the goal is achieved.",
+       "benchmark_folder_name": "health-di-race"
+    },
+    "health_di_best-sex": {
+        "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. Then, update the provided train.py script to train a model with a focus on making a model fair with respect to disparate impact. Iterate over different models, feature selection techniques, or fairness-oriented preprocessing steps to improve the disparate impact with respect to sex. Do not inspect any CSV files directly. Use execute script action to verify if the goal is achieved.",
+        "benchmark_folder_name": "health-di-sex"
+    },
+    "health_di_target10-race": {
+       "research_problem": "Review the data_description.txt file to gain an understanding of the data and its features. Make a note of key points and your progress in the research logs to maintain traceability. Next, modify the existing train.py script to train a model that aims to improve disparate impact with respect to race by 10% in health data. Explore and experiment with different models, feature selection strategies, or fairness-aware preprocessing techniques to achieve at least a 10% improvement in disparate impact. Avoid reading CSV files directly. After making your modifications, use execute script action to verify if the goal is achieved. Do not inspect any CSV files directly.",
+       "benchmark_folder_name": "health-di-race"
+    },
+    "health_di_target10-sex": {
+        "research_problem": "Review the data_description.txt file to gain an understanding of the data and its features. Make a note of key points and your progress in the research logs to maintain traceability. Next, modify the existing train.py script to train a model that aims to improve disparate impact with respect to sex by 10% in health data. Explore and experiment with different models, feature selection strategies, or fairness-aware preprocessing techniques to achieve at least a 10% improvement in disparate impact. Avoid reading CSV files directly. After making your modifications, use execute script action to verify if the goal is achieved. Do not inspect any CSV files directly.",
+        "benchmark_folder_name": "health-di-sex"
+    },
+    "health_di_implicit-race": {
+       "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. Then, update the provided train.py script to train a best performing model for the health data. Your goal is to Iterate over different models and maximize predictive performance. use execute script action to verify if the goal is achieved. Do not inspect any CSV files directly.",
+       "benchmark_folder_name": "health-di-race"
+    },
+    "health_di_implicit-sex": {
+        "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. Then, update the provided train.py script to train a best performing model for the health data. Your goal is to Iterate over different models and maximize predictive performance. use execute script action to verify if the goal is achieved. Do not inspect any CSV files directly.",
+        "benchmark_folder_name": "health-di-sex"
+    },
+    "health_eod_best-sex": {
+        "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. Then, update the provided train.py script to train a model with a focus on making a model fair with respect to equal opportunity difference. Iterate over different models, feature selection techniques, or fairness-oriented preprocessing steps to improve the equal opportunity difference with respect to sex. Do not inspect any CSV files directly. Use execute script action to verify if the goal is achieved.",
+        "benchmark_folder_name": "health-eod-sex"
+    },
+    "health_eod_best-race": {
+       "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. Then, update the provided train.py script to train a model with a focus on making the model fair with respect to equal opportunity difference. Iterate over different models, feature selection techniques, or fairness-oriented preprocessing steps to improve the equal opportunity difference with respect to race. Do not inspect any CSV files directly. Use execute script action to verify if the goal is achieved.",
+       "benchmark_folder_name": "health-eod-race"
+    },
+    "health_eod_balance-sex": {
+        "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. Then, update the provided train.py script to train a model that best balances accuracy and fairness with respect to equal opportunity difference across sex. Iterate over different models, feature selection strategies, and fairness-oriented preprocessing techniques to find an optimal trade-off between accuracy and equal opportunity difference. Do not inspect any CSV files directly. Use the execute script action to verify if the goal is achieved.",
+        "benchmark_folder_name": "health-eod-sex"
+    },
+    "health_eod_balance-race": {
+       "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. Then, update the provided train.py script to train a model that best balances accuracy and fairness with respect to equal opportunity difference across race. Iterate over different models, feature selection strategies, and fairness-oriented preprocessing techniques to find an optimal trade-off between accuracy and equal opportunity difference. Do not inspect any CSV files directly. Use the execute script action to verify if the goal is achieved.",
+       "benchmark_folder_name": "health-eod-race"
+    },
+    "health_eod_target10-sex": {
+        "research_problem": "Review the data_description.txt file to gain an understanding of the data and its features. Make a note of key points and your progress in the research logs to maintain traceability. Next, modify the existing train.py script to train a model that aims to improve equal opportunity difference with respect to sex by 10% in health data. Explore and experiment with different models, feature selection strategies, or fairness-aware preprocessing techniques to achieve at least a 10% improvement in equal opportunity difference. Avoid reading CSV files directly. After making your modifications, use execute script action to verify if the goal is achieved. Do not inspect any CSV files directly.",
+        "benchmark_folder_name": "health-eod-sex"
+    },
+    "health_eod_target10-race": {
+       "research_problem": "Review the data_description.txt file to gain an understanding of the data and its features. Make a note of key points and your progress in the research logs to maintain traceability. Next, modify the existing train.py script to train a model that aims to improve equal opportunity difference with respect to race by 10% in health data. Explore and experiment with different models, feature selection strategies, or fairness-aware preprocessing techniques to achieve at least a 10% improvement in equal opportunity difference. Avoid reading CSV files directly. After making your modifications, use execute script action to verify if the goal is achieved. Do not inspect any CSV files directly.",
+       "benchmark_folder_name": "health-eod-race"
+    },
+    "health_eod_implicit-sex": {
+        "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. Then, update the provided train.py script to train a best performing model for the health data. Your goal is to Iterate over different models and maximize predictive performance. Use execute script action to verify if the goal is achieved. Do not inspect any CSV files directly.",
+        "benchmark_folder_name": "health-eod-sex"
+    },
+    "health_eod_implicit-race": {
+       "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. Then, update the provided train.py script to train a best performing model for the health data. Your goal is to Iterate over different models and maximize predictive performance. Use execute script action to verify if the goal is achieved. Do not inspect any CSV files directly.",
+       "benchmark_folder_name": "health-eod-race"
+    },
+    "nondescriptive_di_balance-patt1": {
+       "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. Then, update the provided train.py script to train a model that best balances accuracy and fairness with respect to disparate impact across patt1. Iterate over different models, feature selection strategies, and fairness-oriented preprocessing techniques to find an optimal trade-off between accuracy and disparate impact. Do not inspect any CSV files directly. Use the execute script action to verify if the goal is achieved.",
+       "benchmark_folder_name": "non_descriptive_ad-di-patt1"
+    },
+    "nondescriptive_di_balance-patt5": {
+        "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. Then, update the provided train.py script to train a model that best balances accuracy and fairness with respect to disparate impact across patt5. Iterate over different models, feature selection strategies, and fairness-oriented preprocessing techniques to find an optimal trade-off between accuracy and disparate impact. Do not inspect any CSV files directly. Use the execute script action to verify if the goal is achieved.",
+        "benchmark_folder_name": "non_descriptive_ad-di-patt5"
+    },
+    "nondescriptive_di_best-patt1": {
+       "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. Then, update the provided train.py script to train a model with a focus on making the model fair with respect to disparate impact. Iterate over different models, feature selection techniques, or fairness-oriented preprocessing steps to improve the disparate impact with respect to patt1. Do not inspect any CSV files directly. Use execute script action to verify if the goal is achieved.",
+       "benchmark_folder_name": "non_descriptive_ad-di-patt1"
+    },
+    "nondescriptive_di_best-patt5": {
+        "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. Then, update the provided train.py script to train a model with a focus on making a model fair with respect to disparate impact. Iterate over different models, feature selection techniques, or fairness-oriented preprocessing steps to improve the disparate impact with respect to patt5. Do not inspect any CSV files directly. Use execute script action to verify if the goal is achieved.",
+        "benchmark_folder_name": "non_descriptive_ad-di-patt5"
+    },
+    "nondescriptive_di_target10-patt1": {
+       "research_problem": "Review the data_description.txt file to gain an understanding of the data and its features. Make a note of key points and your progress in the research logs to maintain traceability. Next, modify the existing train.py script to train a model that aims to improve disparate impact with respect to patt1 by 10% in non-descriptive data. Explore and experiment with different models, feature selection strategies, or fairness-aware preprocessing techniques to achieve at least a 10% improvement in disparate impact. Avoid reading CSV files directly. After making your modifications, use execute script action to verify if the goal is achieved. Do not inspect any CSV files directly.",
+       "benchmark_folder_name": "non_descriptive_ad-di-patt1"
+    },
+    "nondescriptive_di_target10-patt5": {
+        "research_problem": "Review the data_description.txt file to gain an understanding of the data and its features. Make a note of key points and your progress in the research logs to maintain traceability. Next, modify the existing train.py script to train a model that aims to improve disparate impact with respect to patt5 by 10% in non-descriptive data. Explore and experiment with different models, feature selection strategies, or fairness-aware preprocessing techniques to achieve at least a 10% improvement in disparate impact. Avoid reading CSV files directly. After making your modifications, use execute script action to verify if the goal is achieved. Do not inspect any CSV files directly.",
+        "benchmark_folder_name": "non_descriptive_ad-di-patt5"
+    },
+    "nondescriptive_di_implicit-patt1": {
+       "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. Then, update the provided train.py script to train a best performing model for the non-descriptive data. Your goal is to Iterate over different models and maximize predictive performance. use execute script action to verify if the goal is achieved. Do not inspect any CSV files directly.",
+       "benchmark_folder_name": "non_descriptive_ad-di-patt1"
+    },
+    "nondescriptive_di_implicit-patt5": {
+        "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. Then, update the provided train.py script to train a best performing model for the non-descriptive data. Your goal is to Iterate over different models and maximize predictive performance. use execute script action to verify if the goal is achieved. Do not inspect any CSV files directly.",
+        "benchmark_folder_name": "non_descriptive_ad-di-patt5"
+    },
+    "nondescriptive_eod_best-patt5": {
+        "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. Then, update the provided train.py script to train a model with a focus on making a model fair with respect to equal opportunity difference. Iterate over different models, feature selection techniques, or fairness-oriented preprocessing steps to improve the equal opportunity difference with respect to patt5. Do not inspect any CSV files directly. Use execute script action to verify if the goal is achieved.",
+        "benchmark_folder_name": "non_descriptive_ad-eod-patt5"
+    },
+    "nondescriptive_eod_best-patt1": {
+       "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. Then, update the provided train.py script to train a model with a focus on making the model fair with respect to equal opportunity difference. Iterate over different models, feature selection techniques, or fairness-oriented preprocessing steps to improve the equal opportunity difference with respect to patt1. Do not inspect any CSV files directly. Use execute script action to verify if the goal is achieved.",
+       "benchmark_folder_name": "non_descriptive_ad-eod-patt1"
+    },
+    "nondescriptive_eod_balance-patt5": {
+        "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. Then, update the provided train.py script to train a model that best balances accuracy and fairness with respect to equal opportunity difference across patt5. Iterate over different models, feature selection strategies, and fairness-oriented preprocessing techniques to find an optimal trade-off between accuracy and equal opportunity difference. Do not inspect any CSV files directly. Use the execute script action to verify if the goal is achieved.",
+        "benchmark_folder_name": "non_descriptive_ad-eod-patt5"
+    },
+    "nondescriptive_eod_balance-patt1": {
+       "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. Then, update the provided train.py script to train a model that best balances accuracy and fairness with respect to equal opportunity difference across patt1. Iterate over different models, feature selection strategies, and fairness-oriented preprocessing techniques to find an optimal trade-off between accuracy and equal opportunity difference. Do not inspect any CSV files directly. Use the execute script action to verify if the goal is achieved.",
+       "benchmark_folder_name": "non_descriptive_ad-eod-patt1"
+    },
+    "nondescriptive_eod_target10-patt5": {
+        "research_problem": "Review the data_description.txt file to gain an understanding of the data and its features. Make a note of key points and your progress in the research logs to maintain traceability. Next, modify the existing train.py script to train a model that aims to improve equal opportunity difference with respect to patt5 by 10% in non-descriptive data. Explore and experiment with different models, feature selection strategies, or fairness-aware preprocessing techniques to achieve at least a 10% improvement in equal opportunity difference. Avoid reading CSV files directly. After making your modifications, use execute script action to verify if the goal is achieved. Do not inspect any CSV files directly.",
+        "benchmark_folder_name": "non_descriptive_ad-eod-patt5"
+    },
+    "nondescriptive_eod_target10-patt1": {
+       "research_problem": "Review the data_description.txt file to gain an understanding of the data and its features. Make a note of key points and your progress in the research logs to maintain traceability. Next, modify the existing train.py script to train a model that aims to improve equal opportunity difference with respect to patt1 by 10% in non-descriptive data. Explore and experiment with different models, feature selection strategies, or fairness-aware preprocessing techniques to achieve at least a 10% improvement in equal opportunity difference. Avoid reading CSV files directly. After making your modifications, use execute script action to verify if the goal is achieved. Do not inspect any CSV files directly.",
+       "benchmark_folder_name": "non_descriptive_ad-eod-patt1"
+    },
+    "nondescriptive_eod_implicit-patt5": {
+        "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. Then, update the provided train.py script to train a best performing model for the non-descriptive data. Your goal is to Iterate over different models and maximize predictive performance. Use execute script action to verify if the goal is achieved. Do not inspect any CSV files directly.",
+        "benchmark_folder_name": "non_descriptive_ad-eod-patt5"
+    },
+    "nondescriptive_eod_implicit-patt1": {
+       "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. Then, update the provided train.py script to train a best performing model for the non-descriptive data. Your goal is to Iterate over different models and maximize predictive performance. Use execute script action to verify if the goal is achieved. Do not inspect any CSV files directly.",
+       "benchmark_folder_name": "non_descriptive_ad-eod-patt1"
+    }
+
 }
