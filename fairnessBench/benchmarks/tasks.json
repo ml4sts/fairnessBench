@@ -544,5 +544,4 @@
        "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. Then, update the provided train.py script to train a best performing model for the non-descriptive data. Your goal is to Iterate over different models and maximize predictive performance. Use execute script action to verify if the goal is achieved. Do not inspect any CSV files directly.",
        "benchmark_folder_name": "non_descriptive_ad-eod-patt1"
     }
-
 }
