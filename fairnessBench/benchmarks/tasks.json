@@ -543,5 +543,57 @@
     "nondescriptive_eod_implicit-patt1": {
        "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. Then, update the provided train.py script to train a best performing model for the non-descriptive data. Your goal is to Iterate over different models and maximize predictive performance. Use execute script action to verify if the goal is achieved. Do not inspect any CSV files directly.",
        "benchmark_folder_name": "non_descriptive_ad-eod-patt1"
+    },
+    "adult_balance-eod-sex": {
+        "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. Then, update the provided train.py script to train a model that best balances accuracy and fairness with respect to equal opportunity difference across sex. Iterate over different models, feature selection strategies, and fairness-oriented preprocessing techniques to find an optimal trade-off between accuracy and equal opportunity difference. Do not inspect any CSV files directly. Use the execute script action to verify if the goal is achieved.",
+        "benchmark_folder_name": "adult-eod-sex"
+    },
+    "adult_balance-eod-nosuccess-sex": {
+        "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. Then, update the provided train.py script to train a model that best balances accuracy and fairness with respect to equal opportunity difference across sex. Iterate over different models, feature selection strategies, and fairness-oriented preprocessing techniques to find an optimal trade-off between accuracy and equal opportunity difference.  Do not inspect any CSV files directly.",
+        "benchmark_folder_name": "adult-eod-sex"
+    },
+    "adult_balance-eod-shortgoal-sex": {
+        "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. To achieve the best accuracy-fairness compromise regarding equal opportunity difference, systematically test various algorithms, variable selection approaches, and bias-mitigation preprocessing techniques. Iterate over different models, feature selection strategies, and fairness-oriented preprocessing techniques to find an optimal trade-off between accuracy and equal opportunity difference. Do not inspect any CSV files directly. Use the execute script action to verify if the goal is achieved.",
+        "benchmark_folder_name": "adult-eod-sex"
+    },
+    "adult_balance-eod-noreq-sex": {
+        "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. Then, update the provided train.py script to train a model that best balances accuracy and fairness with respect to disparate impact across sex. Iterate over different models, feature selection strategies, and fairness-oriented preprocessing techniques to find an optimal trade-off between accuracy and equal opportunity difference. Refine train.py to balance performance and sex-based fairness metrics Use the execute script action to verify if the goal is achieved.",
+        "benchmark_folder_name": "adult-eod-sex"
+    },
+    "adult_balance-eod-nochange-sex": {
+        "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. Then, update the provided train.py script to train a model that best balances accuracy and fairness with respect to equal opportunity difference across sex. Do not inspect any CSV files directly. Use the execute script action to verify if the goal is achieved.",
+        "benchmark_folder_name": "adult-eod-sex"
+    },
+    "adult_balance-eod-nohow-sex": {
+        "research_problem": "Go through the data_description.txt file to understand the data and its features. Then, update the provided train.py script to train a model that best balances accuracy and fairness with respect to equal opportunity difference across sex. Iterate over different models, feature selection strategies, and fairness-oriented preprocessing techniques to find an optimal trade-off between accuracy and equal opportunity difference. Do not inspect any CSV files directly. Use the execute script action to verify if the goal is achieved.",
+        "benchmark_folder_name": "adult-eod-sex"
+    },
+    "adult_balance-eod-rephrased01-sex": {
+        "research_problem": "Review the data_description.txt file to get familiar with the dataset and its features and note down essential points in your research logs. Modify the train.py script to train a model that optimizes both accuracy and fairness, focusing on reducing equal opportunity difference with respect to sex. Experiment with various models, feature selection methods, and fairness-aware preprocessing to balance model performance and disparate impact. Do not look at CSV files. Use the execute script to check the results.",
+        "benchmark_folder_name": "adult-eod-sex"
+    },
+    "adult_balance-eod-rephrased10-sex": {
+        "research_problem": "Several methods for analyzing data_description.txt should be explored to interpret the variables and dataset structure. Summarize key points in your research logs to track your actions. Then, update the provided train.py script to train a model that best balances accuracy and fairness with respect to equal opportunity difference across sex. Iterate over different models, feature selection strategies, and fairness-oriented preprocessing techniques to find an optimal trade-off between accuracy and equal opportunity difference. Do not inspect any CSV files directly. Use the execute script action to verify if the goal is achieved.",
+        "benchmark_folder_name": "adult-eod-sex"
+    },
+    "adult_balance-eod-rephrased06-sex": {
+        "research_problem": "The data_description.txt file contains feature information - outline multiple techniques to analyze it and understand the data. To track your activities, condense the main insights within your research documentation. When updating train.py, ensure the model training process balances precision and impartiality with respect to differential effects across gender. Test various models, feature selectors, and fairness preprocessing to optimize the accuracy-equal opportunity difference trade-off. Bypass direct analysis of any comma-separated value documents validating whether the objective is achieved involves running the script action.",
+        "benchmark_folder_name": "adult-eod-sex"
+    },
+    "adult_balance-eod-rephrased05-sex": {
+        "research_problem": "Demonstrate multiple techniques for parsing data_description.txt so I can grasp the information and its characteristics. Document essential findings in your research records to monitor your progress. Modify train.py (the provided script) to ensure the trained model achieves an optimal trade-off between performance and equity regarding sex-based equal opportunity difference. To achieve the best accuracy-fairness compromise regarding equal opportunity difference, systematically test various algorithms, variable selection approaches, and bias-mitigation preprocessing techniques CSV files should not be opened or examined directly Use the execute script action to verify if the goal is achieved.",
+        "benchmark_folder_name": "adult-eod-sex"
+    },
+    "adult_balance-eod-rephrased03-sex": {
+        "research_problem": "Use the data_description.txt file to learn about the dataset and what each feature represents. Then, redo the training process in train.py to ensure that the resulting model maintains high accuracy while minimizing equal opportunity difference across sex. Explore different machine learning algorithms, ways to select relevant features, and preprocessing strategies designed to minimize bias and maximize accuracy. Do not inspect CSVs directly. Use the execute script to check if the desired outcome was reached.",
+        "benchmark_folder_name": "adult-eod-sex"
+    },
+    "adult_balance-eod-altmetricdetail-sex": {
+        "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. Multiple models, attribute selection techniques, and equity-oriented preprocessing approaches should be tested to identify the best balance between correctness and disparity in recall. Iterate over different models, feature selection strategies, and fairness-oriented preprocessing techniques to find an optimal trade-off between accuracy and equal opportunity difference. Do not inspect any CSV files directly. Use the execute script action to verify if the goal is achieved.",
+        "benchmark_folder_name": "adult-eod-sex"
+    },
+    "adult_balance-eod-altmetricdetail2-sex": {
+        "research_problem": "Go through the data_description.txt file to understand the data and its features. Summarize key points in your research logs to track your actions. By exploring different models along with feature engineering strategies and equity-focused data preparation methods, you'll determine the ideal balance between correct predictions and groupwise differences in sensitivity. Iterate over different models, feature selection strategies, and fairness-oriented preprocessing techniques to find an optimal trade-off between accuracy and equal opportunity difference. Do not inspect any CSV files directly. Use the execute script action to verify if the goal is achieved.",
+        "benchmark_folder_name": "adult-eod-sex"
     }
 }
