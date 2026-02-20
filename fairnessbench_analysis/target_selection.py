@@ -6,12 +6,12 @@ import seaborn as sns
 from path import CSV_FILES,GRAPHS
 
 # Loading useful dataframes
-file = CSV_FILES/'Final_step_perfomance2025-09-18T00:48:26.025263.csv'
+file = CSV_FILES/'Final_step_perfomance2026-02-07T02:23:17.201613.csv'
 res = pd.read_csv(file)
 
 task_data_metric = res['task'].str.split('_').apply(pd.Series).rename(columns ={0:'task_dataset',1:'task_metric',2:'task-dem'})
 wider_code = pd.concat([res, task_data_metric],axis=1)
-wider_cols=['model','task','task_dataset','task_metric','task-dem','run_ts','run_id','acc','precision','recall','di','statistical_parity_diff','equal_opp_diff','error_rate_diff','error_rate_ratio','false_omission_rate_diff','score_count']
+wider_cols=['model','task','task_dataset','task_metric','task-dem','run_ts','run_id','acc','precision','recall','di','statistical_parity_diff','equal_opp_diff','error_rate_diff','error_rate_ratio','false_omission_rate_diff']
 wider_code = wider_code[wider_cols]
 
 wider_adrecon = wider_code[wider_code['task_dataset']=='adrecon'].reset_index(drop=True)

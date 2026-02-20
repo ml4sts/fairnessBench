@@ -6,23 +6,23 @@ import seaborn as sns
 from path import CSV_FILES,GRAPHS
 
 # Loading useful dataframes
-perf_df = pd.read_csv(CSV_FILES/'Final_step_perfomance2025-09-18T00:48:26.025263.csv')
+perf_df = pd.read_csv(CSV_FILES/'Final_step_perfomance2026-02-07T02:23:17.201613.csv')
 
 # Removing missing rows 
 perf= ['acc','precision', 'recall', 'di', 'statistical_parity_diff', 
                   'equal_opp_diff', 'error_rate_diff', 'error_rate_ratio', 
                   'false_omission_rate_diff']
-perf_df= perf_df.dropna(subset=perf, how='all')
+#perf_df= perf_df.dropna(subset=perf, how='all')
 perf_df = perf_df.replace([np.inf, -np.inf], np.nan).fillna(0)
 
 # loading baseline 
 
-baseline_df = pd.read_csv(CSV_FILES/'Baseline_cleaned_perfomance2025-09-18T00:48:53.537033.csv')
+baseline_df = pd.read_csv(CSV_FILES/'Baseline_cleaned_perfomance2026-02-07T02:23:19.806782.csv')
 
 base= ['baseline_acc','baseline_precision', 'baseline_recall', 'baseline_di', 'baseline_statistical_parity_diff', 
                   'baseline_equal_opp_diff', 'baseline_error_rate_diff', 'baseline_error_rate_ratio', 
                   'baseline_false_omission_rate_diff']
-baseline_df= baseline_df.dropna(subset=base, how='all')
+#baseline_df= baseline_df.dropna(subset=base, how='all')
 baseline_df= baseline_df.fillna(0)
 baseline_df= baseline_df.drop(columns=['run_ts','run_id','baseline_score_count'])
 
@@ -41,7 +41,7 @@ columns=['model','task','task_dataset','task_metric','resch_prob','dem','run_ts'
 'acc','baseline_acc','precision','baseline_precision','recall',
 'baseline_recall','di','baseline_di','statistical_parity_diff','baseline_statistical_parity_diff','equal_opp_diff',
 'baseline_equal_opp_diff','error_rate_diff','baseline_error_rate_diff','error_rate_ratio','baseline_error_rate_ratio',
-'false_omission_rate_diff','baseline_false_omission_rate_diff','score_count']
+'false_omission_rate_diff','baseline_false_omission_rate_diff']
 clean_df=clean_df[columns]
 
 # filtering target10 task 
@@ -102,5 +102,9 @@ df_improvement_stats_tall = df_improvement_stats.melt(id_vars=['model','task_dat
                                                       value_vars=['total','success','improvement'],var_name='count_type',value_name='count')
 sns.set_context(context='poster',font_scale = .5)
 output= os.path.join(GRAPHS,'target10_success.png' )
-sns.catplot(df_improvement_stats_tall, col = 'model',x='task_dataset', y='count',hue='count_type',kind='bar').savefig(output)
+g=sns.catplot(df_improvement_stats_tall, col = 'model',x='task_dataset', y='count',hue='count_type',kind='bar')
+# Rotate x-axis labels
+for ax in g.axes.flatten():
+    ax.tick_params(axis='x', labelrotation=35)
+    g.savefig(output)
 

@@ -36,15 +36,17 @@ To run an analysis, change the input CSV filename in the script to the file requ
 python ....py
 ```
 **Key files:**
-- adult_di_code_llmeval.py: Analyzes disparate impact (DI) for the Adult dataset using the LLM code evaluation.
 - adult_fairness.py: Analyze the fairness metrics used in the benchmark for the Adult dataset.
 - balancing_fairness.py: Analyzes the fairness metrics used in the benchmark for the Balance research problem.
-- code_log_llm_eval.py: Generates plots showing how rubric-section scores vary across tasks and datasets for both code and log evaluations.
-- correlation_flake8_code.py: Analyzes the correlation between LLM code-evaluation scores and Flake8 (linter-based) scores.
-- cv_scores_evalmodels.py: Analyzes the consistency of different evaluation models based on cross-validation (CV) scores.
-- di_across_datasets.py: Analyzes disparate impact (DI) and accuracy across datasets and research problems.
-- performance_flake8_code.py: Generates a scatter plot of Flake8 performance vs. LLM code-evaluation scores across models, datasets, and research problems.
+- di_across_datasets.py: Analyzes fairness (disparate impact (DI) and equal opportunity diff (EOB))and accuracy across datasets and research problems.
+- comparing_flake8_bal_be_impli.py: Generates a bar plot of Flake8 performance for 3 research problems ( balance, best, implicit) for different models and datasets.
 - target_selection.py: Analyze the models performance and fairness metrics for the targey selection tasks.
 - target10_sucess_rate.py: Generates a plot showing how agent performance differs from the baseline on the Target10 research problem, by dataset and model.
+- acc_di_tradeoff_heatmap.py: Generates a heatmap that shows the tradeoff between accuracy and fairness (disparate impact) for 3 research problems ( balance, best, implicit) using the Pareto frontier.
+- acc_fairness_overlap_heatmap.py: Analyses the variation in datasets (randoadult,sampadult, nondescriptive, health) to the adult dataset. 
+- run_count.py: Analyzes the number of completed and successful runs for each model and dataset.
+- sensitivity_analysis.py: code analyzing the LLM agent's performance and fairness for different versions of the same prompt.
+- dollarstreet_analysis.py: codebase for analyzing the performance across income levels.
+
 
 

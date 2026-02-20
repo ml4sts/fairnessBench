@@ -7,7 +7,7 @@ import seaborn as sns
 from path import CSV_FILES,GRAPHS
 
 # Loading useful dataframes
-file = CSV_FILES/'Final_step_perfomance2025-09-18T00:48:26.025263.csv'
+file = CSV_FILES/'Final_step_perfomance2026-02-07T02:23:17.201613.csv'
 perf_alt = pd.read_csv(file)
 
 
@@ -21,7 +21,7 @@ perf_alt = perf_alt.replace([np.inf, -np.inf], np.nan).fillna(0)
 # expanding the task to sub columns 
 task_data_metric = perf_alt['task'].str.split('_').apply(pd.Series).rename(columns ={0:'task_dataset',1:'task_metric',2:'task-dem'})
 wider_code = pd.concat([perf_alt, task_data_metric],axis=1)
-wider_cols=['model','task','task_dataset','task_metric','task-dem','run_ts','run_id','acc','precision','recall','di','statistical_parity_diff','equal_opp_diff','error_rate_diff','error_rate_ratio','false_omission_rate_diff','score_count']
+wider_cols=['model','task','task_dataset','task_metric','task-dem','run_ts','run_id','acc','precision','recall','di','statistical_parity_diff','equal_opp_diff','error_rate_diff','error_rate_ratio','false_omission_rate_diff']
 wider_code = wider_code[wider_cols]
 
 # Filtering only adult dataset from the dataframe

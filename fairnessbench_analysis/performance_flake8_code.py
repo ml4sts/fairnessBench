@@ -37,7 +37,7 @@ g.set_titles(template='{col_var}: {col_name}\n{row_var}: {row_name}')
 # add horizontal lines at di=1 to each cell plot 
 for i, ax in enumerate(g.axes.flat):
     ax.axhline(y=85.0, color='black', linestyle='-.', alpha=0.2)
-    ax.axvline(x=75.0, color='black', linestyle='-.', alpha=0.2)
+    ax.axvline(x=85.0, color='black', linestyle='-.', alpha=0.2)
 
 output = os.path.join(GRAPHS,'performance_flake8_code.png')   
 plt.savefig(output,dpi=300)
