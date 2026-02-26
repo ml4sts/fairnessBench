@@ -1,0 +1,125 @@
+patt2: Integer 
+
+feat1 : Categorical feature
+    Private
+    Self-emp-not-inc
+    Self-emp-inc
+    Federal-gov
+    Local-gov
+    State-gov
+    Without-pay
+    Never-worked.
+
+feat2 : Categorical
+    Education Level
+    Bachelors
+    Some-college
+    11th, HS-grad
+    Prof-school
+    Assoc-acdm
+    Assoc-voc
+    9th
+    7th-8th
+    12th
+    Masters
+    1st-4th
+    10th
+    Doctorate
+    5th-6th
+    Preschool
+    
+patt3 : Categorical
+    Married-civ-spouse, 
+    Divorced, 
+    Never-married, 
+    Separated, 
+    Widowed, 
+    Married-spouse-absent, 
+    Married-AF-spouse
+
+feat3 : Categorical
+    Tech-support, 
+    Craft-repair, 
+    Other-service, 
+    Sales, 
+    Exec-managerial, 
+    Prof-specialty, 
+    Handlers-cleaners, 
+    Machine-op-inspct, 
+    Adm-clerical, 
+    Farming-fishing, 
+    Transport-moving, 
+    Priv-house-serv, 
+    Protective-serv, 
+    Armed-Forces
+
+patt4 : Categorical
+    Wife, 
+    Own-child, 
+    Husband, 
+    Not-in-family, 
+    Other-relative, 
+    Unmarried
+
+patt1 : Categorical
+    White, 
+    Asian-Pac-Islander, 
+    Amer-Indian-Eskimo, 
+    Other, 
+    Black
+
+patt5 : Binary
+    Female
+    Male
+    
+feat4 : Integer
+
+feat5 : Integer
+
+feat6 : Integer
+
+feat7 : Categorical
+    United-States, 
+    Cambodia, 
+    England, 
+    Puerto-Rico, 
+    Canada, 
+    Germany, 
+    Outlying-US(Guam-USVI-etc), 
+    India, 
+    Japan, 
+    Greece, 
+    South, 
+    China, 
+    Cuba, 
+    Iran, 
+    Honduras, 
+    Philippines, 
+    Italy, 
+    Poland, 
+    Jamaica, 
+    Vietnam, 
+    Mexico, 
+    Portugal, 
+    Ireland, 
+    France, 
+    Dominican-Republic, 
+    Laos, Ecuador, 
+    Taiwan, 
+    Haiti, 
+    Columbia, 
+    Hungary, 
+    Guatemala, 
+    Nicaragua, 
+    Scotland, 
+    Thailand, 
+    Yugoslavia, 
+    El-Salvador, 
+    Trinadad&Tobago, 
+    Peru, 
+    Hong, 
+    Holand-Netherlands
+
+target : binary target
+        <=50K
+        >50K.

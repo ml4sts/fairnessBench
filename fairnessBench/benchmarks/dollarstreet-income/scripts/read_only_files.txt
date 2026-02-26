@@ -1,5 +1,5 @@
-./assets/*
-./images_v2_imagenet_test.csv          
+assets/*
+./images_v2_imagenet_test.csv
 ./topics_to_imagenet_classes_map.json
 ./README.md
 ./images_v2.csv

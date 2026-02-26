@@ -18,22 +18,6 @@ torch.cuda.empty_cache()
 
 # AS: Setup llama
 loaded_hf_models = {}
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-try:
-    # Need export HF_HOME=/datasets/ai/llama3
-    # llama_= "meta-llama/Llama-3.3-70B-Instruct" # Gave us decent results.
-    # llama_= "meta-llama/Llama-3.1-405B-Instruct" # Terrible hallusinations
-    # llama_= "meta-llama/Llama-3.1-8B-Instruct" # Trying smaller models for test runs 
-
-    tokenizer = AutoTokenizer.from_pretrained(llama_)
-    quant_config = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_quant_type="nf4", bnb_4bit_compute_dtype=torch.float16)
-    model = AutoModelForCausalLM.from_pretrained(llama_, quantization_config = quant_config, device_map="auto",torch_dtype=torch.float16)
-    loaded_hf_models = {"llama": (model, tokenizer)}
-    print(f"Loaded local {llama_} successfuly using device: {model.device}.")
-except Exception as e:
-    print(f"Failed to load local llama - Current device:{device}\nIssue: {e}")
-
-
 def complete_text_hf(prompt, stop_sequences=[], model="llama", max_tokens_to_sample = 2500, temperature=0.5, log_file=None, device=0, **kwargs):
     if model in loaded_hf_models:
         hf_model, tokenizer = loaded_hf_models[model]
@@ -606,13 +590,13 @@ def complete_text(prompt, log_file, model, device=0, **kwargs):
     
     if model.startswith("claude"):
         # use anthropic API
-        completion = complete_text_claude(prompt, stop_sequences=[anthropic.HUMAN_PROMPT,"Observation:",  "Observation"], log_file=log_file, model=model, **kwargs)
+        completion = complete_text_claude(prompt, stop_sequences=[anthropic.HUMAN_PROMPT,"Observation:"], log_file=log_file, model=model, **kwargs)
     elif model.startswith("gemini"):
-        completion = complete_text_gemini(prompt, stop_sequences=["Observation:", "Observation"], log_file=log_file, model=model, **kwargs)
+        completion = complete_text_gemini(prompt, stop_sequences=["Observation:"], log_file=log_file, model=model, **kwargs)
     elif model.startswith("llama"):
-        completion = complete_text_hf(prompt, stop_sequences=["Observation:", "Observation"], log_file=log_file, model=model, device=device, **kwargs)
+        completion = complete_text_hf(prompt, stop_sequences=["Observation:"], log_file=log_file, model=model, device=device, **kwargs)
     elif model.startswith("qwen"):
-        completion = complete_text_qwen(prompt, stop_sequences=["Observation:", "Observation"], log_file=log_file, model=model, device=device, **kwargs)
+        completion = complete_text_qwen(prompt, stop_sequences=["Observation:"], log_file=log_file, model=model, device=device, **kwargs)
     elif model.startswith("granite"):
         completion = complete_text_granite(prompt, stop_sequences=["}"], log_file=log_file, model=model, device=device, **kwargs)
     elif model.startswith("deepseek"):
@@ -621,10 +605,10 @@ def complete_text(prompt, log_file, model, device=0, **kwargs):
         completion = complete_text_gemma(prompt, stop_sequences=["}"], log_file=log_file, model=model, device=device, **kwargs)
     elif "/" in model:
         # use CRFM API since this specifies organization like "openai/..."
-        completion = complete_text_crfm(prompt, stop_sequences=["Observation:", "Observation"], log_file=log_file, model=model, **kwargs)
+        completion = complete_text_crfm(prompt, stop_sequences=["Observation:"], log_file=log_file, model=model, **kwargs)
     else:
         # use OpenAI API
-        completion = complete_text_openai(prompt, stop_sequences=["Observation:", "Observation"], log_file=log_file, model=model, **kwargs)
+        completion = complete_text_openai(prompt, stop_sequences=["Observation:"], log_file=log_file, model=model, **kwargs)
     return completion
 
 

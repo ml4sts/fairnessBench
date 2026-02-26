@@ -29,8 +29,8 @@ def run(agent_cls, args):
         print("Research problem: ", research_problem)
         print("Lower level actions enabled: ", [action.name for action in env.low_level_actions])
         print("High level actions enabled: ", [action.name for action in env.high_level_actions])
-        print("Read only files: ", env.read_only_files, file=sys.stderr) 
-        print("Env read only files: ", env.env_read_only_files, file=sys.stderr) 
+        print("Read only files: ", env.read_only_files if len(env.read_only_files) < 10 else env.read_only_files[:10], file=sys.stderr) 
+        print("Env read only files: ", env.env_read_only_files if len(env.env_read_only_files) < 10 else env.env_read_only_files[:10], file=sys.stderr) 
         print("=====================================")  
 
         # AS: Create agent object from whichever agent was requested in agrs 
