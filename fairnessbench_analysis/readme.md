@@ -36,17 +36,17 @@ To run an analysis, change the input CSV filename in the script to the file requ
 python ....py
 ```
 **Key files:**
-- adult_fairness.py: Analyze the fairness metrics used in the benchmark for the Adult dataset.
-- balancing_fairness.py: Analyzes the fairness metrics used in the benchmark for the Balance research problem.
-- di_across_datasets.py: Analyzes fairness (disparate impact (DI) and equal opportunity diff (EOB))and accuracy across datasets and research problems.
-- comparing_flake8_bal_be_impli.py: Generates a bar plot of Flake8 performance for 3 research problems ( balance, best, implicit) for different models and datasets.
-- target_selection.py: Analyze the models performance and fairness metrics for the targey selection tasks.
-- target10_sucess_rate.py: Generates a plot showing how agent performance differs from the baseline on the Target10 research problem, by dataset and model.
-- acc_di_tradeoff_heatmap.py: Generates a heatmap that shows the tradeoff between accuracy and fairness (disparate impact) for 3 research problems ( balance, best, implicit) using the Pareto frontier.
-- acc_fairness_overlap_heatmap.py: Analyses the variation in datasets (randoadult,sampadult, nondescriptive, health) to the adult dataset. 
-- run_count.py: Analyzes the number of completed and successful runs for each model and dataset.
-- sensitivity_analysis.py: code analyzing the LLM agent's performance and fairness for different versions of the same prompt.
-- dollarstreet_analysis.py: codebase for analyzing the performance across income levels.
+- adult_fairness.py: Analyze the target fairness metrics used in the benchmark for the Adult dataset. It generates Figure 4 in section 4.2.2
+- balancing_fairness.py: Analyzes the fairness metrics used in the benchmark for the Balance research problem. This file generates Figure 6 in Section 4.3. 
+- di_across_datasets.py: Analyzes fairness (disparate impact (DI) and equal opportunity diff (EOB))and accuracy across datasets and research problems. It generates Figure 3 found in section 4.2.1. and figure 13, which is found in the appendix. 
+- comparing_flake8_bal_be_impli.py: Generates a bar plot (which is explained in section 4.3) of Flake8 performance for 3 research problems ( balance, best, implicit) for different models and datasets. 
+- target_selection.py: Analyze the model's performance and fairness metrics for the target selection tasks. It generates Figure 9 in section 4.5.1
+- target10_sucess_rate.py: Generates figure 5 in section 4.2.3 which shows how agent performance differs from the baseline on the Target10 research problem, by dataset and model.
+- acc_di_tradeoff_heatmap.py: Generates a heatmap(Figure 7, section 4.3) that shows the tradeoff between accuracy and fairness (disparate impact) for 3 research problems ( balance, best, implicit) using the Pareto frontier. 
+- acc_fairness_overlap_heatmap.py: Analyses the variation in datasets (randoadult,sampadult, nondescriptive, health) to the adult dataset. It generates Figures 8 and 12 in section 4.4
+- run_count.py: Analyzes the number of completed and successful runs for each model and dataset. It generates table 4 and 10 in appendix 
+- sensitivity_analysis.py: code analyzing the LLM agent's performance and fairness for different versions of the same prompt. This file genaerates figure 10 and 11 in section 4.6. 
+- dollarstreet_analysis.py: codebase for analyzing the performance across income levels which is explained in Section 4.5.2
 
 
 
