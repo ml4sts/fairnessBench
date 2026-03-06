@@ -22,7 +22,8 @@ def get_score(agent_files):
     test_df["income_q"] = pd.qcut(test_df["income"], q=4, labels=["Q1", "Q2", "Q3", "Q4"])
     test_df["income_group"] = test_df["income_q"].apply(lambda q: "Disadvantaged" if q == "Q1" else "Advantaged")
     group_acc = test_df.groupby("income_group")["correct"].mean() * 100
-    return group_acc.round(2)
+    
+    return group_acc.round(2).to_dict()
 
 if __name__ == "__main__":
     print(get_score())
