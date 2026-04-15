@@ -25,8 +25,8 @@ How well can an LLM agent improve the training script to achieve high fairness m
 We use a variaty of open-source paid LLMs. 
 - Meta's Llama-3.3-70B (open source)
 - Alibaba's Qwen-2.5-72B (open source)
-- OpenAI's GPT-4o (paid)
-- Anthropic's Claude-sonnet 3.7 (paid)
+- OpenAI's GPT-4o (proprietary)
+- Anthropic's Claude-sonnet 3.7 (proprietary)
 
 
 <!--
