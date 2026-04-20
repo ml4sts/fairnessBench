@@ -13,10 +13,11 @@ Run_scripts/*
 run_experiments_*.sh
 test*.txt
 eval*.sh
+fairnessbench_analysis/*/*.png
+fairnessbench_analysis/*/*.csv
 
-
-
-
+# path
+path.py
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
