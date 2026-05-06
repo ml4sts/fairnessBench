@@ -1,0 +1,125 @@
+patient_age: Integer 
+
+lifestyle: Categorical feature
+    Sedentary
+    Moderately-active 
+    Active
+    Highly-active
+    Unhealthy
+    Healthy
+    At-risk
+
+insurance_provider : Categorical
+    UnitedHealthcare
+    Blue Cross Blue Shield
+    Aetna
+    Cigna
+    Humana
+    Kaiser Permanente
+    Anthem
+    Molina Healthcare
+    Centene Corporation
+    Highmark Health
+    Health Net
+    WellCare Health Plans
+    CareFirst
+    Independence Blue Cross
+    Fidelis Care
+    Oscar Health
+    
+marital-status: Categorical
+    Married-civ-spouse, 
+    Divorced, 
+    Never-married, 
+    Separated, 
+    Widowed, 
+    Married-spouse-absent, 
+    Married-AF-spouse
+
+procedure_on_the_visit : Categorical
+    Administrative-check
+    Specialist-consultation
+    Minor-procedure
+    Major-surgery
+    General-checkup
+    Diagnostic-test
+    Rehabilitation
+    Emergency
+    Preventive-screening
+    Therapy-session
+    Follow-up
+    Mental-health-consultation
+    Chronic-disease-management
+    Vaccination
+
+relationship : Categorical
+    Wife, 
+    Own-child, 
+    Husband, 
+    Not-in-family, 
+    Other-relative, 
+    Unmarried
+
+race : Categorical
+    White, 
+    Asian-Pac-Islander, 
+    Amer-Indian-Eskimo, 
+    Other, 
+    Black
+
+gender : Binary
+    Female
+    Male
+    
+cholesterol : Integer
+
+blood-pressure : Integer
+
+daily-activity-hours : Integer
+
+reason-for-visit : Categorical
+    General-checkup
+    Routine-follow-up
+    New-symptom
+    Fever
+    Cold-Flu-Cough
+    Headache-migraine
+    Heart-concerns
+    Respiratory-issue
+    Digestive-issue
+    Pain-related
+    Skin-concern
+    Eye
+    ENT
+    Mental-health-concerns
+    Stress
+    Fatigue-weakness
+    Weight-concerns
+    Diabetes/Bloodsugar
+    BP-concern
+    Cholesterol-lipid-concern
+    Allergy-symptoms
+    Prenatal
+    Gynecological-concern
+    Pediatrics
+    Age-related
+    Chronic-disease
+    Medication-side-effect
+    Injury
+    Trauma
+    Preventive-counseling
+    Genetic-risks
+    Vaccination-inquiry
+    Health-counseling
+    Substance-concern
+    Surgical-consultation
+    Specialist-referral
+    Discharge
+    Lab-result-discussion'
+    Second-opinion
+    Administrative-inquiry
+    Other
+
+health_risk : binary target
+        1 
+        0
