@@ -34,7 +34,7 @@ the result of the action
 
 """
 
-# AS: These are the entries the LLM uses to respond to each message sent to it. Name of entry and its description
+# These are the entries the LLM uses to respond to each message sent to it. Name of entry and its description
 format_prompt_dict = {
     "Reflection": "What does the observation mean? If there is an error, what caused the error and how to debug?",
     "Research Plan and Status": "The full high level research plan, with current status and confirmed results of each step briefly annotated. It must only include progress that has been made by previous steps. If there is any update, enclose the new update text in double asterisks **like this**. If there is no update, just copy the previous step Research Plan and Status. The high level plan from the previous step should be fully retained, unless it is intentionally revised.",
@@ -51,27 +51,25 @@ class ResearchAgent(Agent):
     def __init__(self, args, env):
         super().__init__(args, env)
         self.valid_format_entires = ["Reflection",  "Research Plan and Status","Fact Check", "Thought","Action", "Action Input"] # use all entries by default
-        # AS: If runner args had other required entries change the default
+        # If runner args had other required entries change the default
         if args.valid_format_entires:
             self.valid_format_entires = args.valid_format_entires
-        # AS: self.tools_prompt is defined in the  super.init
+        # self.tools_prompt is defined in the  super.init
         self.initial_prompt = initial_prompt.format(tools_prompt=self.tools_prompt, tool_names=self.prompt_tool_names,  task_description=env.research_problem, format_prompt="\n".join([f"{k}: {format_prompt_dict[k]}" for k in self.valid_format_entires]))
 
     def run(self, env):
-        print()
-        print("AS: Research Agent run() was called...")
-        print()
+
         last_steps = self.args.max_steps_in_context
         last_observation_step = self.args.max_observation_steps_in_context
 
-        # AS: Output the initial prompt to the main_log file
+        # Output the initial prompt to the main_log file
         with open(os.path.join(self.log_dir , "main_log"), "a", 1) as f:
             f.write(self.initial_prompt + "\n")
 
         while not env.is_final() and len(self.history_steps) < self.args.agent_max_steps:
 
             curr_step = len(self.history_steps)
-            print(f"AS: Now in step {curr_step}")
+            print(f"Now in step {curr_step}")
             #### call LLM for next action ###
 
             ###########################################################
@@ -80,7 +78,7 @@ class ResearchAgent(Agent):
 
             prompt = self.initial_prompt
             if curr_step > last_steps:
-                # AS: Still not sure what the purpose of retrieval is
+                # Retrieve the research log of the agent
                 if self.args.retrieval:
 
                     # retrieval action
@@ -96,8 +94,8 @@ class ResearchAgent(Agent):
             else:
                 prompt += "\nNow let's start!\n\n"
 
-            # AS: Add action that the previous step/s decided that the LLM wants to apply
-            # AS: Doesn't apply on step 0. Otherwise will loop up to number of steps 
+            # Add action that the previous step/s decided that the LLM wants to apply
+            # Doesn't apply on step 0. Otherwise will loop up to number of steps 
             for idx in range(max(curr_step - last_steps, 0), curr_step):
                 action_string = ""
                 action_string = self.print_action(self.history_steps[idx]["action"], self.valid_format_entires)

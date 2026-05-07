@@ -2,9 +2,7 @@
 This file contains the Environment class, which prepares the environment for the research agent to run in.
 """
 
-### AS ###
 # Stop 5: Set up an Environment object and pass it to the agent
-
 
 
 import json
@@ -24,7 +22,7 @@ from dacite import from_dict
 from .low_level_actions import LOW_LEVEL_ACTIONS
 from .high_level_actions import HIGH_LEVEL_ACTIONS
 from .schema import Step, Trace, EnvException, TooLongPromptError, LLMError, EnhancedJSONEncoder 
-from .LLM import complete_text_fast as complete_text_claude # AS: They hard code claude but I want to use the arg
+from .LLM import complete_text_fast as complete_text_claude # They hard code claude but I want to use the arg
 # from .LLM import complete_text_claude
 from .prepare_task import prepare_task, get_task_info
 
@@ -52,7 +50,7 @@ class Environment:
 
         self._args = args
         self._log_dir = os.path.join(args.log_dir, "env_log")
-        # AS: generate env_log folder with all subfolders
+        # Generate env_log folder with all subfolders
         self._setup_log_dir()
 
 
@@ -63,7 +61,7 @@ class Environment:
             self._env_read_only_files = []
             self._initialize_task_env() # set up work dir and log dir
 
-        else: # AS: If --interactive was passed: you can input prompt during runtime
+        else: # If --interactive was passed: you can input prompt during runtime
             self._research_problem = input("What is the task: ")
             log_file = os.path.join(self.log_dir, "create_benchmark_folder_name.log")
             self._benchmark_folder_name = create_benchmark_folder_name(self._research_problem, log_file)
@@ -76,7 +74,7 @@ class Environment:
 
             self._initialize_interactive_env() # set up work dir and log dir
 
-        # AS: Set up usable actions for agent to use
+        # Set up usable actions for agent to use
         self._action_infos =  {t.name: t for t in LOW_LEVEL_ACTIONS + HIGH_LEVEL_ACTIONS}
 
         if not args.interactive:
@@ -256,7 +254,7 @@ class Environment:
 
 
     def _initialize_trace(self):
-        # AS: We can restore trace and continue???!!!!
+        # We can restore trace and continue (not perfect)
         if self.args.resume:
             print("Restoring trace from {}".format(self.args.resume))
             prev_trace = from_dict(data_class=Trace, data=json.load(open(os.path.join(self.args.resume, "env_log","trace.json"), "r")))
@@ -346,7 +344,7 @@ class Environment:
 
             if isinstance(action_input, dict):
                 try:
-                    # AS: This is where we call the action from either action files and get the return value into observation
+                    # This is where we call the action from either action files and get the return value into observation
                     observation = self.action_infos[action_name].function(**action_input, log_file=log_file, trace=trace, **self.static_kwargs_for_tools)
                 except TooLongPromptError:
                     observation="EnvError: too long input for the tool"
