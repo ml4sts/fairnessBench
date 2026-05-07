@@ -6,7 +6,7 @@
 # This scrip calls on the runner.py
 
 # Base path depends on where we want to place out logs (base log folder) (work/scratch/project/...)
-base=LOG_PATH
+base=$LOG_PATH
 
 # grab preliminary info
 exp_path=$1
