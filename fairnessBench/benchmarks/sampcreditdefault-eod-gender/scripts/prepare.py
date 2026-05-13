@@ -23,9 +23,9 @@ description_file = "credit_default_description.json"
 synthetic_data = "credit_default_synthetic.csv"
 
 categorical_attributes = {
-    'X2': True,   # SEX
+    'gender': True,   # SEX
     'X3': True,   # EDUCATION
-    'X4': True,   # MARRIAGE
+    'marital_status': True,   # MARRIAGE
     'X6': True,   # PAY_0
     'X7': True,   # PAY_2
     'X8': True,   # PAY_3
@@ -52,7 +52,7 @@ generator.synthetic_dataset.to_csv(synthetic_data, index=False)
 cd_syn = pd.read_csv(synthetic_data)
 ####
 
-cat_cols= ['X2','X3', 'X4','X6','X7','X8','X9','X10', 'X11']
+cat_cols= ['gender','X3', 'marital_status','X6','X7','X8','X9','X10', 'X11']
 df_syn_enc = pd.get_dummies(cd_syn, columns=cat_cols)
 df_syn_enc = df_syn_enc.astype(int)
 

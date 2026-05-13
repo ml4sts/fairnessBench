@@ -47,7 +47,9 @@ categorical_attributes = {
     'Attribute15': True,
     'Attribute17': True,
     'Attribute19': True,
-    'Attribute20': True}
+    'Attribute20': True,
+    'sex':True,
+    'class': True}
 
 epsilon = 1
 degree_of_bayesian_network = 2

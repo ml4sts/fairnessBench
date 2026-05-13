@@ -48,7 +48,9 @@ categorical_attributes = {
     'Attribute15': True,
     'Attribute17': True,
     'Attribute19': True,
-    'Attribute20': True}
+    'Attribute20': True,
+    'sex':True,
+    'class': True}
 
 epsilon = 1
 degree_of_bayesian_network = 2
@@ -73,7 +75,7 @@ y = df_german["class"]
 
 categorical_columns = ["Attribute1", "Attribute3", "Attribute4", "Attribute6", "Attribute7", 
                        "Attribute9", "Attribute10", "Attribute12", "Attribute14", "Attribute15",
-                      "Attribute17", "Attribute19", "Attribute20"]
+                      "Attribute17", "Attribute19", "Attribute20", "sex"]
 
 X_enc = pd.get_dummies(X, columns=categorical_columns)
 X_enc = X_enc.replace({True: 1, False: 0}) # bool vals to 0 and 1
