@@ -19,6 +19,21 @@ How well can an LLM agent improve the training script to achieve high fairness m
   * Error Rate Ratio
 * To examine disparities in false negatives across groups:
   * False Omission Rate Difference
+ 
+
+### Independence 
+* **Disparate Impact**
+* **Statistical Parity Difference**
+
+### Separation
+* **Equal Opportunity Difference** 
+
+
+### Sufficiency??
+* **Error Rate Difference**
+* **Error Rate Ratio**
+* **False Omission Rate Difference**
+
 
 
 ## Different LLM models used for agent
@@ -35,7 +50,24 @@ Google's Gemma 3 27B - Instruction tuned
 --> 
 
 ## Baseline
-Run baseline.sh on a task/list of tasks to run the baseline train.py provided in the task to compare the accuracy and fairness metrics with the values reached by the agents 
+baseline.sh script provides a standardized way to run a benchmark task/ list of benchmark tasks. This script serves as the primary entry point for reproducing baseline results reported in the paper.
+
+<!--Run baseline.sh on a benchmark task/ list of benchmark tasks to run the baseline train.py provided in the task. -->
+
+### Purpose 
+
+<!--to compare the accuracy and fairness metrics with the values reached by the agents--> 
+The script automates:
+- Benchmark execution
+- Experiment configuration
+- Model/task setup
+- Logging and output organization
+- Reproducible baseline runs
+
+It is intended for:
+- Researchers reproducing paper results
+- Users evaluating new models against benchmark baselines
+- Developers validating changes to the framework
 
 ## What does eval do?
 Run eval.sh with a list of tasks <!--, agent LLMs to be evaluated and a selected evaluation LLM -->
