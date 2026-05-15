@@ -2,3 +2,6 @@
 ./train_y.csv
 ./test_X.csv
 ./test_y.csv
+./adult_description.json
+./adult_synthetic.csv
+./adult_temp.csv

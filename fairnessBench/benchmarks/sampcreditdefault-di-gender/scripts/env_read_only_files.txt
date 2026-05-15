@@ -2,3 +2,6 @@
 ./train_y.csv
 ./test_X.csv
 ./test_y.csv
+./credit_default_original.csv
+./credit_default_synthetic.csv
+./credit_default_description.json
