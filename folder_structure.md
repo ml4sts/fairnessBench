@@ -2,7 +2,7 @@
 This is a benchmark to evaluate AI capabilities to do fair data driven decision-making.
 
 # Repository Structure
-
+```
 fairnessBench/
   a. agents/
     - agent.py
@@ -27,4 +27,4 @@ fairnessBench/
   l. plot.py
   m. prepare_task.py
   n. runner.py..
-
+```
