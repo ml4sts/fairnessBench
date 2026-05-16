@@ -3,6 +3,8 @@
 # This run will use the base agent just to run the raw train.py of tasks before any agent modifying them to have prediction metrics to compare to
 
 
+log_dir=final_exp_logs
+
 all_tasks="
 adult_di_best-sex
 adult_di_best-race
@@ -106,6 +108,6 @@ randoadult_eod_implicit-sex
 
 for task in $all_tasks
 do    
-    bash multi_run_experiment.sh final_exp_logs/sanity_check/$task $task 1 0 --agent-type Agent
+    bash multi_run_experiment.sh $log_dir/sanity_check/$task $task 1 0 --agent-type Agent
 done
 
