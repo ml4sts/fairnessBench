@@ -8,15 +8,15 @@ statlog_german_credit_data = fetch_ucirepo(id=144)
 X = statlog_german_credit_data.data.features.copy() 
 y = statlog_german_credit_data.data.targets.copy()
 
-#SR: mapping the decodings 
+#Mapping the decodings 
 sex_ms_mapping = {
-    "A91": ("male", "d/s"),  # SR: d/s = divorced/separated , just made it smaller to take less space in the table
+    "A91": ("male", "d/s"),  # d/s = divorced/separated , just made it smaller to take less space in the table
     "A92": ("female", "d/s/m"),
     "A93": ("male", "single"),
     "A94": ("male", "m/w"),
     "A95": ("female", "single")}
 
-X["sex"] = X["Attribute9"].map(lambda x: sex_ms_mapping[x][0]) # SR: picks 0th index for sex
+X["sex"] = X["Attribute9"].map(lambda x: sex_ms_mapping[x][0]) # picks 0th index for sex
 X['sex'] = X['sex'].map({'male': 1, 'female': 0})
 y = y.replace({2: 0}) 
 categorical_columns = ["Attribute1", "Attribute3", "Attribute4", "Attribute6", "Attribute7", 
@@ -26,10 +26,10 @@ categorical_columns = ["Attribute1", "Attribute3", "Attribute4", "Attribute6", "
 X_enc = pd.get_dummies(X, columns=categorical_columns)
 X_enc = X_enc.replace({True: 1, False: 0}) # bool vals to 0 and 1
 
-# SR: splitting to train and test: 80-20
+# Splitting to train and test: 80-20
 train_X, test_X, train_y, test_y = train_test_split(X_enc, y, test_size=0.2, random_state=1)
 
-# SR: saving test and train files to read in train.py script
+# Saving test and train files to read in train.py script
 os.chdir("../env/")
 
 train_X.to_csv("train_X.csv")

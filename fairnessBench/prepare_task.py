@@ -1,5 +1,4 @@
 
-# AS:
 # Stop 3:
 # Find and run prepare.py of the task and create "prepared" file
 
@@ -20,13 +19,13 @@ def get_task_info(task):
     benchmark_folder_name= None
 
     # Retrieve task from benchmarks
-    # AS: Debugging Research probleman folder name:
+    # Debugging Research problem and folder name:
     tasks = json.load(open(os.path.join(benchmarks_dir, "tasks.json")))
     if task in tasks:
         research_problem = tasks[task].get("research_problem", None)
         benchmark_folder_name = tasks[task].get("benchmark_folder_name", None)
 
-    # AS: Check if a folder exists for this task with an env folder in it
+    # Check if a folder exists for this task with an env folder in it
     elif task in os.listdir(benchmarks_dir) and os.path.isdir(os.path.join(benchmarks_dir, task, "env")):
         # default benchmarks
         benchmark_folder_name = task 

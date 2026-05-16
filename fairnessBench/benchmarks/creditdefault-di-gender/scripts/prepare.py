@@ -11,7 +11,7 @@ y = default_of_credit_card_clients.data.targets.copy()
 X.rename(columns={'X2':'gender', 'X4':'marital_status'}, inplace=True)
 X["gender"] = X["gender"].apply(lambda i: 1 if i == 1 else 0) 
 
-# SR: splitting to train and test: 80-20
+# Splitting to train and test: 80-20
 train_X, test_X, train_y, test_y = train_test_split(X, y, test_size=0.2, random_state=1)
 
 os.chdir("../env/")

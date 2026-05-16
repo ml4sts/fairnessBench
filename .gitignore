@@ -1,4 +1,3 @@
-# AS: 
 final_exp_logs
 fairnessBench/benchmarks/*/env/*.csv
 fairnessBench/benchmarks/*/env/assets/*

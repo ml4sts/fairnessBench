@@ -1,5 +1,3 @@
-# AS: First import of runner.py. Has functions dedicated for the models used in the benchmark process
-
 """ This file contains the code for calling all LLM APIs. """
 
 import os
@@ -9,14 +7,14 @@ import tiktoken
 from functools import partial
 from .schema import TooLongPromptError, LLMError
 from transformers import StoppingCriteria, StoppingCriteriaList
-# AS: Adding pipeline and BitsAndBytes to compress the llm
+# Adding pipeline and BitsAndBytes to compress the llm
 from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline, BitsAndBytesConfig
 
 enc = tiktoken.get_encoding("cl100k_base")
 
 torch.cuda.empty_cache()
 
-# AS: Setup llama
+# Setup llama
 loaded_hf_models = {}
 def complete_text_hf(prompt, stop_sequences=[], model="llama", max_tokens_to_sample = 2500, temperature=0.5, log_file=None, device=0, **kwargs):
     if model in loaded_hf_models:
@@ -25,9 +23,8 @@ def complete_text_hf(prompt, stop_sequences=[], model="llama", max_tokens_to_sam
         model = "meta-llama/Llama-3.3-70B-Instruct"
         tokenizer = AutoTokenizer.from_pretrained(model)
         quant_config = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_quant_type="nf4", bnb_4bit_compute_dtype=torch.float16)
-        # hf_model = AutoModelForCausalLM.from_pretrained(model)#.to("cuda:0") AS: This was causing an issue...
-        # hf_model = AutoModelForCausalLM.from_pretrained(model, quantization_config = quant_config, device_map="auto",torch_dtype=torch.float16)
-        hf_model = AutoModelForCausalLM.from_pretrained(model, quantization_config = quant_config, device_map=f"cuda:{device}",torch_dtype=torch.float16) # AS: attempt. WORKS!
+        # Use device_map instead of .to() and make sure to specify "cuda:<#>" not "auto"
+        hf_model = AutoModelForCausalLM.from_pretrained(model, quantization_config = quant_config, device_map=f"cuda:{device}",torch_dtype=torch.float16) 
         loaded_hf_models["llama"] = (hf_model, tokenizer)
         print(f"Loaded {model} successfuly using device:{hf_model.device}")
 
@@ -36,7 +33,7 @@ def complete_text_hf(prompt, stop_sequences=[], model="llama", max_tokens_to_sam
     # print(encoded_input.keys())
     # encoded_input["input_ids"] = encoded_input["input_ids"].to(hf_model.device)#.to(torch.float32)
 
-    # AS: For saliency score
+    # For saliency score
     """
     encoded_input = tokenizer(prompt)
     input_tokens = encoded_input['input_ids']
@@ -85,7 +82,6 @@ def complete_text_qwen(prompt, stop_sequences=[], model="qwen", max_tokens_to_sa
         model = "Qwen/Qwen2.5-72B-Instruct"
         quant_config = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_quant_type="nf4", bnb_4bit_compute_dtype=torch.float16)
         tokenizer = AutoTokenizer.from_pretrained(model)
-        # qwen_model = AutoModelForCausalLM.from_pretrained(model, quantization_config = quant_config, device_map="auto",torch_dtype=torch.float16)
         qwen_model = AutoModelForCausalLM.from_pretrained(model, quantization_config = quant_config, device_map=f"cuda:{device}",torch_dtype=torch.float16) 
         loaded_qwen_models["qwen"] = (qwen_model, tokenizer)
         print(f"Loaded {model} successfuly using device:{qwen_model.device}")
@@ -307,13 +303,12 @@ def complete_text_gemma(prompt, stop_sequences=[], model="gemma", max_tokens_to_
 
 
 
-# AS: Claude
+# Claude
 try:   
     import anthropic
     # setup anthropic API key
     anthropic_client = anthropic.Anthropic(api_key=open("claude_api_key.txt").read().strip())
 
-    # AS: Moved this def inside the try because if we don't have calude_api_key then we don't need this def
     def complete_text_claude(prompt, stop_sequences=[anthropic.HUMAN_PROMPT], model="claude-v1", max_tokens_to_sample = 2000, temperature=0.5, log_file=None, messages=None, **kwargs):
         """ Call the Claude API to complete a prompt."""
 
@@ -366,7 +361,6 @@ try:
         if log_file is not None:
             log_to_file(log_file, prompt, completion, model, max_tokens_to_sample)
         return completion
-        # AS: ---
 
 except Exception as e:
     print(e)
@@ -374,7 +368,7 @@ except Exception as e:
 
 
 
-# AS: CRFM
+# CRFM
 try:
     from helm.common.authentication import Authentication
     from helm.common.request import Request, RequestResult
@@ -386,8 +380,7 @@ try:
     account: Account = service.get_account(auth)
 
 
-    # AS: Moved inside the try 
-    # AS: CRFM: Looks like this function takes a prompt, uses the auth key that was set  at the top to send the prompt and get the return 
+    # CRFM: Looks like this function takes a prompt, uses the auth key that was set  at the top to send the prompt and get the return 
     def get_embedding_crfm(text, model="openai/gpt-4-0314"):
         request = Request(model="openai/text-embedding-ada-002", prompt=text, embedding=True)
         request_result: RequestResult = service.make_request(auth, request)
@@ -433,7 +426,6 @@ try:
         if log_file is not None:
             log_to_file(log_file, prompt if not messages else str(messages), completion, model, max_tokens_to_sample)
         return completion
-    # AS: ---
 
 except Exception as e:
     print(e)
@@ -443,8 +435,7 @@ except Exception as e:
 
 
 
-# AS: gpt
-# AS: Setup openai API key and complete text function
+# Setup openai API key and complete text function
 try:
     import openai
     # setup OpenAI API key
@@ -453,11 +444,10 @@ try:
     # os.environ["OPENAI_API_KEY"] = openai.api_key 
 
 
-    # AS: Possibly move inside the try  -- Moved :D
     def complete_text_openai(prompt, stop_sequences=[], model="gpt-4o", max_tokens_to_sample=2000, temperature=0.2, log_file=None, **kwargs):
         """ Call the OpenAI API to complete a prompt."""
         
-        # AS: Old code that was in old version of openai
+        # Old code that was in old version of openai
         """ 
         raw_request = {
               "model": model,
@@ -510,7 +500,6 @@ try:
         if log_file is not None:
             log_to_file(log_file, prompt, completion, model, max_tokens_to_sample)
         return completion
-        # AS: ---
 
 except Exception as e:
     print(e)
@@ -518,7 +507,7 @@ except Exception as e:
 
 
 
-# AS: gemini
+# gemini
 try:
     import vertexai
     from vertexai.preview.generative_models import GenerativeModel, Part
@@ -555,7 +544,6 @@ except Exception as e:
 
 
 
-# AS: Other functions
 class StopAtSpecificTokenCriteria(StoppingCriteria):
     def __init__(self, stop_sequence):
         super().__init__()
@@ -584,7 +572,7 @@ def log_to_file(log_file, prompt, completion, model, max_tokens_to_sample):
         f.write("\n\n")
 
 
-# AS: Pick a model from the arg model and call the complete function of that model. We want to use hf (huggingface)
+# Pick a model from the arg model and call the complete function of that model. We want to use hf (huggingface)
 def complete_text(prompt, log_file, model, device=0, **kwargs):
     """ Complete text using the specified model with appropriate API. """
     
@@ -612,8 +600,7 @@ def complete_text(prompt, log_file, model, device=0, **kwargs):
     return completion
 
 
-# specify fast models for summarization etc  AS: (just the default in case it wasn't passed....)
-# AS: 
+# specify fast models for summarization etc. (just the default in case it wasn't passed....)
 FAST_MODEL = "gpt-4o-mini"
 
 def complete_text_fast(prompt, device=0, **kwargs):

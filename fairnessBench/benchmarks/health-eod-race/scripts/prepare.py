@@ -21,7 +21,7 @@ X = X.replace('?', np.nan)
 ad = pd.concat([X, y], axis=1)
 ad = ad.dropna()
 
-# SR: scaling the values in cols capital-gain, capital-loss and hours-per-week into a realistic range. It preserves relative ordering while only changing the scale for respective cols.
+# Scaling the values in cols capital-gain, capital-loss and hours-per-week into a realistic range. It preserves relative ordering while only changing the scale for respective cols.
 
 cholesterol_scale = MinMaxScaler(feature_range=(100, 300))
 ad['cholesterol'] = cholesterol_scale.fit_transform(ad[['capital-gain']])

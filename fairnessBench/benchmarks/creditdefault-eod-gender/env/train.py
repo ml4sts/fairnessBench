@@ -9,7 +9,7 @@ train_y = pd.read_csv("train_y.csv", index_col=0)
 test_X = pd.read_csv("test_X.csv", index_col=0)
 test_y = pd.read_csv("test_y.csv", index_col=0)
 
-lr = LogisticRegression(max_iter=1000) # SR: model
+lr = LogisticRegression(max_iter=1000) # model
 lr.fit(train_X, train_y) 
 
 pred_y = lr.predict(test_X)

@@ -28,7 +28,7 @@ from langchain.input import get_color_mapping
 from langchain.callbacks import FileCallbackHandler
 from langchain.agents.mrkl.output_parser import MRKLOutputParser
 from fairnessBench.schema import Action
-from fairnessBench.LLM import complete_text_fast as complete_text_crfm # AS: Changed it to complete_text_fast
+from fairnessBench.LLM import complete_text_fast as complete_text_crfm # CRFM is not setup
 from .agent import Agent
 
 

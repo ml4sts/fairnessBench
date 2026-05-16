@@ -17,28 +17,29 @@
 # pip install --force-reinstall charset-normalizer==3.1.0
 
 
-# AS:
 # Our dependencies:
 pip install tiktoken
-# For llama:
+# For local models:
 pip install transformers
 pip install torch
 pip install accelerate
 pip install tokenizer
 pip install bitsandbytes
 
-pip install blobfile  # ??
-pip install protobuf  # ??
-pip install dacite    # ??
+pip install blobfile
+pip install protobuf
+pip install dacite
 pip install anthropic # for agent.py
 pip install langchain # langchain agent
 pip install langchain_anthropic 
 
 
-# For Adult:
+# Fairness libs:
 pip install ucimlrepo
 pip install scikit-learn
 pip install aif360
 
-pip install flake8 # Eval
+# For eval
+pip install flake8
+pip install fairnessbench/eval/ # install flake8 config
 

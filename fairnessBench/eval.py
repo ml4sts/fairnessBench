@@ -96,7 +96,7 @@ def get_latest_agent_history_step(subdir):
         return thinking
     except:
         return None
-# AS: TODO: check if calling this function multiple times with different scripts affects the app or is initialize enough
+
 def get_flake8(train_script):
     app.initialize([train_script])
     # Step 1: Save the real stdout
@@ -171,7 +171,7 @@ def run_eval(log_folder, benchmark_folder_name, eval_model=None, eval_intermedia
                         result.submitted_final_answer = True
                         
                 # Setting a constant var to limit the evaluation to a maximum number of steps
-                num_steps_eval = 50 # AS: move this to the top with eplaination
+                num_steps_eval = 50 # TODO: move this to the top with eplaination
 
                 # Create a sampled list of steps to limit the evaluation to the maximum number of steps
                 step_list = range(num_steps)
