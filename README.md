@@ -23,31 +23,31 @@ pip install -r fairnessBench/requirements.txt
 pip install -e fairnessBench
 ```
 
-```{Warning}
+> [!WARNING]
 Logs and workspace files might be space consuming. Please create a log directory where you have sufficient space.
-The path to your log directory will be used as the environment variable `LOG_PATH` in the following step 
-```
+The path to your log directory will be used as the environment variable `LOG_PATH` in the following step.
+
 
 ### What Makes A Single Run
 - On your terminal run `export LOG_PATH=<path_to_log_dir>`
 - Pick a task/list of tasks to run from fairnessBench/benchmarks/tasks.json
 - Pick LLMs wanted for the benchmark (make sure the required API keys are in the root directory of the app)
 - Follow the steps found in the run_experiment.sh script to declare the tasks and LLMs you want to use
-- Run run_experiment.sh
+- Run `bash run_experiment.sh`
 
-```{Notice}
+> [!NOTE]
 Some tasks are time consuming especially when using local LLMs. Make sure you have sufficient compute resources available,
  and if on a SLURM environment, please follow the provided template `batch_script_template.sh` to schedule your job properly.
-```
+
 
 ### run_experiment.sh
 
-- Log_dir: The path to a directory for the environment to keep the logs
+- Log_dir: A directory name in `LOG_PATH` for the environment to keep the logs
 - Models: The models you want to evaluate on the tasks
   - Available options are:
     - Paid: claude-2.1, gpt-4-0125-preview, gpt-4o-mini, gpt-4o, claude-3-7-sonnet-20250219, claude-3-5-haiku-20241022, claude-3-opus-20240229
     - Local: gemini-pro, llama, qwen, granite
-  - Local models will be downloaded into your cache if now loaded with `export HF_HOME=<path_to_model>`
+  - Local models will be downloaded into your cache if not loaded with `export HF_HOME=<path_to_model>`
 - edit_script_model & fast_llm: Are LLMs specifically used to run smaller actions such as editing a script or summarizing a long observation, these can optionally be different from main agent models
 
 ### eval.sh
