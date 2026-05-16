@@ -8,7 +8,6 @@ A fairnessBench task is defined as follows:
 For a dataset and a very simple training script that uses logistic regression model. 
 How well can an LLM agent improve the training script to achieve high fairness metrics.
 
-
 ## Instructions for running the benchmark:
 Here we describe the steps necessary to run the experiment. Once you are able to run fairnessBench
 on your own machine, you can start adding your own tasks and your own LLMs to benchmark.
@@ -70,32 +69,23 @@ baseline.sh script provides a standardized way to run a benchmark task/list of b
 
 <!--Run baseline.sh on a benchmark task/ list of benchmark tasks to run the baseline train.py provided in the task. -->
 
-## Fairness Metrics:
-* To capture disparities:
-  * Disparate Impact
-  * Statistical Parity Difference
-* To assess differences in true positive rates:
-  * Equal Opportunity Difference
-* To quantify misclassification disparities
-  * Error Rate Difference
-  * Error Rate Ratio
-* To examine disparities in false negatives across groups:
-  * False Omission Rate Difference
- 
+## Fairness Metrics
+We use the following group fairness metrics to capture disparities, assess differences in true positive rates, to quantify misclassification disparities and to examine disparities in false negatives across groups:
 
 ### Independence 
+Measures whether the prediction and demographic group are independent.
 * **Disparate Impact**
 * **Statistical Parity Difference**
-
-### Separation
-* **Equal Opportunity Difference** 
-
-
-### Sufficiency??
 * **Error Rate Difference**
 * **Error Rate Ratio**
-* **False Omission Rate Difference**
 
+### Separation
+Separation measures if the prediction & demographics are independent conditioned on the ground truth.
+* **Equal Opportunity Difference** 
+
+### Sufficiency
+Sufficiency measures if the ground truth is independent of the demographic variables, conditioned on the prediction
+* **False Omission Rate Difference**
 
 
 ## Different LLM models used for agent
