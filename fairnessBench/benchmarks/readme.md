@@ -56,16 +56,18 @@ adult-di-sex
 We use the following group fairness metrics to capture disparities, assess differences in true positive rates, to quantify misclassification disparities and to examine disparities in false negatives across groups:
 
 ### Independence 
+Measures whether the prediction and demographic group are independent.
 * **Disparate Impact**
 * **Statistical Parity Difference**
-
-### Separation
-* **Equal Opportunity Difference** 
-
-
-### Sufficiency??
 * **Error Rate Difference**
 * **Error Rate Ratio**
+
+### Separation
+separation measures if the prediction & demographics are independent conditioned on the ground truth.
+* **Equal Opportunity Difference** 
+
+### Sufficiency
+Sufficiency measures if the ground truth is independent of the demographic variables, conditioned on the prediction
 * **False Omission Rate Difference**
 
 
