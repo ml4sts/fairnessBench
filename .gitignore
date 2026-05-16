@@ -13,7 +13,7 @@ Run_scripts/*
 run_experiments_*.sh
 test*.txt
 eval*.sh
-
+**description.json
 
 
 
