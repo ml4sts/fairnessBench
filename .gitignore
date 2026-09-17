@@ -13,8 +13,13 @@ Run_scripts/*
 run_experiments_*.sh
 test*.txt
 eval*.sh
-fairnessbench_analysis/*/*.png
-fairnessbench_analysis/*/*.csv
+# analysis outputs - regenerable by explode_results.py / results.ipynb,
+# and large (csv_files and graphs are ~45MB). Code and readme stay tracked.
+fairnessbench_analysis/**/*.png
+fairnessbench_analysis/**/*.csv
+fairnessbench_analysis/**/*.tex
+fairnessbench_analysis/csv_files/
+fairnessbench_analysis/graphs*/
 
 # path
 path.py
